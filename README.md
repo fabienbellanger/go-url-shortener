@@ -1,9 +1,8 @@
 # go-url-shortener
-A simple boilerplate for [Fiber](https://github.com/gofiber/fiber)
+A simple URL shortener written in Go with [Fiber](https://github.com/gofiber/fiber)
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/fabienbellanger/go-url-shortener)](https://goreportcard.com/report/github.com/fabienbellanger/go-url-shortener)
-[![MIT license](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
-[![go.dev reference](https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white&style=square)](https://pkg.go.dev/github.com/fabienbellanger/go-url-shortener)
+- https://www.eddywm.com/lets-build-a-url-shortener-in-go-part-3-short-link-generation/
+- https://intersog.com/blog/how-to-write-a-custom-url-shortener-using-golang-and-redis/
 
 ## Sommaire
 -  [Commands list](#commands-list)
