@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  api:
+    container_name: go-url-shortener-api
+    build: .
+    ports: 
+      - 9900:8888
+    volumes:
+      - ./:/build:delegated
+    restart: always
+    depends_on:
+      - mysql
+    networks:
+      - go-url-shortener-bridge
+
+  mysql:
+    container_name: go-url-shortener-mysql
+    image: mysql:5.7
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always # "no" | on-failure
+    volumes:
+      - go-url-shortener-data_mysql:/var/lib/mysql:delegated
+    environment:
+      - MYSQL_DATABASE=url_shortener
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=root
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+    networks:
+      - go-url-shortener-bridge
+
+networks:
+  go-url-shortener-bridge:
+
+volumes:
+  go-url-shortener-data_mysql:
