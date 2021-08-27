@@ -12,15 +12,12 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/basicauth"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/favicon"
-	"github.com/gofiber/fiber/v2/middleware/filesystem"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/pprof"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
 	jwtware "github.com/gofiber/jwt/v2"
-	"github.com/gofiber/template/django"
-	"github.com/markbates/pkger"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
 
@@ -42,7 +39,7 @@ func Run(db *db.DB, logger *zap.Logger) {
 
 	// Public routes
 	// -------------
-	registerPublicWebRoutes(web, logger)
+	registerPublicWebRoutes(web, db, logger)
 	registerPublicAPIRoutes(api, db)
 
 	// Protected routes
@@ -77,15 +74,11 @@ func Run(db *db.DB, logger *zap.Logger) {
 }
 
 func initConfig(logger *zap.Logger) fiber.Config {
-	// Initialize standard Go html template engine
-	engine := django.NewFileSystem(pkger.Dir("/public/templates"), ".django")
-
 	return fiber.Config{
 		AppName:               viper.GetString("APP_NAME"),
 		Prefork:               viper.GetBool("SERVER_PREFORK"),
 		DisableStartupMessage: false,
 		StrictRouting:         true,
-		Views:                 engine,
 		// Errors handling
 		// ---------------
 		ErrorHandler: func(c *fiber.Ctx, err error) error {
@@ -211,12 +204,6 @@ func initMiddlewares(s *fiber.App) {
 }
 
 func initTools(s *fiber.App) {
-	// Pkger
-	// -----
-	s.Use("/assets", filesystem.New(filesystem.Config{
-		Root: pkger.Dir("/public/assets"),
-	}))
-
 	// Basic Auth
 	// ----------
 	cfg := basicauth.Config{

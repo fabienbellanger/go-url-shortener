@@ -5,16 +5,14 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/fabienbellanger/go-url-shortener/db"
-	"github.com/fabienbellanger/go-url-shortener/handlers/api"
-	"github.com/fabienbellanger/go-url-shortener/handlers/web"
+	"github.com/fabienbellanger/go-url-shortener/handlers"
 )
 
 // Web routes
 // ----------
 
-func registerPublicWebRoutes(r fiber.Router, logger *zap.Logger) {
-	r.Get("/health-check", web.HealthCheck(logger))
-	r.Get("/hello/:name", web.Hello())
+func registerPublicWebRoutes(r fiber.Router, db *db.DB, logger *zap.Logger) {
+	r.Get("/:id", handlers.RedirectURL(db))
 }
 
 // API routes
@@ -30,19 +28,22 @@ func registerProtectedAPIRoutes(r fiber.Router, db *db.DB) {
 	v1 := r.Group("/v1")
 
 	registerUser(v1, db)
+
+	// Links
+	v1.Post("/links", handlers.CreateLink(db))
 }
 
 func registerAuth(r fiber.Router, db *db.DB) {
-	r.Post("/login", api.Login(db))
-	r.Post("/register", api.CreateUser(db))
+	r.Post("/login", handlers.Login(db))
+	r.Post("/register", handlers.CreateUser(db))
 }
 
 func registerUser(r fiber.Router, db *db.DB) {
 	users := r.Group("/users")
 
-	users.Get("/", api.GetAllUsers(db))
-	users.Get("/stream", api.StreamUsers(db))
-	users.Get("/:id", api.GetUser(db))
-	users.Delete("/:id", api.DeleteUser(db))
-	users.Put("/:id", api.UpdateUser(db))
+	users.Get("/", handlers.GetAllUsers(db))
+	users.Get("/stream", handlers.StreamUsers(db))
+	users.Get("/:id", handlers.GetUser(db))
+	users.Delete("/:id", handlers.DeleteUser(db))
+	users.Put("/:id", handlers.UpdateUser(db))
 }
