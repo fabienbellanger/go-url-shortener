@@ -14,7 +14,6 @@ A simple URL shortener written in Go with [Fiber](https://github.com/gofiber/fib
     -  [pprof](#pprof)
     -  [trace](#trace)
     -  [cover](#cover)
--  [TODO](#todo)
 
 
 ## Commands list
@@ -23,7 +22,6 @@ A simple URL shortener written in Go with [Fiber](https://github.com/gofiber/fib
 |---|---|
 | `<binary> version` | Display application version |
 | `<binary> run` | Start server |
-| `<binary> log-rotate` | Log rotation |
 | `<binary> log-reader` | Log reader |
 
 
@@ -34,8 +32,7 @@ A simple URL shortener written in Go with [Fiber](https://github.com/gofiber/fib
 | `make update` | `go get -u && go mod tidy` | Update Go dependencies |
 | `make serve` | `go run cmd/main.go` | Start the Web server |
 | `make serve-race` | `go run --race cmd/main.go` | Start the Web server with data races option |
-| `make serve-pkger` | `pkger && go run cmd/main.go` | Run Pkger and start the Web server |
-| `make build` | `go build -o go-url-shortener -v cmd/main.go` | Build application with pkger |
+| `make build` | `go build -o go-url-shortener -v cmd/main.go` | Build application |
 | `make test` | `go test -cover -v ./...` | Launch unit tests |
 
 
@@ -137,10 +134,3 @@ Puis :
 ```bash
 go tool cover -html=<fichier à analyser>
 ```
-
-## TODO
--  [x] Utiliser Zap
--  [ ] **Attention** : Le middleware websocket de Fiber génère une data race avec le hub ! Voir si cela sera corrigé à l'avenir (lever une issue sur Github ?)
--  [ ] Mettre en place la stack Prometheus + Grafana pour la télémétrie
--  [x] Si la connexion à la base de données est coupée, cela retourne une 401 au lieu d'une 500.
--  [x] Validation des données avec github.com/go-playground/validator
