@@ -27,7 +27,7 @@ A simple URL shortener written in Go with [Fiber](https://github.com/gofiber/fib
         "firstname": "Toto",
         "created_at": "2021-03-08T20:43:28.345Z",
         "updated_at": "2021-03-08T20:43:28.345Z",
-        "token": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJjcmVhdGVkQXQiOiIyMDIxLTA4LTI3VDE1OjIzOjMyLjIyNloiLCJleHAiOjE2MzA5NDE4MTQsImZpcnN0bmFtZSI6IlRvdG8iLCJpYXQiOjE2MzAwNzc4MTQsImlkIjoiYjc4ODg5M2UtNjFlNi00YTg0LThkZWItMWY4ZjVhYTU2MzFlIiwibGFzdG5hbWUiOiJUZXN0IiwibmJmIjoxNjMwMDc3ODE0LCJ1c2VybmFtZSI6InRlc3RAZ21haWwuY29tIn0.vgccmOprDnbY3m-WurT8CaqKtN7VXT8u4WXtmiIN1w65iD80uGmkDO2iSpkVdG1pgsA3crNvCfgOMwSpHrf3FQ",
+        "token": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJjcmVhdGVkQXQiOiIyMDIxLTA5LTIzVDE5OjIxOjE4LjIxN1oiLCJleHAiOjE2MzI1MTEyOTQsImZpcnN0bmFtZSI6IlRvdG8iLCJpYXQiOjE2MzI0MjQ4OTQsImlkIjoiMDBkYWVmODMtMGE5ZC00YWY3LWFhMWYtN2ZlZDMwYzlmZmJlIiwibGFzdG5hbWUiOiJUZXN0IiwibmJmIjoxNjMyNDI0ODk0LCJ1c2VybmFtZSI6InRlc3RAZ21haWwuY29tIn0.XT6Cj5WnH1_h8tvagSE4vcXBVu5_5gox0YqbfasyxRKVGu1hvXNOKOyRTXsrYgigokXHR7pGyAJubEriKKjk4w",
         "expires_at": "2021-03-18T21:43:35.641Z"
     }
     ```
@@ -50,7 +50,7 @@ A simple URL shortener written in Go with [Fiber](https://github.com/gofiber/fib
 
 - **[GET] `/api/v1/users`**: Users list
     ```bash
-    http GET localhost:3000/api/v1/users "Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJjcmVhdGVkQXQiOiIyMDIxLTA4LTI3VDE1OjIzOjMyLjIyNloiLCJleHAiOjE2MzA5NDE4MTQsImZpcnN0bmFtZSI6IlRvdG8iLCJpYXQiOjE2MzAwNzc4MTQsImlkIjoiYjc4ODg5M2UtNjFlNi00YTg0LThkZWItMWY4ZjVhYTU2MzFlIiwibGFzdG5hbWUiOiJUZXN0IiwibmJmIjoxNjMwMDc3ODE0LCJ1c2VybmFtZSI6InRlc3RAZ21haWwuY29tIn0.vgccmOprDnbY3m-WurT8CaqKtN7VXT8u4WXtmiIN1w65iD80uGmkDO2iSpkVdG1pgsA3crNvCfgOMwSpHrf3FQ"
+    http GET localhost:3000/api/v1/users "Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJjcmVhdGVkQXQiOiIyMDIxLTA5LTIzVDE5OjIxOjE4LjIxN1oiLCJleHAiOjE2MzI1MTEyOTQsImZpcnN0bmFtZSI6IlRvdG8iLCJpYXQiOjE2MzI0MjQ4OTQsImlkIjoiMDBkYWVmODMtMGE5ZC00YWY3LWFhMWYtN2ZlZDMwYzlmZmJlIiwibGFzdG5hbWUiOiJUZXN0IiwibmJmIjoxNjMyNDI0ODk0LCJ1c2VybmFtZSI6InRlc3RAZ21haWwuY29tIn0.XT6Cj5WnH1_h8tvagSE4vcXBVu5_5gox0YqbfasyxRKVGu1hvXNOKOyRTXsrYgigokXHR7pGyAJubEriKKjk4w"
     ```
     Response:
     ```json
@@ -76,7 +76,7 @@ A simple URL shortener written in Go with [Fiber](https://github.com/gofiber/fib
 
 - **[GET] `/api/v1/users/{id}`**: Get user information
     ```bash
-    http GET localhost:3000/api/v1/users/2a40080f-6077-4273-9075-1c5503ac95eb "Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJjcmVhdGVkQXQiOiIyMDIxLTA4LTI3VDE1OjIzOjMyLjIyNloiLCJleHAiOjE2MzA5NDE4MTQsImZpcnN0bmFtZSI6IlRvdG8iLCJpYXQiOjE2MzAwNzc4MTQsImlkIjoiYjc4ODg5M2UtNjFlNi00YTg0LThkZWItMWY4ZjVhYTU2MzFlIiwibGFzdG5hbWUiOiJUZXN0IiwibmJmIjoxNjMwMDc3ODE0LCJ1c2VybmFtZSI6InRlc3RAZ21haWwuY29tIn0.vgccmOprDnbY3m-WurT8CaqKtN7VXT8u4WXtmiIN1w65iD80uGmkDO2iSpkVdG1pgsA3crNvCfgOMwSpHrf3FQ"
+    http GET localhost:3000/api/v1/users/2a40080f-6077-4273-9075-1c5503ac95eb "Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJjcmVhdGVkQXQiOiIyMDIxLTA5LTIzVDE5OjIxOjE4LjIxN1oiLCJleHAiOjE2MzI1MTEyOTQsImZpcnN0bmFtZSI6IlRvdG8iLCJpYXQiOjE2MzI0MjQ4OTQsImlkIjoiMDBkYWVmODMtMGE5ZC00YWY3LWFhMWYtN2ZlZDMwYzlmZmJlIiwibGFzdG5hbWUiOiJUZXN0IiwibmJmIjoxNjMyNDI0ODk0LCJ1c2VybmFtZSI6InRlc3RAZ21haWwuY29tIn0.XT6Cj5WnH1_h8tvagSE4vcXBVu5_5gox0YqbfasyxRKVGu1hvXNOKOyRTXsrYgigokXHR7pGyAJubEriKKjk4w"
     ```
     Response:
     ```json
@@ -92,13 +92,13 @@ A simple URL shortener written in Go with [Fiber](https://github.com/gofiber/fib
 
 - **[DELETE] `/api/v1/users/{id}`**: Delete user
     ```bash
-    http DELETE localhost:3000/api/v1/users/2a40080f-6077-4273-9075-1c5503ac95eb "Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJjcmVhdGVkQXQiOiIyMDIxLTA4LTI3VDE1OjIzOjMyLjIyNloiLCJleHAiOjE2MzA5NDE4MTQsImZpcnN0bmFtZSI6IlRvdG8iLCJpYXQiOjE2MzAwNzc4MTQsImlkIjoiYjc4ODg5M2UtNjFlNi00YTg0LThkZWItMWY4ZjVhYTU2MzFlIiwibGFzdG5hbWUiOiJUZXN0IiwibmJmIjoxNjMwMDc3ODE0LCJ1c2VybmFtZSI6InRlc3RAZ21haWwuY29tIn0.vgccmOprDnbY3m-WurT8CaqKtN7VXT8u4WXtmiIN1w65iD80uGmkDO2iSpkVdG1pgsA3crNvCfgOMwSpHrf3FQ"
+    http DELETE localhost:3000/api/v1/users/2a40080f-6077-4273-9075-1c5503ac95eb "Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJjcmVhdGVkQXQiOiIyMDIxLTA5LTIzVDE5OjIxOjE4LjIxN1oiLCJleHAiOjE2MzI1MTEyOTQsImZpcnN0bmFtZSI6IlRvdG8iLCJpYXQiOjE2MzI0MjQ4OTQsImlkIjoiMDBkYWVmODMtMGE5ZC00YWY3LWFhMWYtN2ZlZDMwYzlmZmJlIiwibGFzdG5hbWUiOiJUZXN0IiwibmJmIjoxNjMyNDI0ODk0LCJ1c2VybmFtZSI6InRlc3RAZ21haWwuY29tIn0.XT6Cj5WnH1_h8tvagSE4vcXBVu5_5gox0YqbfasyxRKVGu1hvXNOKOyRTXsrYgigokXHR7pGyAJubEriKKjk4w"
     ```
   Response code `204`
 
 - **[PUT] `/api/v1/users/{id}`**: Update user information
     ```bash
-    http PUT localhost:3000/api/v1/users/2a40080f-6077-4273-9075-1c5503ac95eb "Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJjcmVhdGVkQXQiOiIyMDIxLTA4LTI3VDE1OjIzOjMyLjIyNloiLCJleHAiOjE2MzA5NDE4MTQsImZpcnN0bmFtZSI6IlRvdG8iLCJpYXQiOjE2MzAwNzc4MTQsImlkIjoiYjc4ODg5M2UtNjFlNi00YTg0LThkZWItMWY4ZjVhYTU2MzFlIiwibGFzdG5hbWUiOiJUZXN0IiwibmJmIjoxNjMwMDc3ODE0LCJ1c2VybmFtZSI6InRlc3RAZ21haWwuY29tIn0.vgccmOprDnbY3m-WurT8CaqKtN7VXT8u4WXtmiIN1w65iD80uGmkDO2iSpkVdG1pgsA3crNvCfgOMwSpHrf3FQ" lastname=Test firstname=Tutu username=test3@gmail.com password=222222222
+    http PUT localhost:3000/api/v1/users/2a40080f-6077-4273-9075-1c5503ac95eb "Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJjcmVhdGVkQXQiOiIyMDIxLTA5LTIzVDE5OjIxOjE4LjIxN1oiLCJleHAiOjE2MzI1MTEyOTQsImZpcnN0bmFtZSI6IlRvdG8iLCJpYXQiOjE2MzI0MjQ4OTQsImlkIjoiMDBkYWVmODMtMGE5ZC00YWY3LWFhMWYtN2ZlZDMwYzlmZmJlIiwibGFzdG5hbWUiOiJUZXN0IiwibmJmIjoxNjMyNDI0ODk0LCJ1c2VybmFtZSI6InRlc3RAZ21haWwuY29tIn0.XT6Cj5WnH1_h8tvagSE4vcXBVu5_5gox0YqbfasyxRKVGu1hvXNOKOyRTXsrYgigokXHR7pGyAJubEriKKjk4w" lastname=Test firstname=Tutu username=test3@gmail.com password=222222222
     ```
   Response:
     ```json
@@ -115,7 +115,7 @@ A simple URL shortener written in Go with [Fiber](https://github.com/gofiber/fib
 
 - **[POST] `/api/v1/links`**: Create new shortened URL
     ```bash
-    http POST localhost:3000/api/v1/links "Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJjcmVhdGVkQXQiOiIyMDIxLTA4LTI3VDE1OjIzOjMyLjIyNloiLCJleHAiOjE2MzA5NDE4MTQsImZpcnN0bmFtZSI6IlRvdG8iLCJpYXQiOjE2MzAwNzc4MTQsImlkIjoiYjc4ODg5M2UtNjFlNi00YTg0LThkZWItMWY4ZjVhYTU2MzFlIiwibGFzdG5hbWUiOiJUZXN0IiwibmJmIjoxNjMwMDc3ODE0LCJ1c2VybmFtZSI6InRlc3RAZ21haWwuY29tIn0.vgccmOprDnbY3m-WurT8CaqKtN7VXT8u4WXtmiIN1w65iD80uGmkDO2iSpkVdG1pgsA3crNvCfgOMwSpHrf3FQ" url=https://google.com expired_at="2021-12-31T00:00:00Z"
+    http POST localhost:3000/api/v1/links "Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJjcmVhdGVkQXQiOiIyMDIxLTA5LTIzVDE5OjIxOjE4LjIxN1oiLCJleHAiOjE2MzI1MTEyOTQsImZpcnN0bmFtZSI6IlRvdG8iLCJpYXQiOjE2MzI0MjQ4OTQsImlkIjoiMDBkYWVmODMtMGE5ZC00YWY3LWFhMWYtN2ZlZDMwYzlmZmJlIiwibGFzdG5hbWUiOiJUZXN0IiwibmJmIjoxNjMyNDI0ODk0LCJ1c2VybmFtZSI6InRlc3RAZ21haWwuY29tIn0.XT6Cj5WnH1_h8tvagSE4vcXBVu5_5gox0YqbfasyxRKVGu1hvXNOKOyRTXsrYgigokXHR7pGyAJubEriKKjk4w" url=https://google.com expired_at="2021-12-31T00:00:00Z"
     ```
     Response:
     ```json

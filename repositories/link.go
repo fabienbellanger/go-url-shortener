@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"errors"
+	"time"
 
 	"github.com/fabienbellanger/go-url-shortener/db"
 	"github.com/fabienbellanger/go-url-shortener/models"
@@ -53,7 +54,7 @@ func CreateLink(db *db.DB, link *models.LinkForm) (newLink models.Link, err erro
 
 // GetLinkFromID returns a link if ID exists, else returns an error.
 func GetLinkFromID(db *db.DB, id string) (link *models.Link, err error) {
-	result := db.First(&link, "id = ?", id)
+	result := db.Where("expired_at >= ?", time.Now()).First(&link, "id = ?", id)
 	if result.Error != nil {
 		return link, result.Error
 	}

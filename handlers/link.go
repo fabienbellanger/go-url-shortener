@@ -49,7 +49,7 @@ func RedirectURL(db *db.DB) fiber.Handler {
 
 		link, err := repositories.GetLinkFromID(db, id)
 		if err != nil {
-			c.SendStatus(fiber.StatusNotFound)
+			return c.SendStatus(fiber.StatusNotFound)
 		}
 		return c.Redirect(link.URL)
 	}
