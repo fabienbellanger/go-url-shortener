@@ -115,7 +115,7 @@ A simple URL shortener written in Go with [Fiber](https://github.com/gofiber/fib
 
 - **[GET] `/api/v1/links`**: Get all links
     ```bash
-    http GET localhost:3000/api/v1/links "Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJjcmVhdGVkQXQiOiIyMDIxLTA5LTIzVDE5OjIxOjE4LjIxN1oiLCJleHAiOjE2MzI1MTEyOTQsImZpcnN0bmFtZSI6IlRvdG8iLCJpYXQiOjE2MzI0MjQ4OTQsImlkIjoiMDBkYWVmODMtMGE5ZC00YWY3LWFhMWYtN2ZlZDMwYzlmZmJlIiwibGFzdG5hbWUiOiJUZXN0IiwibmJmIjoxNjMyNDI0ODk0LCJ1c2VybmFtZSI6InRlc3RAZ21haWwuY29tIn0.XT6Cj5WnH1_h8tvagSE4vcXBVu5_5gox0YqbfasyxRKVGu1hvXNOKOyRTXsrYgigokXHR7pGyAJubEriKKjk4w"
+    http GET "localhost:3000/api/v1/links?page=1&limit=10" "Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJjcmVhdGVkQXQiOiIyMDIxLTA5LTIzVDE5OjIxOjE4LjIxN1oiLCJleHAiOjE2MzI1MTEyOTQsImZpcnN0bmFtZSI6IlRvdG8iLCJpYXQiOjE2MzI0MjQ4OTQsImlkIjoiMDBkYWVmODMtMGE5ZC00YWY3LWFhMWYtN2ZlZDMwYzlmZmJlIiwibGFzdG5hbWUiOiJUZXN0IiwibmJmIjoxNjMyNDI0ODk0LCJ1c2VybmFtZSI6InRlc3RAZ21haWwuY29tIn0.XT6Cj5WnH1_h8tvagSE4vcXBVu5_5gox0YqbfasyxRKVGu1hvXNOKOyRTXsrYgigokXHR7pGyAJubEriKKjk4w"
     ```
     Response:
     ```json
