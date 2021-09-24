@@ -4,32 +4,40 @@ import (
 	"crypto/sha256"
 	"fmt"
 	"math/big"
-	"os"
 
 	"github.com/itchyny/base58-go"
 )
 
 // Encodes an ID in SHA256
-func sha256encoded(input string) []byte {
+func sha256encoded(input string) ([]byte, error) {
 	algorithm := sha256.New()
-	algorithm.Write([]byte(input))
-	return algorithm.Sum(nil)
+	_, err := algorithm.Write([]byte(input))
+	if err != nil {
+		return []byte{}, err
+	}
+	return algorithm.Sum(nil), nil
 }
 
 // Encodes the ID SHA256 encoded in base58
-func base58Encoded(bytes []byte) string {
+func base58Encoded(bytes []byte) (string, error) {
 	encoding := base58.BitcoinEncoding
 	encoded, err := encoding.Encode(bytes)
 	if err != nil {
-		fmt.Println(err.Error())
-		os.Exit(1)
+		return "", err
 	}
-	return string(encoded)
+	return string(encoded), nil
 }
 
-func GenerateShortLink(link string, key string) string {
-	urlHashBytes := sha256encoded(link + key)
+func GenerateShortLink(link string, key string) (string, error) {
+	urlHashBytes, err := sha256encoded(link + key)
+	if err != nil {
+		return "", err
+	}
+
 	generatedNumber := new(big.Int).SetBytes(urlHashBytes).Uint64()
-	finalString := base58Encoded([]byte(fmt.Sprintf("%d", generatedNumber)))
-	return finalString[:8]
+	finalString, err := base58Encoded([]byte(fmt.Sprintf("%d", generatedNumber)))
+	if err != nil {
+		return "", err
+	}
+	return finalString[:8], nil
 }

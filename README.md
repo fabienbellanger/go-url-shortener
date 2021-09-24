@@ -33,7 +33,8 @@ A simple URL shortener written in Go with [Fiber](https://github.com/gofiber/fib
 | `make serve` | `go run cmd/main.go` | Start the Web server |
 | `make serve-race` | `go run --race cmd/main.go` | Start the Web server with data races option |
 | `make build` | `go build -o go-url-shortener -v cmd/main.go` | Build application |
-| `make test` | `go test -cover -v ./...` | Launch unit tests |
+| `make test` | `go test -cover ./...` | Launch unit tests |
+| `make test-verbose` | `go test -cover -v ./...` | Launch unit tests in verbose mode |
 
 
 ## Routes

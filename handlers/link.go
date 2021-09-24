@@ -8,6 +8,21 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// LinksList returns the list of all links
+// TODO: Paginate!!
+func LinksList(db *db.DB) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		page := c.Query("page")
+		limit := c.Query("limit")
+
+		links, err := repositories.GetAllLinks(db, page, limit)
+		if err != nil {
+			return fiber.NewError(fiber.StatusInternalServerError, "Error when getting all links")
+		}
+		return c.JSON(links)
+	}
+}
+
 // CreateLink adds a new link.
 func CreateLink(db *db.DB) fiber.Handler {
 	return func(c *fiber.Ctx) error {

@@ -113,6 +113,30 @@ A simple URL shortener written in Go with [Fiber](https://github.com/gofiber/fib
     ```
 #### Links
 
+- **[GET] `/api/v1/links`**: Get all links
+    ```bash
+    http GET localhost:3000/api/v1/links "Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJjcmVhdGVkQXQiOiIyMDIxLTA5LTIzVDE5OjIxOjE4LjIxN1oiLCJleHAiOjE2MzI1MTEyOTQsImZpcnN0bmFtZSI6IlRvdG8iLCJpYXQiOjE2MzI0MjQ4OTQsImlkIjoiMDBkYWVmODMtMGE5ZC00YWY3LWFhMWYtN2ZlZDMwYzlmZmJlIiwibGFzdG5hbWUiOiJUZXN0IiwibmJmIjoxNjMyNDI0ODk0LCJ1c2VybmFtZSI6InRlc3RAZ21haWwuY29tIn0.XT6Cj5WnH1_h8tvagSE4vcXBVu5_5gox0YqbfasyxRKVGu1hvXNOKOyRTXsrYgigokXHR7pGyAJubEriKKjk4w"
+    ```
+    Response:
+    ```json
+    [
+        {
+            "expired_at": "2021-12-31T00:00:00Z",
+            "id": "63KzMaYN",
+            "url": "https://www.apitic.com"
+        },
+        {
+            "expired_at": "2021-12-05T00:00:00Z",
+            "id": "FCpwJsD9",
+            "url": "http://localhost:8081/shop/pitaya-larochelle/signIn/+33 6 99 05 85 14&12490922"
+        },
+        {
+            "expired_at": "2021-12-31T00:00:00Z",
+            "id": "Hr46NkUS",
+            "url": "https://google.com"
+        }
+    ]
+
 - **[POST] `/api/v1/links`**: Create new shortened URL
     ```bash
     http POST localhost:3000/api/v1/links "Authorization: Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJjcmVhdGVkQXQiOiIyMDIxLTA5LTIzVDE5OjIxOjE4LjIxN1oiLCJleHAiOjE2MzI1MTEyOTQsImZpcnN0bmFtZSI6IlRvdG8iLCJpYXQiOjE2MzI0MjQ4OTQsImlkIjoiMDBkYWVmODMtMGE5ZC00YWY3LWFhMWYtN2ZlZDMwYzlmZmJlIiwibGFzdG5hbWUiOiJUZXN0IiwibmJmIjoxNjMyNDI0ODk0LCJ1c2VybmFtZSI6InRlc3RAZ21haWwuY29tIn0.XT6Cj5WnH1_h8tvagSE4vcXBVu5_5gox0YqbfasyxRKVGu1hvXNOKOyRTXsrYgigokXHR7pGyAJubEriKKjk4w" url=https://google.com expired_at="2021-12-31T00:00:00Z"

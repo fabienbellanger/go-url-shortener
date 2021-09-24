@@ -30,6 +30,7 @@ func registerProtectedAPIRoutes(r fiber.Router, db *db.DB) {
 	registerUser(v1, db)
 
 	// Links
+	v1.Get("/links", handlers.LinksList(db))
 	v1.Post("/links", handlers.CreateLink(db))
 }
 

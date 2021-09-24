@@ -57,6 +57,9 @@ build:
 
 ## test: Run test
 test:
+	$(GO_TEST) -cover ./...
+
+test-verbose:
 	$(GO_TEST) -cover -v ./...
 
 test-cover-count: 

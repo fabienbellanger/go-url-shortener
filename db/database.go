@@ -7,12 +7,17 @@ import (
 	"log"
 	"os"
 	"path"
+	"strconv"
 	"time"
 
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+)
+
+const (
+	MAX_LIMIT = 10
 )
 
 // TODO: Add a custom logger for GORM : https://www.soberkoder.com/go-gorm-logging/
@@ -159,4 +164,26 @@ func (c *DatabaseConfig) dsn() (dsn string, err error) {
 		dsn += fmt.Sprintf("&loc=%s", c.Location)
 	}
 	return
+}
+
+// Paginate creates a GORM scope to paginate queries.
+// TODO: Continue and Optimize
+func Paginate(page, limit string) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		page, err := strconv.Atoi(page)
+		if err != nil || page < 1 {
+			page = 1
+		}
+
+		limit, err := strconv.Atoi(limit)
+		if err != nil || limit > MAX_LIMIT || limit < 1 {
+			limit = MAX_LIMIT
+		}
+
+		offset := (page - 1) * limit
+
+		log.Printf("page=%d, offset=%d, limit=%d\n", page, offset, limit)
+
+		return db.Offset(offset).Limit(limit)
+	}
 }
