@@ -1,4 +1,4 @@
-.PHONY: all install update update-all serve serve-pkger serve-race error-reader build test bench clean help test-cover-count cover-count test-cover-atomic cover-atomic html-cover-count html-cover-atomic run-cover-count run-cover-atomic view-cover-count view-cover-atomic
+.PHONY: all install update update-all serve serve-race error-reader build test bench clean help test-cover-count cover-count test-cover-atomic cover-atomic html-cover-count html-cover-atomic run-cover-count run-cover-atomic view-cover-count view-cover-atomic
 
 .DEFAULT_GOAL=help
 
@@ -21,8 +21,6 @@ GO_TOOL=$(GO_CMD) tool
 BINARY_NAME=go-url-shortener
 BINARY_UNIX=$(BINARY_NAME)_unix
 DOCKER_COMPOSE=docker-compose
-PKGER=pkger
-PKGER_FILE=pkged.go
 
 all: test build
 
@@ -38,11 +36,6 @@ update-all:
 serve:
 	$(GO_RUN) $(MAIN_PATH) run
 
-serve-pkger:
-	$(PKGER)
-	$(GO_RUN) $(MAIN_PATH) run
-	@rm $(PKGER_FILE)
-
 serve-race:
 	$(GO_RUN) run -race $(MAIN_PATH)
 
@@ -50,10 +43,8 @@ serve-race:
 error-reader:
 	$(GO_RUN) $(MAIN_PATH) log-reader --server
 
-build: 
-	$(PKGER)
+build:
 	$(GO_BUILD) -o $(BINARY_NAME) -v $(MAIN_PATH)
-	@rm $(PKGER_FILE)
 
 ## test: Run test
 test:
