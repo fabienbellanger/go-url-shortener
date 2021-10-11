@@ -16,7 +16,7 @@ require (
 	github.com/stretchr/testify v1.7.0
 	go.uber.org/zap v1.19.1
 	gorm.io/driver/mysql v1.1.2
-	gorm.io/gorm v1.21.15
+	gorm.io/gorm v1.21.16
 )
 
 require (
@@ -43,7 +43,7 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/subosito/gotenv v1.2.0 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
-	github.com/valyala/fasthttp v1.30.0 // indirect
+	github.com/valyala/fasthttp v1.31.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.7.0 // indirect
