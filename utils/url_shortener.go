@@ -28,6 +28,7 @@ func base58Encoded(bytes []byte) (string, error) {
 	return string(encoded), nil
 }
 
+// GenerateShortLink generates a short code form a link
 func GenerateShortLink(link string, key string) (string, error) {
 	urlHashBytes, err := sha256encoded(link + key)
 	if err != nil {
