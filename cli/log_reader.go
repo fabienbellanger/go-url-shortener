@@ -46,10 +46,19 @@ var logReaderCmd = &cobra.Command{
 }
 
 type errorLog struct {
-	Level   string    `json:"level"`
-	Time    time.Time `json:"time"`
-	Caller  string    `json:"caller"`
-	Message string    `json:"message"`
+	Level     string    `json:"level"`
+	Time      time.Time `json:"time"`
+	Caller    string    `json:"caller"`
+	Message   string    `json:"message"`
+	Error     string    `json:"error"`
+	Code      uint      `json:"code"`
+	Method    string    `json:"method"`
+	Path      string    `json:"path"`
+	Body      string    `json:"body"`
+	URL       string    `json:"url"`
+	Host      string    `json:"host"`
+	IP        string    `json:"ip"`
+	RequestID string    `json:"requestId"`
 }
 
 func parseLine(line []byte, serverLogs, dbLogs bool) (string, error) {
@@ -68,11 +77,52 @@ func parseLineServer(line []byte) (string, error) {
 		return "", err
 	}
 
-	result := fmt.Sprintf("%s %7s | %s | %s",
+	code := ""
+	if errLog.Code != 0 {
+		code = fmt.Sprintf(" | Code: %d", errLog.Code)
+	}
+	message := ""
+	if errLog.Message != "" {
+		message = fmt.Sprintf(" | Message: %s", errLog.Message)
+	}
+	errorLog := ""
+	if errLog.Error != "" && errLog.Error != "<nil>" {
+		errorLog = fmt.Sprintf(" | Error: %s", errLog.Error)
+	}
+	method := ""
+	if errLog.Method != "" {
+		method = fmt.Sprintf(" | Method: %s", errLog.Method)
+	}
+	url := ""
+	if errLog.URL != "" {
+		url = fmt.Sprintf(" | URL: %s", errLog.URL)
+	}
+	host := ""
+	if errLog.Host != "" {
+		host = fmt.Sprintf(" | Host: %s", errLog.Host)
+	}
+	ip := ""
+	if errLog.IP != "" {
+		ip = fmt.Sprintf(" | IP: %s", errLog.IP)
+	}
+	requestId := ""
+	if errLog.RequestID != "" {
+		requestId = fmt.Sprintf(" | RequestID: %s", errLog.RequestID)
+	}
+
+	result := fmt.Sprintf("%s %7s | %s%s%s%s%s%s%s%s%s",
 		errLog.Time.Format(time.RFC3339),
 		displayLevel(errLog.Level),
 		errLog.Caller,
-		errLog.Message)
+		code,
+		message,
+		errorLog,
+		method,
+		host,
+		url,
+		ip,
+		requestId,
+	)
 
 	return result, nil
 }
