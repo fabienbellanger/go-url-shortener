@@ -5,7 +5,7 @@ go 1.17
 require (
 	github.com/fabienbellanger/goutils v1.0.17
 	github.com/go-playground/validator/v10 v10.9.0
-	github.com/gofiber/fiber/v2 v2.20.2
+	github.com/gofiber/fiber/v2 v2.21.0
 	github.com/gofiber/jwt/v2 v2.2.7
 	github.com/golang-jwt/jwt/v4 v4.1.0
 	github.com/google/uuid v1.3.0
@@ -15,8 +15,8 @@ require (
 	github.com/spf13/viper v1.9.0
 	github.com/stretchr/testify v1.7.0
 	go.uber.org/zap v1.19.1
-	gorm.io/driver/mysql v1.1.2
-	gorm.io/gorm v1.22.0
+	gorm.io/driver/mysql v1.1.3
+	gorm.io/gorm v1.22.1
 )
 
 require (
