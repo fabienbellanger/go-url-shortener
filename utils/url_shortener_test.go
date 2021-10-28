@@ -22,3 +22,9 @@ func TestShortLinkGenerator(t *testing.T) {
 	assert.Equal(t, shortLink_2, "d66yfx7N")
 	assert.Equal(t, shortLink_3, "dhZTayYQ")
 }
+
+func BenchmarkShortLinkGenerator(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		GenerateShortLink("https://www.guru3d.com/news-story/spotted-ryzen-threadripper-pro-3995wx-processor-with-8-channel-ddr4,2.html", key)
+	}
+}
