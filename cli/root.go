@@ -9,9 +9,9 @@ import (
 const version = "0.0.1"
 
 var rootCmd = &cobra.Command{
-	Use:     "Fiber Boilerplate",
-	Short:   "A Fiber boilerplate with GORM",
-	Long:    "A Fiber boilerplate with GORM",
+	Use:     "go-url-shortener",
+	Short:   "A URL shortener application",
+	Long:    "A URL shortener application written with Fiber and GORM",
 	Version: version,
 }
 

@@ -49,8 +49,8 @@ func Run(db *db.DB, logger *zap.Logger) {
 
 	// Custom 404 (after all routes but not available because of JWT)
 	// --------------------------------------------------------------
-	app.Use(func(ctx *fiber.Ctx) error {
-		return ctx.Status(fiber.StatusNotFound).JSON(utils.HTTPError{
+	app.Use(func(c *fiber.Ctx) error {
+		return c.Status(fiber.StatusNotFound).JSON(utils.HTTPError{
 			Code:    fiber.StatusNotFound,
 			Message: "Resource Not Found",
 		})
@@ -195,10 +195,7 @@ func initMiddlewares(s *fiber.App) {
 				return c.IP()
 			},
 			LimitReached: func(c *fiber.Ctx) error {
-				return c.Status(fiber.StatusTooManyRequests).JSON(utils.HTTPError{
-					Code:    fiber.StatusTooManyRequests,
-					Message: "Too Many Requests",
-				})
+				return fiber.NewError(fiber.StatusTooManyRequests, "Too Many Requests")
 			},
 		}))
 	}

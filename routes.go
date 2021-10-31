@@ -21,30 +21,24 @@ func registerPublicWebRoutes(r fiber.Router, db *db.DB, logger *zap.Logger) {
 func registerPublicAPIRoutes(r fiber.Router, db *db.DB) {
 	v1 := r.Group("/v1")
 
-	registerAuth(v1, db)
+	v1.Post("/login", handlers.Login(db))
 }
 
 func registerProtectedAPIRoutes(r fiber.Router, db *db.DB) {
 	v1 := r.Group("/v1")
 
-	registerUser(v1, db)
+	// Register
+	v1.Post("/register", handlers.CreateUser(db))
 
-	// Links
-	v1.Get("/links", handlers.LinksList(db))
-	v1.Post("/links", handlers.CreateLink(db))
-}
-
-func registerAuth(r fiber.Router, db *db.DB) {
-	r.Post("/login", handlers.Login(db))
-	r.Post("/register", handlers.CreateUser(db))
-}
-
-func registerUser(r fiber.Router, db *db.DB) {
-	users := r.Group("/users")
-
+	// Users
+	users := v1.Group("/users")
 	users.Get("/", handlers.GetAllUsers(db))
-	users.Get("/stream", handlers.StreamUsers(db))
 	users.Get("/:id", handlers.GetUser(db))
 	users.Delete("/:id", handlers.DeleteUser(db))
 	users.Put("/:id", handlers.UpdateUser(db))
+
+	// Links
+	links := v1.Group("/links")
+	links.Get("", handlers.LinksList(db))
+	links.Post("", handlers.CreateLink(db))
 }

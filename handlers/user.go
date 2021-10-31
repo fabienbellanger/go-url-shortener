@@ -1,14 +1,11 @@
 package handlers
 
 import (
-	"bufio"
-	"encoding/json"
 	"errors"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v4"
-	"github.com/google/uuid"
 	"github.com/spf13/viper"
 	"gorm.io/gorm"
 
@@ -220,41 +217,5 @@ func UpdateUser(db *db.DB) fiber.Handler {
 		}
 
 		return c.JSON(updatedUser)
-	}
-}
-
-// StreamUsers returns users list in a stream.
-func StreamUsers(db *db.DB) fiber.Handler {
-	return func(c *fiber.Ctx) error {
-		c.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSONCharsetUTF8)
-
-		c.Context().SetBodyStreamWriter(func(w *bufio.Writer) {
-			w.WriteString("[")
-			enc := json.NewEncoder(w)
-			n := 100_000
-			for i := 0; i < n; i++ {
-				user := models.User{
-					ID:        uuid.New().String(),
-					Username:  "My Username",
-					Password:  ",kkjkjkjkjknnqfjkkjdnfsjklqblk",
-					Lastname:  "My Lastname",
-					Firstname: "My Firstname",
-					CreatedAt: time.Now(),
-					UpdatedAt: time.Now(),
-				}
-				if err := enc.Encode(user); err != nil {
-					continue
-				}
-
-				if i < n-1 {
-					w.WriteString(",")
-				}
-
-				w.Flush()
-			}
-			w.WriteString("]")
-		})
-
-		return nil
 	}
 }

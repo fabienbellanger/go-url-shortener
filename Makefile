@@ -18,6 +18,7 @@ GO_TEST=$(GO_CMD) test
 GO_GET=$(GO_CMD) get
 GO_MOD=$(GO_CMD) mod
 GO_TOOL=$(GO_CMD) tool
+GO_VET=$(GO_CMD) vet
 BINARY_NAME=go-url-shortener
 BINARY_UNIX=$(BINARY_NAME)_unix
 DOCKER_COMPOSE=docker-compose
@@ -44,7 +45,8 @@ error-reader:
 	$(GO_RUN) $(MAIN_PATH) log-reader --server
 
 build:
-	$(GO_BUILD) -o $(BINARY_NAME) -v $(MAIN_PATH)
+	$(GO_VET) ./...
+	$(GO_BUILD) -ldflags "-s -w" -o $(BINARY_NAME) -v $(MAIN_PATH)
 
 ## test: Run test
 test:
