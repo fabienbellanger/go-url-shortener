@@ -30,43 +30,48 @@ func initConfig() error {
 	return viper.ReadInConfig()
 }
 
-// TODO: Choose what to initialize
-func initConfigLoggerDatabase() (*zap.Logger, *db.DB, error) {
+// initConfigLoggerDatabase initializes configuration, logger and database.
+// Logger and database initialization are not required.
+func initConfigLoggerDatabase(initLogger, initDatabase bool) (logger *zap.Logger, database *db.DB, err error) {
 	// Configuration initialization
 	// ----------------------------
-	if err := initConfig(); err != nil {
+	if err = initConfig(); err != nil {
 		return nil, nil, err
 	}
 
 	// Logger initialization
 	// ---------------------
-	logger, err := server.InitLogger()
-	if err != nil {
-		return nil, nil, err
+	if initLogger {
+		logger, err = server.InitLogger()
+		if err != nil {
+			return nil, nil, err
+		}
+		defer logger.Sync()
 	}
-	defer logger.Sync()
 
 	// Database connection
 	// -------------------
-	db, err := db.New(&db.DatabaseConfig{
-		Driver:          viper.GetString("DB_DRIVER"),
-		Host:            viper.GetString("DB_HOST"),
-		Username:        viper.GetString("DB_USERNAME"),
-		Password:        viper.GetString("DB_PASSWORD"),
-		Port:            viper.GetInt("DB_PORT"),
-		Database:        viper.GetString("DB_DATABASE"),
-		Charset:         viper.GetString("DB_CHARSET"),
-		Collation:       viper.GetString("DB_COLLATION"),
-		Location:        viper.GetString("DB_LOCATION"),
-		MaxIdleConns:    viper.GetInt("DB_MAX_IDLE_CONNS"),
-		MaxOpenConns:    viper.GetInt("DB_MAX_OPEN_CONNS"),
-		ConnMaxLifetime: viper.GetDuration("DB_CONN_MAX_LIFETIME") * time.Hour,
-	})
-	if err != nil {
-		return nil, nil, err
+	if initDatabase {
+		database, err = db.New(&db.DatabaseConfig{
+			Driver:          viper.GetString("DB_DRIVER"),
+			Host:            viper.GetString("DB_HOST"),
+			Username:        viper.GetString("DB_USERNAME"),
+			Password:        viper.GetString("DB_PASSWORD"),
+			Port:            viper.GetInt("DB_PORT"),
+			Database:        viper.GetString("DB_DATABASE"),
+			Charset:         viper.GetString("DB_CHARSET"),
+			Collation:       viper.GetString("DB_COLLATION"),
+			Location:        viper.GetString("DB_LOCATION"),
+			MaxIdleConns:    viper.GetInt("DB_MAX_IDLE_CONNS"),
+			MaxOpenConns:    viper.GetInt("DB_MAX_OPEN_CONNS"),
+			ConnMaxLifetime: viper.GetDuration("DB_CONN_MAX_LIFETIME") * time.Hour,
+		})
+		if err != nil {
+			return nil, nil, err
+		}
 	}
 
-	return logger, db, err
+	return logger, database, err
 }
 
 func displayLevel(l string) aurora.Value {

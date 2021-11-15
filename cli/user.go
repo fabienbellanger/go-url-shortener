@@ -60,7 +60,7 @@ var userCmd = &cobra.Command{
 
 		// Init config, logger and database
 		// --------------------------------
-		_, db, err := initConfigLoggerDatabase()
+		_, db, err := initConfigLoggerDatabase(false, true)
 		if err != nil {
 			fmt.Printf("\nError: %v\n", err)
 			return

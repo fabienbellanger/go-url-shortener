@@ -22,7 +22,7 @@ var serverCmd = &cobra.Command{
 }
 
 func startServer() {
-	logger, db, err := initConfigLoggerDatabase()
+	logger, db, err := initConfigLoggerDatabase(true, true)
 	if err != nil {
 		log.Fatalln(err)
 	}
