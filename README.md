@@ -21,7 +21,6 @@ A simple URL shortener written in Go with [Fiber](https://github.com/gofiber/fib
 
 | Command               | Description                 |
 | --------------------- | --------------------------- |
-| `<binary> version`    | Display application version |
 | `<binary> run`        | Start server                |
 | `<binary> log-reader` | Log reader                  |
 | `<binary> register`   | Create a new user           |
