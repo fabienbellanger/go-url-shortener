@@ -12,7 +12,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/basicauth"
 	"github.com/gofiber/fiber/v2/middleware/cors"
-	"github.com/gofiber/fiber/v2/middleware/favicon"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/pprof"
@@ -26,8 +25,7 @@ import (
 	"github.com/fabienbellanger/go-url-shortener/utils"
 )
 
-// Run starts HTTP server.
-// TODO: Delete favicon
+// Run starts HTTP server
 func Run(db *db.DB, logger *zap.Logger) {
 	app := fiber.New(initConfig(logger))
 
@@ -192,9 +190,9 @@ func initMiddlewares(s *fiber.App) {
 
 	// Favicon
 	// -------
-	s.Use(favicon.New(favicon.Config{
-		File: "favicon.png",
-	}))
+	// s.Use(favicon.New(favicon.Config{
+	// 	File: "favicon.png",
+	// }))
 
 	// Logger
 	// ------
