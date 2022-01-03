@@ -4,8 +4,8 @@ go 1.17
 
 require (
 	github.com/fabienbellanger/goutils v1.0.17
-	github.com/go-playground/validator/v10 v10.9.0
-	github.com/gofiber/fiber/v2 v2.23.0
+	github.com/go-playground/validator/v10 v10.10.0
+	github.com/gofiber/fiber/v2 v2.24.0
 	github.com/gofiber/jwt/v2 v2.2.7
 	github.com/golang-jwt/jwt/v4 v4.2.0
 	github.com/google/uuid v1.3.0
@@ -15,7 +15,7 @@ require (
 	github.com/spf13/viper v1.10.1
 	github.com/stretchr/testify v1.7.0
 	go.uber.org/zap v1.19.1
-	gorm.io/driver/mysql v1.2.1
+	gorm.io/driver/mysql v1.2.2
 	gorm.io/gorm v1.22.4
 )
 
@@ -37,7 +37,7 @@ require (
 	github.com/mitchellh/mapstructure v1.4.3 // indirect
 	github.com/pelletier/go-toml v1.9.4 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/spf13/afero v1.6.0 // indirect
+	github.com/spf13/afero v1.7.1 // indirect
 	github.com/spf13/cast v1.4.1 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect

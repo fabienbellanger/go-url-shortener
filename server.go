@@ -80,6 +80,7 @@ func initConfig(logger *zap.Logger) fiber.Config {
 		Prefork:               viper.GetBool("SERVER_PREFORK"),
 		DisableStartupMessage: false,
 		StrictRouting:         true,
+		EnablePrintRoutes:     viper.GetString("APP_ENV") == "development",
 		// Errors handling
 		// ---------------
 		ErrorHandler: func(c *fiber.Ctx, err error) error {
