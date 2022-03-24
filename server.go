@@ -81,6 +81,8 @@ func initConfig(logger *zap.Logger) fiber.Config {
 		DisableStartupMessage: false,
 		StrictRouting:         true,
 		EnablePrintRoutes:     false, // viper.GetString("APP_ENV") == "development",
+		Concurrency:           256 * 1024 * 1024,
+		ReduceMemoryUsage:     true,
 		// Errors handling
 		// ---------------
 		ErrorHandler: func(c *fiber.Ctx, err error) error {
