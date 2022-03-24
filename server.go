@@ -29,7 +29,7 @@ import (
 func Run(db *db.DB, logger *zap.Logger) {
 	app := fiber.New(initConfig(logger))
 
-	initMiddlewares(app)
+	initMiddlewares(app, logger)
 	initTools(app)
 
 	// Routes
@@ -80,7 +80,7 @@ func initConfig(logger *zap.Logger) fiber.Config {
 		Prefork:               viper.GetBool("SERVER_PREFORK"),
 		DisableStartupMessage: false,
 		StrictRouting:         true,
-		EnablePrintRoutes:     viper.GetString("APP_ENV") == "development",
+		EnablePrintRoutes:     false, // viper.GetString("APP_ENV") == "development",
 		// Errors handling
 		// ---------------
 		ErrorHandler: func(c *fiber.Ctx, err error) error {
@@ -141,7 +141,7 @@ func initConfig(logger *zap.Logger) fiber.Config {
 }
 
 // initLogger initialize Fiber access logger
-func initLogger(s *fiber.App) {
+func initLogger(s *fiber.App, loggerZap *zap.Logger) {
 	if viper.GetString("APP_ENV") == "development" || viper.GetBool("ENABLE_ACCESS_LOG") {
 		var file *os.File
 
@@ -174,10 +174,12 @@ func initLogger(s *fiber.App) {
 			TimeInterval: 500 * time.Millisecond,
 			Output:       logOutput,
 		}))
+
+		// s.Use(zapLogger(loggerZap))
 	}
 }
 
-func initMiddlewares(s *fiber.App) {
+func initMiddlewares(s *fiber.App, loggerZap *zap.Logger) {
 	// CORS
 	// ----
 	s.Use(cors.New(cors.Config{
@@ -197,7 +199,7 @@ func initMiddlewares(s *fiber.App) {
 
 	// Logger
 	// ------
-	initLogger(s)
+	initLogger(s, loggerZap)
 
 	// Recover
 	// -------

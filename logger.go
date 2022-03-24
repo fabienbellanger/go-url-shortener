@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"time"
 
 	"github.com/fabienbellanger/goutils"
+	"github.com/gofiber/fiber/v2"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -100,4 +102,36 @@ func getLoggerLevel(l string, env string) (level zapcore.Level) {
 		}
 	}
 	return
+}
+
+// zapLogger is a middleware and zap to provide an "access log" like logging for each request.
+// TODO: Doesn not work!
+func zapLogger(log *zap.Logger) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		start := time.Now().UTC()
+
+		err := c.Next()
+		if err != nil {
+			_ = c.SendStatus(fiber.StatusInternalServerError)
+		}
+
+		req := c.Request()
+
+		// "${time} | ${status} | ${method} | ${path} | ${protocol}://${host}${url} | ${latency} | ${locals:requestid}\n",
+		fields := []zapcore.Field{
+			zap.Int("status", c.Response().StatusCode()),
+			zap.String("method", string(req.Header.Method())),
+			zap.String("protocol", string(req.Header.Protocol())),
+			zap.String("host", string(req.Host())),
+			zap.String("request", string(req.RequestURI())),
+			zap.String("remote_ip", c.IP()),
+			zap.String("user_agent", c.Get(fiber.HeaderUserAgent)),
+			zap.String("latency", time.Since(start).String()),
+			zap.String("request_id", fmt.Sprintf("%s", c.Locals("requestid"))),
+		}
+
+		log.Info("access", fields...)
+
+		return c.Next()
+	}
 }
