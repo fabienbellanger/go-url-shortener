@@ -145,6 +145,7 @@ func initConfig(logger *zap.Logger) fiber.Config {
 // initLogger initialize Fiber access logger
 func initLogger(s *fiber.App, loggerZap *zap.Logger) {
 	if viper.GetString("APP_ENV") == "development" || viper.GetBool("ENABLE_ACCESS_LOG") {
+
 		var file *os.File
 
 		logOutput := os.Stderr
@@ -168,6 +169,9 @@ func initLogger(s *fiber.App, loggerZap *zap.Logger) {
 
 		defer file.Close()
 
+		// TODO: Use separate log file (ACCESS_LOG_OUTPUT) instead of (LOG_OUTPUTS)
+		s.Use(zapLogger(loggerZap))
+
 		s.Use(logger.New(logger.Config{
 			Next:         nil,
 			Format:       "${time} | ${status} | ${method} | ${path} | ${protocol}://${host}${url} | ${latency} | ${locals:requestid}\n",
@@ -176,8 +180,6 @@ func initLogger(s *fiber.App, loggerZap *zap.Logger) {
 			TimeInterval: 500 * time.Millisecond,
 			Output:       logOutput,
 		}))
-
-		// s.Use(zapLogger(loggerZap))
 	}
 }
 
