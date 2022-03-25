@@ -16,7 +16,7 @@ var serverLogsFlag bool
 var dbLogsFlag bool
 
 func init() {
-	logReaderCmd.Flags().BoolVarP(&serverLogsFlag, "server", "s", false, "server error logs")
+	logReaderCmd.Flags().BoolVarP(&serverLogsFlag, "server", "s", false, "server access/error logs")
 	logReaderCmd.Flags().BoolVarP(&dbLogsFlag, "db", "d", false, "database logs")
 
 	rootCmd.AddCommand(logReaderCmd)
@@ -34,8 +34,11 @@ var logReaderCmd = &cobra.Command{
 
 		scanner := bufio.NewScanner(os.Stdin)
 		for scanner.Scan() {
-			if line, err := parseLine(scanner.Bytes(), serverLogsFlag, dbLogsFlag); err == nil {
+			line, err := parseLine(scanner.Bytes(), serverLogsFlag, dbLogsFlag)
+			if err == nil {
 				fmt.Println(line)
+			} else {
+				fmt.Println(err)
 			}
 		}
 
@@ -59,6 +62,8 @@ type errorLog struct {
 	Host      string    `json:"host"`
 	IP        string    `json:"ip"`
 	RequestID string    `json:"requestId"`
+	Latency   string    `json:"latency"`
+	UserAgent string    `json:"userAgent"`
 }
 
 func parseLine(line []byte, serverLogs, dbLogs bool) (string, error) {
@@ -79,7 +84,7 @@ func parseLineServer(line []byte) (string, error) {
 
 	code := ""
 	if errLog.Code != 0 {
-		code = fmt.Sprintf(" | Code: %d", errLog.Code)
+		code = fmt.Sprintf(" | %d", displayLogStatusCode(errLog.Code))
 	}
 	message := ""
 	if errLog.Message != "" {
@@ -91,15 +96,19 @@ func parseLineServer(line []byte) (string, error) {
 	}
 	method := ""
 	if errLog.Method != "" {
-		method = fmt.Sprintf(" | Method: %s", errLog.Method)
+		method = fmt.Sprintf(" | %s", displayLogMethod(errLog.Method))
 	}
 	url := ""
 	if errLog.URL != "" {
-		url = fmt.Sprintf(" | URL: %s", errLog.URL)
+		url = fmt.Sprintf(" | %s", errLog.URL)
+	}
+	path := ""
+	if errLog.URL != "" {
+		path = fmt.Sprintf(" | %s", errLog.Path)
 	}
 	host := ""
 	if errLog.Host != "" {
-		host = fmt.Sprintf(" | Host: %s", errLog.Host)
+		host = fmt.Sprintf(" | %s", errLog.Host)
 	}
 	ip := ""
 	if errLog.IP != "" {
@@ -109,19 +118,30 @@ func parseLineServer(line []byte) (string, error) {
 	if errLog.RequestID != "" {
 		requestId = fmt.Sprintf(" | RequestID: %s", errLog.RequestID)
 	}
+	userAgent := ""
+	if errLog.UserAgent != "" {
+		userAgent = fmt.Sprintf(" | UserAgent: %s", errLog.UserAgent)
+	}
+	latency := ""
+	if errLog.Latency != "" {
+		latency = fmt.Sprintf(" | %s", errLog.Latency)
+	}
 
-	result := fmt.Sprintf("%s %7s | %s%s%s%s%s%s%s%s%s",
+	result := fmt.Sprintf("%s %7s %s%s%s%s%s%s%s%s%s%s%s%s",
 		errLog.Time.Format(time.RFC3339),
-		displayLevel(errLog.Level),
-		errLog.Caller,
+		displayLogLevel(errLog.Level),
 		code,
+		method,
 		message,
 		errorLog,
-		method,
-		host,
+		path,
 		url,
+		host,
 		ip,
 		requestId,
+		userAgent,
+		latency,
+		" | "+errLog.Caller,
 	)
 
 	return result, nil

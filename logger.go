@@ -117,16 +117,16 @@ func zapLogger(log *zap.Logger) fiber.Handler {
 		stop := time.Since(start)
 		req := c.Request()
 		fields := []zapcore.Field{
-			zap.Int("status", c.Response().StatusCode()),
+			zap.Int("code", c.Response().StatusCode()),
 			zap.String("method", string(req.Header.Method())),
 			zap.String("path", string(req.RequestURI())),
-			zap.String("uri", string(req.URI().FullURI())),
-			zap.String("remote_ip", c.IP()),
-			zap.String("user_agent", c.Get(fiber.HeaderUserAgent)),
+			zap.String("url", string(req.URI().FullURI())),
+			zap.String("ip", c.IP()),
+			zap.String("userAgent", c.Get(fiber.HeaderUserAgent)),
 			zap.String("latency", stop.String()),
-			zap.String("request_id", fmt.Sprintf("%s", c.Locals("requestid"))),
+			zap.String("requestId", fmt.Sprintf("%s", c.Locals("requestid"))),
 		}
-		log.Info("HTTP access log", fields...)
+		log.Info("", fields...)
 
 		return nil
 	}
