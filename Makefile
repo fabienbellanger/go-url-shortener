@@ -42,7 +42,7 @@ serve-race:
 
 ## logs: Display access/error logs
 logs:
-	$(GO_RUN) $(MAIN_PATH) log-reader --server
+	$(GO_RUN) $(MAIN_PATH) logs --server
 
 build:
 	$(GO_VET) ./...

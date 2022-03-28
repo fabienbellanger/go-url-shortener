@@ -23,9 +23,9 @@ func init() {
 }
 
 var logReaderCmd = &cobra.Command{
-	Use:   "log-reader",
-	Short: "Log reader",
-	Long:  `Log reader`,
+	Use:   "logs",
+	Short: "Logs reader",
+	Long:  `Logs reader`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if serverLogsFlag == dbLogsFlag {
 			fmt.Println(cmd.UsageString())

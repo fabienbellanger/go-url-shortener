@@ -22,7 +22,8 @@ A simple URL shortener written in Go with [Fiber](https://github.com/gofiber/fib
 | Command               | Description                 |
 | --------------------- | --------------------------- |
 | `<binary> run`        | Start server                |
-| `<binary> log-reader` | Log reader                  |
+| `<binary> logs -s`    | Server logs reader          |
+| `<binary> logs -d`    | Database (GORM) logs reader |
 | `<binary> register`   | Create a new user           |
 
 ## Makefile commands
@@ -35,6 +36,7 @@ A simple URL shortener written in Go with [Fiber](https://github.com/gofiber/fib
 | `make build`        | `go build -o go-url-shortener -v cmd/main.go` | Build application                           |
 | `make test`         | `go test -cover ./...`                        | Launch unit tests                           |
 | `make test-verbose` | `go test -cover -v ./...`                     | Launch unit tests in verbose mode           |
+| `make logs`         | `go run cmd/main.go logs -s`                  | Start server logs reader                    |
 
 ## Routes
 
