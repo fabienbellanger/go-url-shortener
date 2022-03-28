@@ -141,7 +141,7 @@ func initConfig(logger *zap.Logger) fiber.Config {
 	}
 }
 
-// initLogger initialize Fiber access logger
+// initLogger initialize access logger
 func initLogger(s *fiber.App, loggerZap *zap.Logger) {
 	if viper.GetBool("ENABLE_ACCESS_LOG") {
 		s.Use(zapLogger(loggerZap))
