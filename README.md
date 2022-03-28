@@ -92,7 +92,7 @@ $ drill --benchmark drill.yml --stats --quiet
 Installer `godoc` (pas dans le répertoire du projet) :
 
 ```bash
-go get -u golang.org/x/tools/...
+go install golang.org/x/tools/...@latest
 ```
 
 Puis lancer :
