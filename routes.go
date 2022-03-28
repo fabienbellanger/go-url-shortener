@@ -12,7 +12,7 @@ import (
 // ----------
 
 func registerPublicWebRoutes(r fiber.Router, db *db.DB, logger *zap.Logger) {
-	r.Get("/:id", handlers.RedirectURL(db))
+	r.Get("/:id", handlers.RedirectURL(db, logger))
 }
 
 // API routes

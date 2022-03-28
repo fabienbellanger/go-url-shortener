@@ -6,6 +6,7 @@ import (
 	"github.com/fabienbellanger/go-url-shortener/repositories"
 	"github.com/fabienbellanger/go-url-shortener/utils"
 	"github.com/gofiber/fiber/v2"
+	"go.uber.org/zap"
 )
 
 // LinksList returns the list of all links
@@ -55,7 +56,7 @@ func CreateLink(db *db.DB) fiber.Handler {
 }
 
 // RedirectURL redirects to original URL if URL exists, else return 404 HTTP code.
-func RedirectURL(db *db.DB) fiber.Handler {
+func RedirectURL(db *db.DB, logger *zap.Logger) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		id := c.Params("id")
 		if id == "" {

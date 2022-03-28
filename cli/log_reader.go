@@ -34,12 +34,8 @@ var logReaderCmd = &cobra.Command{
 
 		scanner := bufio.NewScanner(os.Stdin)
 		for scanner.Scan() {
-			line, err := parseLine(scanner.Bytes(), serverLogsFlag, dbLogsFlag)
-			if err == nil {
-				fmt.Println(line)
-			} else {
-				fmt.Println(err)
-			}
+			line, _ := parseLine(scanner.Bytes(), serverLogsFlag, dbLogsFlag)
+			fmt.Println(line)
 		}
 
 		if err := scanner.Err(); err != nil {
@@ -75,11 +71,12 @@ func parseLine(line []byte, serverLogs, dbLogs bool) (string, error) {
 	return "", errors.New("invalid flag")
 }
 
+// TODO: Improve parser
 func parseLineServer(line []byte) (string, error) {
 	var errLog errorLog
 	err := json.Unmarshal(line, &errLog)
 	if err != nil {
-		return "", err
+		return string(line), err
 	}
 
 	code := ""
@@ -96,7 +93,7 @@ func parseLineServer(line []byte) (string, error) {
 	}
 	method := ""
 	if errLog.Method != "" {
-		method = fmt.Sprintf(" | %s", displayLogMethod(errLog.Method))
+		method = fmt.Sprintf(" | %6s", displayLogMethod(errLog.Method))
 	}
 	url := ""
 	if errLog.URL != "" {

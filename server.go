@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
-	"path"
 	"strings"
 	"time"
 
@@ -12,8 +11,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/basicauth"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/favicon"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
-	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/pprof"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
@@ -145,41 +144,7 @@ func initConfig(logger *zap.Logger) fiber.Config {
 // initLogger initialize Fiber access logger
 func initLogger(s *fiber.App, loggerZap *zap.Logger) {
 	if viper.GetString("APP_ENV") == "development" || viper.GetBool("ENABLE_ACCESS_LOG") {
-
-		var file *os.File
-
-		logOutput := os.Stderr
-		switch viper.GetString("ACCESS_LOG_OUTPUT") {
-		case "stdout":
-			logOutput = os.Stdout
-		case "file":
-			logPath := path.Clean(viper.GetString("LOG_PATH"))
-			appName := strings.ReplaceAll(viper.GetString("APP_NAME"), " ", "_")
-			if logPath == "" || appName == "" {
-				logOutput = os.Stderr
-			} else {
-				path := logPath + "/" + appName + "_access.log"
-
-				file, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
-				if err == nil {
-					logOutput = file
-				}
-			}
-		}
-
-		defer file.Close()
-
-		// TODO: Use separate log file (ACCESS_LOG_OUTPUT) instead of (LOG_OUTPUTS)
 		s.Use(zapLogger(loggerZap))
-
-		s.Use(logger.New(logger.Config{
-			Next:         nil,
-			Format:       "${time} | ${status} | ${method} | ${path} | ${protocol}://${host}${url} | ${latency} | ${locals:requestid}\n",
-			TimeFormat:   "2006-01-02 15:04:05",
-			TimeZone:     "Local",
-			TimeInterval: 500 * time.Millisecond,
-			Output:       logOutput,
-		}))
 	}
 }
 
@@ -197,9 +162,9 @@ func initMiddlewares(s *fiber.App, loggerZap *zap.Logger) {
 
 	// Favicon
 	// -------
-	// s.Use(favicon.New(favicon.Config{
-	// 	File: "favicon.png",
-	// }))
+	s.Use(favicon.New(favicon.Config{
+		File: "favicon.png",
+	}))
 
 	// Logger
 	// ------

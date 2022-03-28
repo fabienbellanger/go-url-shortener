@@ -39,11 +39,6 @@ func TestLogOutputsWithOneOutput(t *testing.T) {
 	assert.Equal(t, []string{"stdout"}, gottenOutputs, "with stdout")
 	assert.Nil(t, err)
 
-	outputs = []string{"stderr"}
-	gottenOutputs, err = getLoggerOutputs(outputs, "", "")
-	assert.Equal(t, []string{"stderr"}, gottenOutputs, "with stderr")
-	assert.Nil(t, err)
-
 	outputs = []string{"file"}
 	gottenOutputs, err = getLoggerOutputs(outputs, appName, filePath)
 	assert.Equal(t, []string{"/tmp/go-url-shortener.log"}, gottenOutputs, "with file")
@@ -61,14 +56,14 @@ func TestLogOutputsWithOneOutput(t *testing.T) {
 func TestLogOutputsWithMoreThanOneOutput(t *testing.T) {
 	appName := "go-url-shortener"
 	filePath := "/tmp"
-	outputs := []string{"stdout", "stderr"}
+	outputs := []string{"stdout"}
 
 	gottenOutputs, err := getLoggerOutputs(outputs, "", "")
-	assert.Equal(t, []string{"stderr", "stdout"}, gottenOutputs, "with stdout")
+	assert.Equal(t, []string{"stdout"}, gottenOutputs, "with stdout")
 	assert.Nil(t, err)
 
-	outputs = []string{"stdout", "stderr", "file"}
+	outputs = []string{"stdout", "file"}
 	gottenOutputs, err = getLoggerOutputs(outputs, appName, filePath)
-	assert.Equal(t, []string{"/tmp/go-url-shortener.log", "stderr", "stdout"}, gottenOutputs, "with stdout")
+	assert.Equal(t, []string{"/tmp/go-url-shortener.log", "stdout"}, gottenOutputs, "with stdout")
 	assert.Nil(t, err)
 }
