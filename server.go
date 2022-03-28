@@ -143,7 +143,7 @@ func initConfig(logger *zap.Logger) fiber.Config {
 
 // initLogger initialize Fiber access logger
 func initLogger(s *fiber.App, loggerZap *zap.Logger) {
-	if viper.GetString("APP_ENV") == "development" || viper.GetBool("ENABLE_ACCESS_LOG") {
+	if viper.GetBool("ENABLE_ACCESS_LOG") {
 		s.Use(zapLogger(loggerZap))
 	}
 }
