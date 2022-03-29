@@ -100,7 +100,7 @@ func displayLogMethod(m string) aurora.Value {
 	case "DELETE":
 		return aurora.Red(m)
 	default:
-		return aurora.Gray(m)
+		return aurora.Gray(12, m)
 	}
 }
 

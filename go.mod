@@ -10,7 +10,7 @@ require (
 	github.com/golang-jwt/jwt/v4 v4.4.1
 	github.com/google/uuid v1.3.0
 	github.com/itchyny/base58-go v0.2.0
-	github.com/logrusorgru/aurora v0.0.0-20181002194514-a7b3b318ed4e
+	github.com/logrusorgru/aurora v2.0.3+incompatible
 	github.com/spf13/cobra v1.2.1
 	github.com/spf13/viper v1.10.1
 	github.com/stretchr/testify v1.7.0
