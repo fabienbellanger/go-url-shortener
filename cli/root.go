@@ -5,7 +5,7 @@ import (
 
 	server "github.com/fabienbellanger/go-url-shortener"
 	"github.com/fabienbellanger/go-url-shortener/db"
-	"github.com/logrusorgru/aurora"
+	"github.com/logrusorgru/aurora/v3"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
