@@ -13,17 +13,22 @@ import (
 
 func registerPublicWebRoutes(r fiber.Router, db *db.DB, logger *zap.Logger) {
 	// Admin interface
+	registerPublicAdminRoutes(r, db, logger)
+
+	// Shorted URL
+	r.Get("/:id", handlers.RedirectURL(db, logger))
+}
+
+func registerPublicAdminRoutes(r fiber.Router, db *db.DB, logger *zap.Logger) {
 	// TODO:
 	//   - https://github.com/gofiber/template/tree/master/html
 	//   - https://docs.gofiber.io/guide/templates
-	r.Get("/admin", func(c *fiber.Ctx) error {
+	admin := r.Group("admin")
+	admin.Get("/", func(c *fiber.Ctx) error {
 		return c.Render("public/admin/index", fiber.Map{
 			"Title": "Admin interface",
 		})
 	})
-
-	// Shorted URL
-	r.Get("/:id", handlers.RedirectURL(db, logger))
 }
 
 // API routes
