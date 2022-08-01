@@ -23,10 +23,18 @@ func registerPublicAdminRoutes(r fiber.Router, db *db.DB, logger *zap.Logger) {
 	// TODO:
 	//   - https://github.com/gofiber/template/tree/master/html
 	//   - https://docs.gofiber.io/guide/templates
+	//   - https://docs.gofiber.io/api/middleware/session#examples
 	admin := r.Group("admin")
+
 	admin.Get("/", func(c *fiber.Ctx) error {
 		return c.Render("public/admin/index", fiber.Map{
 			"Title": "Admin interface",
+		})
+	})
+
+	admin.Get("/login", func(c *fiber.Ctx) error {
+		return c.Render("public/admin/login", fiber.Map{
+			"Title": "Admin interface - Login",
 		})
 	})
 }
