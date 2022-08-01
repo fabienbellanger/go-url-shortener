@@ -1,6 +1,9 @@
 package server
 
 import (
+	"embed"
+	"net/http"
+
 	"fmt"
 	"os"
 	"os/signal"
@@ -17,12 +20,16 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
 	jwtware "github.com/gofiber/jwt/v2"
+	"github.com/gofiber/template/html"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
 
 	"github.com/fabienbellanger/go-url-shortener/db"
 	"github.com/fabienbellanger/go-url-shortener/utils"
 )
+
+//go:embed public/*
+var htmlFS embed.FS
 
 // Run starts HTTP server
 func Run(db *db.DB, logger *zap.Logger) {
@@ -82,6 +89,7 @@ func initConfig(logger *zap.Logger) fiber.Config {
 		EnablePrintRoutes:     false, // viper.GetString("APP_ENV") == "development",
 		Concurrency:           256 * 1024 * 1024,
 		ReduceMemoryUsage:     true,
+		Views:                 html.NewFileSystem(http.FS(htmlFS), ".html"),
 		// Errors handling
 		// ---------------
 		ErrorHandler: func(c *fiber.Ctx, err error) error {
@@ -221,12 +229,12 @@ func initTools(s *fiber.App) {
 
 func initJWT(s *fiber.App) {
 	s.Use(jwtware.New(jwtware.Config{
-		SigningMethod: "HS512",
+		SigningMethod: viper.GetString("JWT_ALGO"),
 		SigningKey:    []byte(viper.GetString("JWT_SECRET")),
 		ErrorHandler: func(c *fiber.Ctx, err error) error {
 			return c.Status(fiber.StatusUnauthorized).JSON(utils.HTTPError{
 				Code:    fiber.StatusUnauthorized,
-				Message: "Invalid or expired JWT",
+				Message: "Unauthorized",
 			})
 		},
 	}))

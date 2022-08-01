@@ -2,7 +2,6 @@ package repositories
 
 import (
 	"errors"
-	"log"
 	"time"
 
 	database "github.com/fabienbellanger/go-url-shortener/db"
@@ -22,7 +21,6 @@ func GetAllLinks(db *database.DB, page, limit string) (links []models.Link, err 
 	var total int64
 	db.Model(&links).Count(&total)
 
-	log.Printf("Total lines: %d\n", total)
 	if result := db.Scopes(database.Paginate(page, limit)).Find(&links); result.Error != nil {
 		return links, result.Error
 	}

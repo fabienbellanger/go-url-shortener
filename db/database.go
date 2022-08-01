@@ -182,8 +182,6 @@ func Paginate(page, limit string) func(db *gorm.DB) *gorm.DB {
 
 		offset := (page - 1) * limit
 
-		log.Printf("page=%d, offset=%d, limit=%d\n", page, offset, limit)
-
 		return db.Offset(offset).Limit(limit)
 	}
 }

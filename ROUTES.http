@@ -1,7 +1,7 @@
 # Variables
 # ---------
 @baseUrl = http://{{$dotenv APP_ADDR}}:{{$dotenv APP_PORT}}/api/v1
-@token = eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJjcmVhdGVkQXQiOiIyMDIxLTA4LTI3VDE1OjIzOjMyLjIyNloiLCJleHAiOjE2NDc3MDc3NDMsImZpcnN0bmFtZSI6IlRvdG8iLCJpYXQiOjE2NDY4NDM3NDMsImlkIjoiYjc4ODg5M2UtNjFlNi00YTg0LThkZWItMWY4ZjVhYTU2MzFlIiwibGFzdG5hbWUiOiJUZXN0IiwibmJmIjoxNjQ2ODQzNzQzLCJ1c2VybmFtZSI6InRlc3RAZ21haWwuY29tIn0.g3KP-LUh52-SRiCT4kF8yUDNzJJSY-460LNcuATbhsbqQk0_0Cp3GK8xfmug6iECsLQCaVyvLgV-DR5S7qoBBw
+@token = eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJjcmVhdGVkQXQiOiIyMDIxLTA4LTI3VDE1OjIzOjMyLjIyNloiLCJleHAiOjE2NjAyMTQ1MDAsImZpcnN0bmFtZSI6IlRvdG8gMiIsImlhdCI6MTY1OTM1MDUwMCwiaWQiOiJiNzg4ODkzZS02MWU2LTRhODQtOGRlYi0xZjhmNWFhNTYzMWUiLCJsYXN0bmFtZSI6IlRlc3QiLCJuYmYiOjE2NTkzNTA1MDAsInVzZXJuYW1lIjoidGVzdEBnbWFpbC5jb20ifQ.NnEFKMb-fBfZhaB_V-7n6PKMn5p-wT8EEVhi32XHHtUMy7oEVBlZ9JNq7f_Vw0Davrf3k0ot9E0EoJhq7OktCQ
 
 
 # Users
@@ -61,4 +61,25 @@ Authorization: Bearer {{token}}
 DELETE {{baseUrl}}/users/{{userIdToDelete}}
 Content-Type: application/json
 Authorization: Bearer {{token}}
+###
+
+
+# Links
+# -----
+
+# Get all links
+GET {{baseUrl}}/links?page=1&limit=10
+Content-Type: application/json
+Authorization: Bearer {{token}}
+###
+
+# Create new shortened URL
+POST {{baseUrl}}/links
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "url": "https://google.com",
+    "expired_at": "2024-12-31T00:00:00Z"
+}
 ###
