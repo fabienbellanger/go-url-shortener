@@ -32,11 +32,8 @@ func registerPublicAdminRoutes(r fiber.Router, db *db.DB, logger *zap.Logger) {
 		})
 	})
 
-	admin.Get("/login", func(c *fiber.Ctx) error {
-		return c.Render("public/admin/login", fiber.Map{
-			"Title": "Admin interface - Login",
-		})
-	})
+	admin.Get("/login", handlers.GetLoginPage()).Name("loginPage")
+	admin.Post("/login", handlers.PostLoginPage())
 }
 
 // API routes
