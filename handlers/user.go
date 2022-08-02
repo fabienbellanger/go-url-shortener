@@ -29,6 +29,7 @@ type userAuth struct {
 // Login authenticates a user.
 func Login(db *db.DB) fiber.Handler {
 	return func(c *fiber.Ctx) error {
+		println("========== LOGIN ===========")
 		u := new(userAuth)
 		if err := c.BodyParser(u); err != nil {
 			return c.Status(fiber.StatusBadRequest).JSON(utils.HTTPError{

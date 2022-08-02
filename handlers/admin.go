@@ -1,8 +1,9 @@
 package handlers
 
 import (
-	"fmt"
-
+	"github.com/fabienbellanger/go-url-shortener/db"
+	"github.com/fabienbellanger/go-url-shortener/repositories"
+	"github.com/fabienbellanger/go-url-shortener/utils"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -17,9 +18,25 @@ func GetLoginPage() fiber.Handler {
 }
 
 // PostLoginPage
-func PostLoginPage() fiber.Handler {
+//
+// TODO: Send errors to login page
+func PostLoginPage(db *db.DB) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		fmt.Printf("%v\n", string(c.Body()))
-		return c.RedirectToRoute("loginPage", nil)
+		u := new(userAuth)
+		if err := c.BodyParser(u); err != nil {
+			return c.RedirectToRoute("loginPage", nil)
+		}
+
+		loginErrors := utils.ValidateStruct(*u)
+		if loginErrors != nil {
+			return c.RedirectToRoute("loginPage", nil)
+		}
+
+		_, err := repositories.Login(db, u.Username, u.Password)
+		if err != nil {
+			return c.RedirectToRoute("loginPage", nil)
+		}
+
+		return c.RedirectToRoute("linksPage", nil)
 	}
 }

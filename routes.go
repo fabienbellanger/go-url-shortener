@@ -26,14 +26,14 @@ func registerPublicAdminRoutes(r fiber.Router, db *db.DB, logger *zap.Logger) {
 	//   - https://docs.gofiber.io/api/middleware/session#examples
 	admin := r.Group("admin")
 
-	admin.Get("/", func(c *fiber.Ctx) error {
+	admin.Get("/links", func(c *fiber.Ctx) error {
 		return c.Render("public/admin/index", fiber.Map{
-			"Title": "Admin interface",
+			"Title": "Links list",
 		})
-	})
+	}).Name("linksPage")
 
 	admin.Get("/login", handlers.GetLoginPage()).Name("loginPage")
-	admin.Post("/login", handlers.PostLoginPage())
+	admin.Post("/login", handlers.PostLoginPage(db))
 }
 
 // API routes

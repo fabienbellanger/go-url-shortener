@@ -14,13 +14,11 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/basicauth"
 	"github.com/gofiber/fiber/v2/middleware/cors"
-	"github.com/gofiber/fiber/v2/middleware/csrf"
 	"github.com/gofiber/fiber/v2/middleware/favicon"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/pprof"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
-	fiberUtils "github.com/gofiber/fiber/v2/utils"
 	jwtware "github.com/gofiber/jwt/v2"
 	"github.com/gofiber/template/html"
 	"github.com/spf13/viper"
@@ -212,14 +210,14 @@ func initMiddlewares(s *fiber.App, loggerZap *zap.Logger) {
 
 	// CSRF
 	// ----
-	s.Use(csrf.New(csrf.Config{
-		KeyLookup:      "form:_csrf",
-		CookieName:     "csrf_",
-		CookieSameSite: "Strict",
-		Expiration:     1 * time.Hour,
-		KeyGenerator:   fiberUtils.UUID,
-		ContextKey:     "csrf_token",
-	}))
+	// s.Use(csrf.New(csrf.Config{
+	// 	KeyLookup:      "form:_csrf",
+	// 	CookieName:     "csrf_",
+	// 	CookieSameSite: "Strict",
+	// 	Expiration:     1 * time.Hour,
+	// 	KeyGenerator:   fiberUtils.UUID,
+	// 	ContextKey:     "csrf_token",
+	// }))
 }
 
 func initTools(s *fiber.App) {

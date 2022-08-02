@@ -5,7 +5,7 @@ go 1.18
 require (
 	github.com/fabienbellanger/goutils v1.0.17
 	github.com/go-playground/validator/v10 v10.11.0
-	github.com/gofiber/fiber/v2 v2.35.0
+	github.com/gofiber/fiber/v2 v2.36.0
 	github.com/gofiber/jwt/v2 v2.2.7
 	github.com/gofiber/template v1.6.29
 	github.com/golang-jwt/jwt/v4 v4.4.2
