@@ -27,20 +27,9 @@ const routes: RouteRecordRaw[] = [
                 component: () => import('pages/Index.vue'),
             },
             {
-                path: '/projects',
-                name: 'projects-list',
-                component: () => import('pages/projects/List.vue'),
-            },
-            {
-                path: '/sales-errors',
-                component: () => import('pages/sales-errors/Layout.vue'),
-                children: [
-                    {
-                        path: '',
-                        name: 'sales-errors-list',
-                        component: () => import('pages/sales-errors/List.vue'),
-                    }
-                ],
+                path: '/links',
+                name: 'links-list',
+                component: () => import('pages/links/List.vue'),
             },
         ],
     },

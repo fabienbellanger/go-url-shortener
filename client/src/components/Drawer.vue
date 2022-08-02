@@ -1,7 +1,5 @@
 <template>
     <q-list>
-        <q-item-label header>Sales errors</q-item-label>
-
         <q-item clickable tag="a" :to="link.url" v-for="link in links" :key="link.title" v-bind="link">
             <q-item-section v-if="link.icon" avatar>
                 <q-icon :name="link.icon" />
@@ -22,16 +20,10 @@ import { defineComponent } from 'vue';
 
 const links = [
     {
-        title: 'Projects',
+        title: 'Links',
         caption: '',
         icon: 'dns',
-        url: '/projects',
-    },
-    {
-        title: 'Sales errors',
-        caption: '',
-        icon: 'error_outline',
-        url: '/sales-errors',
+        url: '/links',
     },
 ];
 

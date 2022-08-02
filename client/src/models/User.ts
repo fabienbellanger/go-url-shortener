@@ -10,7 +10,6 @@ export default class User {
     created_at = '';
     updated_at = '';
     token = '';
-    expired_at = '';
 
     constructor(
         id: string,
@@ -19,7 +18,6 @@ export default class User {
         created_at: string,
         updated_at: string,
         token: string,
-        expired_at: string
     ) {
         this.id = id;
         this.lastname = lastname;
@@ -27,11 +25,10 @@ export default class User {
         this.created_at = created_at;
         this.updated_at = updated_at;
         this.token = token;
-        this.expired_at = expired_at;
     }
 
     static initEmpty(): User {
-        return new User('', '', '', '', '', '', '');
+        return new User('', '', '', '', '', '');
     }
 
     static fromUser(user: User): User {
@@ -44,8 +41,7 @@ export default class User {
             user.firstname,
             user.created_at,
             user.updated_at,
-            user.token,
-            user.expired_at
+            user.token
         );
     }
 

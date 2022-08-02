@@ -1,13 +1,13 @@
 <template>
     <div class="q-px-md">
-        <h4 class="q-mt-lg">Projects list</h4>
+        <h4 class="q-mt-lg">Links list</h4>
         <q-table
             :rows="projects"
             :columns="headers"
             :filter="filter"
             :pagination="initialPagination"
             row-key="id"
-            no-data-label="No project"
+            no-data-label="No link"
             color="primary">
             <template v-slot:body="props">
                 <q-tr :props="props">
@@ -17,14 +17,8 @@
                             <q-input v-model="props.row.name" @change="updateName(props.row.id, props.row.name)" dense autofocus counter />
                         </q-popup-edit>
                     </q-td>
-                    <q-td key="created_at" :props="props">
-                        {{ displayDatetime(props.row.created_at) }}
-                    </q-td>
-                    <q-td key="updated_at" :props="props">
-                        {{ displayDatetime(props.row.updated_at) }}
-                    </q-td>
-                    <q-td key="deleted_at" :props="props">
-                        {{ displayDatetime(props.row.deleted_at) }}
+                    <q-td key="expired_at" :props="props">
+                        {{ displayDatetime(props.row.expired_at) }}
                     </q-td>
                     <q-td key="actions" :props="props">
                         <q-btn
@@ -60,7 +54,7 @@
             <q-card>
                 <q-card-section class="row items-center">
                     <q-icon name="warning" color="warning" class="text-h4" />
-                    <span class="q-ml-sm text-h6">Do you really want to delete this project?</span>
+                    <span class="q-ml-sm text-h6">Do you really want to delete this link?</span>
                 </q-card-section>
 
                 <q-card-actions align="right">
@@ -74,7 +68,7 @@
         <q-dialog v-model="confirmCreationDialog" medium @hide="clearProjectCreationName">
             <q-card>
                 <q-card-section class="row items-center">
-                    <span class="q-ml-sm text-h6">Project creation</span>
+                    <span class="q-ml-sm text-h6">Link creation</span>
                 </q-card-section>
 
                 <q-card-section>
@@ -111,6 +105,13 @@ export default defineComponent({
 
         const headers = [
             {
+                name: 'id',
+                label: 'ID',
+                field: 'id',
+                align: 'left',
+                sortable: true,
+            },
+            {
                 name: 'name',
                 label: 'Name',
                 field: 'name',
@@ -118,29 +119,12 @@ export default defineComponent({
                 sortable: true,
             },
             {
-                name: 'created_at',
-                label: 'Created at',
-                field: 'created_at',
+                name: 'expired_at',
+                label: 'Expired at',
+                field: 'expired_at',
                 align: 'left',
                 sortable: true,
                 style: 'width: 200px',
-            },
-            {
-                name: 'updated_at',
-                label: 'Updated at',
-                field: 'updated_at',
-                align: 'left',
-                sortable: true,
-                style: 'width: 200px',
-            },
-            {
-                name: 'deleted_at',
-                label: 'Deleted at',
-                field: 'deleted_at',
-                align: 'left',
-                sortable: true,
-                style: 'width: 200px',
-                required: false,
             },
             {
                 name: 'actions',

@@ -45,7 +45,7 @@ export default route<StateInterface>(function ({ store /*, ssrContext*/ }) {
             return 'login';
         } else if (to.name === 'logout') {
             store.dispatch(userType.A_LOGOUT)
-                .catch((error) => console.error(error));
+                .catch((error: Error) => console.error(error));
             return 'login';
         } else if (to.name === 'login' && isAuthenticated) {
             return '';
