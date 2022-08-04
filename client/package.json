@@ -2,7 +2,7 @@
   "name": "url-shortener-client",
   "version": "0.0.1",
   "description": "URL shortener admin",
-  "productName": "URL shortener admin",
+  "productName": "Apitic - URL shortener",
   "author": "Fabien Bellanger <fabien.bellanger@apitic.com>",
   "private": true,
   "scripts": {

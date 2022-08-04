@@ -52,7 +52,7 @@
                 </q-tr>
             </template>
             <template v-slot:top-right>
-                <q-input dense debounce="300" v-model="filter" placeholder="Search">
+                <q-input clearable dense debounce="300" v-model="filter" placeholder="Search">
                     <template v-slot:append>
                         <q-icon name="search" />
                     </template>
