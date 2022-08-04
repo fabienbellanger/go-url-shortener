@@ -1,7 +1,7 @@
 {
   "name": "url-shortener-client",
   "version": "0.0.1",
-  "description": "A Quasar Project",
+  "description": "URL shortener admin",
   "productName": "URL shortener admin",
   "author": "Fabien Bellanger <fabien.bellanger@apitic.com>",
   "private": true,

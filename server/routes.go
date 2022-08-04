@@ -12,28 +12,8 @@ import (
 // ----------
 
 func registerPublicWebRoutes(r fiber.Router, db *db.DB, logger *zap.Logger) {
-	// Admin interface
-	registerPublicAdminRoutes(r, db, logger)
-
 	// Shorted URL
 	r.Get("/:id", handlers.RedirectURL(db, logger))
-}
-
-func registerPublicAdminRoutes(r fiber.Router, db *db.DB, logger *zap.Logger) {
-	// TODO:
-	//   - https://github.com/gofiber/template/tree/master/html
-	//   - https://docs.gofiber.io/guide/templates
-	//   - https://docs.gofiber.io/api/middleware/session#examples
-	admin := r.Group("admin")
-
-	admin.Get("/links", func(c *fiber.Ctx) error {
-		return c.Render("public/admin/index", fiber.Map{
-			"Title": "Links list",
-		})
-	}).Name("linksPage")
-
-	admin.Get("/login", handlers.GetLoginPage()).Name("loginPage")
-	admin.Post("/login", handlers.PostLoginPage(db))
 }
 
 // API routes
@@ -55,8 +35,8 @@ func registerProtectedAPIRoutes(r fiber.Router, db *db.DB) {
 	users := v1.Group("/users")
 	users.Get("/", handlers.GetAllUsers(db))
 	users.Get("/:id", handlers.GetUser(db))
-	users.Delete("/:id", handlers.DeleteUser(db))
 	users.Put("/:id", handlers.UpdateUser(db))
+	users.Delete("/:id", handlers.DeleteUser(db))
 
 	// Links
 	links := v1.Group("/links")
