@@ -10,12 +10,15 @@
             </q-toolbar>
         </q-header>
 
-        <q-drawer v-model="leftDrawerOpen" show-if-above bordered :width="220">
+        <q-drawer v-model="leftDrawerOpen" show-if-above bordered :width="220"
+            :mini="miniState" @mouseover="miniState = false" @mouseout="miniState = true"
+            mini-to-overlay>
             <Drawer />
         </q-drawer>
 
         <q-page-container>
             <router-view />
+            <div class="text-caption text-grey-6 text-center">&copy; {{ year }} Apitic</div>
         </q-page-container>
     </q-layout>
 </template>
@@ -33,15 +36,19 @@ export default defineComponent({
     },
 
     setup() {
-        const leftDrawerOpen = ref(false);
         const $q = useQuasar();
+        const leftDrawerOpen = ref(false);
+        const miniState = ref(true)
+        const year = ref(new Date().getFullYear());
 
         // Enable Dark mode
         // ----------------
         $q.dark.set(true);
 
         return {
+            year,
             leftDrawerOpen,
+            miniState,
             toggleLeftDrawer() {
                 leftDrawerOpen.value = !leftDrawerOpen.value;
             },
