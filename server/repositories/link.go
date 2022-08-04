@@ -2,11 +2,12 @@ package repositories
 
 import (
 	"errors"
+	"log"
 	"time"
 
-	database "github.com/fabienbellanger/go-url-shortener/db"
-	"github.com/fabienbellanger/go-url-shortener/models"
-	"github.com/fabienbellanger/go-url-shortener/utils"
+	database "github.com/fabienbellanger/go-url-shortener/server/db"
+	"github.com/fabienbellanger/go-url-shortener/server/models"
+	"github.com/fabienbellanger/go-url-shortener/server/utils"
 	"github.com/spf13/viper"
 )
 
@@ -31,6 +32,9 @@ func GetAllLinks(db *database.DB, page, limit string) (links []models.Link, err 
 func CreateLink(db *database.DB, link *models.LinkForm) (newLink models.Link, err error) {
 	// Check if original URL is not already in database.
 	links, err := getLinksFromURL(db, link.URL)
+
+	log.Printf("%+v\n", links)
+
 	if err != nil {
 		return newLink, errors.New("too many links with the same URL")
 	} else if len(links) > 1 {
@@ -66,6 +70,14 @@ func CreateLink(db *database.DB, link *models.LinkForm) (newLink models.Link, er
 	return
 }
 
+func UpdateLink(db *database.DB, link *models.Link) error {
+	r := db.Save(&link)
+	if r.Error != nil {
+		return r.Error
+	}
+	return nil
+}
+
 // GetLinkFromID returns a link if ID exists, else returns an error.
 func GetLinkFromID(db *database.DB, id string) (link *models.Link, err error) {
 	result := db.Where("expired_at >= ?", time.Now()).First(&link, "id = ?", id)
@@ -73,4 +85,13 @@ func GetLinkFromID(db *database.DB, id string) (link *models.Link, err error) {
 		return link, result.Error
 	}
 	return
+}
+
+// DeleteLink remove the link in database.
+func DeleteLink(db *database.DB, id string) error {
+	r := db.Where("id = ?", id).Delete(&models.Link{})
+	if r.Error != nil {
+		return r.Error
+	}
+	return nil
 }

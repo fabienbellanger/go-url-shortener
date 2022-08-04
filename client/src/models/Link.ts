@@ -5,16 +5,16 @@
  */
 export default class Link {
     id = '';
-    link = '';
+    url = '';
     expired_at = '';
 
     constructor(
         id: string,
-        link: string,
+        url: string,
         expired_at: string
     ) {
         this.id = id;
-        this.link = link;
-        this.expired_at = expired_at;
+        this.url = url;
+        this.expired_at = (expired_at.length > 10) ? expired_at.substring(0, 10) : expired_at;
     }
 }

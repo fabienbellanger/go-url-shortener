@@ -4,8 +4,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
 
-	"github.com/fabienbellanger/go-url-shortener/db"
-	"github.com/fabienbellanger/go-url-shortener/handlers"
+	"github.com/fabienbellanger/go-url-shortener/server/db"
+	"github.com/fabienbellanger/go-url-shortener/server/handlers"
 )
 
 // Web routes
@@ -62,4 +62,6 @@ func registerProtectedAPIRoutes(r fiber.Router, db *db.DB) {
 	links := v1.Group("/links")
 	links.Get("", handlers.LinksList(db))
 	links.Post("", handlers.CreateLink(db))
+	links.Put("/:id", handlers.UpdateLink(db))
+	links.Delete("/:id", handlers.DeleteLink(db))
 }

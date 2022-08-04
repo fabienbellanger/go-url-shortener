@@ -2,36 +2,52 @@
     <div class="q-px-md">
         <h4 class="q-mt-lg">Links list</h4>
         <q-table
-            :rows="projects"
+            :rows="links"
             :columns="headers"
             :filter="filter"
             :pagination="initialPagination"
+            :rows-per-page-options="[50, 100, 200, 500]"
             row-key="id"
             no-data-label="No link"
             color="primary">
             <template v-slot:body="props">
                 <q-tr :props="props">
-                    <q-td key="name" :props="props">
-                        {{ props.row.name }}
-                        <q-popup-edit v-model="props.row.name">
-                            <q-input v-model="props.row.name" @change="updateName(props.row.id, props.row.name)" dense autofocus counter />
-                        </q-popup-edit>
+                    <q-td key="id" :props="props">
+                        {{ props.row.id }}
+                    </q-td>
+                    <q-td key="url" :props="props">
+                        {{ props.row.url }}
                     </q-td>
                     <q-td key="expired_at" :props="props">
-                        {{ displayDatetime(props.row.expired_at) }}
+                        {{ formatDatetime(props.row.expired_at) }}
                     </q-td>
                     <q-td key="actions" :props="props">
                         <q-btn
-                            v-if="!displayDeleted"
+                            size="sm"
+                            icon="link"
+                            color="blue"
+                            @click="
+                                currentLink = props.row;
+                                openLink();
+                            "></q-btn>
+                        &nbsp;
+                        <q-btn
+                            size="sm"
+                            icon="edit"
+                            color="green"
+                            @click="
+                                currentLink = props.row;
+                                confirmCreationDialog = true;
+                            "></q-btn>
+                        &nbsp;
+                        <q-btn
                             size="sm"
                             icon="delete"
                             color="red"
                             @click="
+                                currentLink = props.row;
                                 confirmDeleteDialog = true;
-                                projectDeleteId = props.row.id;
                             "></q-btn>
-
-                        <q-btn v-else size="sm" icon="refresh" color="warning" @click="recoverProject(props.row.id)"></q-btn>
                     </q-td>
                 </q-tr>
             </template>
@@ -43,13 +59,11 @@
                 </q-input>
             </template>
             <template v-slot:top-left>
-                <q-btn round color="primary" icon="add" @click="confirmCreationDialog = true" />
-                &nbsp;
-                <q-checkbox v-model="displayDeleted" label="Deleted?" color="primary" @click="getList" />
+                <q-btn round color="primary" icon="add" @click="newLink" />
             </template>
         </q-table>
 
-        <!-- Confirm project deletion dialog -->
+        <!-- Confirm link deletion dialog -->
         <q-dialog v-model="confirmDeleteDialog" persistent>
             <q-card>
                 <q-card-section class="row items-center">
@@ -59,25 +73,46 @@
 
                 <q-card-actions align="right">
                     <q-btn flat label="Cancel" color="primary" v-close-popup />
-                    <q-btn flat label="Delete" color="primary" v-close-popup @click="deleteProject" />
+                    <q-btn flat label="Delete" color="primary" v-close-popup @click="deleteLink" />
                 </q-card-actions>
             </q-card>
         </q-dialog>
 
-        <!-- Project creation dialog -->
-        <q-dialog v-model="confirmCreationDialog" medium @hide="clearProjectCreationName">
+        <!-- link creation dialog -->
+        <q-dialog v-model="confirmCreationDialog" medium @hide="clearLinkCreation">
             <q-card>
                 <q-card-section class="row items-center">
-                    <span class="q-ml-sm text-h6">Link creation</span>
+                    <span class="q-ml-sm text-h6">
+                        <span v-if="currentLink.id">Link update ({{ currentLink.id }})</span>
+                        <span v-else>Link creation</span>
+                    </span>
                 </q-card-section>
 
                 <q-card-section>
-                    <q-input v-model="projectCreationName" label="Project name" style="width: 240px" autofocus />
+                    <q-input v-model="currentLink.url" label="URL" style="width: 320px" autofocus type="url" 
+                        :rules="[val => (val.startsWith('http://') || val.startsWith('https://')) || 'URL is required']"/>
+                </q-card-section>
+
+                <q-card-section>
+                    <q-input v-model="currentLink.expired_at" label="Expired At" style="width: 320px"
+                        :rules="[val => !!val || 'Expiration date is required']">
+                        <template v-slot:prepend>
+                            <q-icon name="event" class="cursor-pointer">
+                                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                                    <q-date v-model="currentLink.expired_at" first-day-of-week="1" mask="YYYY-MM-DD">
+                                        <div class="row items-center justify-end">
+                                            <q-btn v-close-popup label="Close" color="primary" flat />
+                                        </div>
+                                    </q-date>
+                                </q-popup-proxy>
+                            </q-icon>
+                        </template>
+                    </q-input>
                 </q-card-section>
 
                 <q-card-actions align="right">
-                    <q-btn flat label="Cancel" color="primary" v-close-popup @click="clearProjectCreationName" />
-                    <q-btn label="Add" color="primary" v-close-popup @click="addProject" />
+                    <q-btn flat label="Cancel" color="primary" v-close-popup @click="clearLinkCreation" />
+                    <q-btn label="Save" color="primary" v-close-popup @click="editLink" />
                 </q-card-actions>
             </q-card>
         </q-dialog>
@@ -86,22 +121,27 @@
 
 <script lang="ts">
 import { useQuasar } from 'quasar';
-import Project from '../../models/Project';
+import Link from '../../models/Link';
 import { defineComponent, ref } from 'vue';
-import { ProjectAPI } from '../../api/Project';
+import { LinkAPI } from '../../api/Link';
 
 export default defineComponent({
-    name: 'ProjectsList',
+    name: 'LinksList',
 
     setup() {
+        const formatDatetime = (datetime: string) => {
+            if (datetime) {
+                return datetime.substr(0, 10) + ' ' + datetime.substr(11, 5);
+            }
+            return '';
+        };
+
         const $q = useQuasar();
-        const projects = ref<Project[]>();
+        const links = ref<Link[]>();
         const confirmDeleteDialog = ref<boolean>(false);
         const confirmCreationDialog = ref<boolean>(false);
-        const confirmDeleteProject = ref<boolean>(false);
-        const displayDeleted = ref<boolean>(false);
-        const projectDeleteId = ref<string>('');
-        const projectCreationName = ref<string>('');
+        const confirmDeleteLink = ref<boolean>(false);
+        const currentLink = ref<Link>();
 
         const headers = [
             {
@@ -109,12 +149,12 @@ export default defineComponent({
                 label: 'ID',
                 field: 'id',
                 align: 'left',
-                sortable: true,
+                style: 'width: 120px',
             },
             {
-                name: 'name',
-                label: 'Name',
-                field: 'name',
+                name: 'url',
+                label: 'URL',
+                field: 'url',
                 align: 'left',
                 sortable: true,
             },
@@ -124,142 +164,139 @@ export default defineComponent({
                 field: 'expired_at',
                 align: 'left',
                 sortable: true,
-                style: 'width: 200px',
+                style: 'width: 100px',
             },
             {
                 name: 'actions',
                 label: 'Actions',
                 align: 'left',
-                style: 'width: 120px',
+                style: 'width: 200px',
                 required: true,
             },
         ];
 
-        const displayDatetime = (datetime: string) => {
-            if (datetime) {
-                return datetime.substr(0, 10) + ' ' + datetime.substr(11, 5);
+        const clearLinkCreation = () => {
+            currentLink.value = new Link('', '', (new Date().toISOString()).substr(0, 10));
+        };
+
+        const deleteLink = () => {
+            LinkAPI.delete(currentLink.value.id)
+                .then(() => {
+                    getList();
+                    currentLink.value.id = '';
+
+                    $q.notify({
+                        type: 'positive',
+                        message: 'Successfull link deletion',
+                    });
+                })
+                .catch((error) => {
+                    currentLink.value.id = '';
+
+                    $q.notify({
+                        type: 'negative',
+                        message: 'Error during link deletion',
+                    });
+                    console.error(error);
+                });
+        };
+
+        const newLink = () => {
+            clearLinkCreation();
+            confirmCreationDialog.value = true;
+        };
+
+        const editLink = () => {
+            if (currentLink.value.id) {
+                updateLink();
+            } else {
+                addLink();
             }
-            return '';
         };
 
-        const clearProjectDeletionId = () => {
-            projectDeleteId.value = '';
-        };
-
-        const clearProjectCreationName = () => {
-            projectCreationName.value = '';
-        };
-
-        const deleteProject = () => {
-            ProjectAPI.delete(projectDeleteId.value)
-                .then(() => {
-                    getList();
-                    clearProjectDeletionId();
-
-                    $q.notify({
-                        type: 'positive',
-                        message: 'Successfull project deletion',
-                    });
-                })
-                .catch((error) => {
-                    clearProjectDeletionId();
-
-                    $q.notify({
-                        type: 'negative',
-                        message: 'Error during project deletion',
-                    });
-                    console.error(error);
-                });
-        };
-
-        const recoverProject = (id: string) => {
-            ProjectAPI.recover(id)
+        const addLink = () => {
+            LinkAPI.add(currentLink.value)
                 .then(() => {
                     getList();
 
                     $q.notify({
                         type: 'positive',
-                        message: 'Successfull project recovery',
+                        message: 'Successfull link creation',
                     });
                 })
                 .catch((error) => {
                     $q.notify({
                         type: 'negative',
-                        message: 'Error during project recovery',
+                        message: 'Error during link creation',
                     });
                     console.error(error);
                 });
         };
 
-        const addProject = () => {
-            ProjectAPI.add(projectCreationName.value)
+        const updateLink = () => {
+            LinkAPI.update(currentLink.value)
                 .then(() => {
                     getList();
 
                     $q.notify({
                         type: 'positive',
-                        message: 'Successfull project creation',
+                        message: 'Successfull link update',
                     });
                 })
                 .catch((error) => {
                     $q.notify({
                         type: 'negative',
-                        message: 'Error during project creation',
+                        message: 'Error during link update',
                     });
                     console.error(error);
                 });
         };
 
-        const updateName = (id: string, name: string) => {
-            ProjectAPI.update(id, name)
-                .then(() => {
-                    $q.notify({
-                        type: 'positive',
-                        message: 'Successfull project update',
-                    });
-                })
-                .catch((error) => {
-                    $q.notify({
-                        type: 'negative',
-                        message: 'Error during project update',
-                    });
-                    console.error(error);
-                });
+        const openLink = () => {
+            window.open(currentLink.value.url, '_blank');
         };
 
         const getList = () => {
-            ProjectAPI.list(displayDeleted.value)
-                .then((projectsList: Project[]) => {
-                    projects.value = projectsList;
+            LinkAPI.list()
+                .then((linksList: Link[]) => {
+                    links.value = linksList;
                 })
                 .catch((error) => {
                     console.error(error);
                 });
         };
+
         void getList();
 
         return {
-            projects,
+            links,
+            currentLink,
             headers,
-            displayDatetime,
-            deleteProject,
-            recoverProject,
-            addProject,
-            updateName,
+            formatDatetime,
+            deleteLink,
+            newLink,
+            editLink,
+            addLink,
+            updateLink,
+            openLink,
             getList,
-            clearProjectCreationName,
-            displayDeleted,
+            clearLinkCreation,
             confirmDeleteDialog,
             confirmCreationDialog,
-            confirmDeleteProject,
-            projectDeleteId,
-            projectCreationName,
+            confirmDeleteLink,
             filter: ref(''),
             initialPagination: {
                 sortBy: 'name',
                 descending: false,
+                rowsPerPage: 50,
             },
         };
     },
 });
 </script>
+
+<style scoped>
+tr:nth-child(odd) {
+  background-color: #83838314 !important;
+}
+</style>

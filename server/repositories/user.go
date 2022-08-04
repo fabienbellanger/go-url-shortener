@@ -6,8 +6,8 @@ import (
 
 	"github.com/google/uuid"
 
-	"github.com/fabienbellanger/go-url-shortener/db"
-	"github.com/fabienbellanger/go-url-shortener/models"
+	"github.com/fabienbellanger/go-url-shortener/server/db"
+	"github.com/fabienbellanger/go-url-shortener/server/models"
 )
 
 // Login gets user from username and password.

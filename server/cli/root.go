@@ -3,8 +3,8 @@ package cli
 import (
 	"time"
 
-	server "github.com/fabienbellanger/go-url-shortener"
-	"github.com/fabienbellanger/go-url-shortener/db"
+	server "github.com/fabienbellanger/go-url-shortener/server"
+	"github.com/fabienbellanger/go-url-shortener/server/db"
 	"github.com/logrusorgru/aurora/v3"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"

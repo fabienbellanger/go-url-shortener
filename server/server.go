@@ -24,8 +24,8 @@ import (
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
 
-	"github.com/fabienbellanger/go-url-shortener/db"
-	"github.com/fabienbellanger/go-url-shortener/utils"
+	"github.com/fabienbellanger/go-url-shortener/server/db"
+	"github.com/fabienbellanger/go-url-shortener/server/utils"
 )
 
 //go:embed public/*

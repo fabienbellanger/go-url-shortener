@@ -1,4 +1,4 @@
-module github.com/fabienbellanger/go-url-shortener
+module github.com/fabienbellanger/go-url-shortener/server
 
 go 1.19
 

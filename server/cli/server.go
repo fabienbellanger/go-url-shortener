@@ -3,7 +3,7 @@ package cli
 import (
 	"log"
 
-	server "github.com/fabienbellanger/go-url-shortener"
+	server "github.com/fabienbellanger/go-url-shortener/server"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )

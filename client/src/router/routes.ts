@@ -22,9 +22,9 @@ const routes: RouteRecordRaw[] = [
         component: () => import('layouts/MainLayout.vue'),
         children: [
             {
-                path: '',
+                path: '/',
                 name: 'home',
-                component: () => import('pages/Index.vue'),
+                redirect: { name: 'links-list' },
             },
             {
                 path: '/links',

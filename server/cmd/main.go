@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/fabienbellanger/go-url-shortener/cli"
+	"github.com/fabienbellanger/go-url-shortener/server/cli"
 )
 
 func main() {

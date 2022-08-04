@@ -4,6 +4,7 @@ import (
 	"crypto/sha256"
 	"fmt"
 	"math/big"
+	"time"
 
 	"github.com/itchyny/base58-go"
 )
@@ -30,7 +31,7 @@ func base58Encoded(bytes []byte) (string, error) {
 
 // GenerateShortLink generates a short code form a link
 func GenerateShortLink(link string, key string) (string, error) {
-	urlHashBytes, err := sha256encoded(link + key)
+	urlHashBytes, err := sha256encoded(fmt.Sprintf("%s%s%d", link, key, time.Now().UnixNano()))
 	if err != nil {
 		return "", err
 	}

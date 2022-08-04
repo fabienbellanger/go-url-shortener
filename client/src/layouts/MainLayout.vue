@@ -5,7 +5,7 @@
                 <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
                 <q-toolbar-title>URL Shortener Admin</q-toolbar-title>
                 <div>
-                    <q-btn color="secondary" label="Logout" :to="{ name: 'logout' }" margin="sm" />
+                    <q-btn flat label="Logout" :to="{ name: 'logout' }" margin="sm" />
                 </div>
             </q-toolbar>
         </q-header>

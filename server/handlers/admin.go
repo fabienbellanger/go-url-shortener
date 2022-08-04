@@ -1,9 +1,9 @@
 package handlers
 
 import (
-	"github.com/fabienbellanger/go-url-shortener/db"
-	"github.com/fabienbellanger/go-url-shortener/repositories"
-	"github.com/fabienbellanger/go-url-shortener/utils"
+	"github.com/fabienbellanger/go-url-shortener/server/db"
+	"github.com/fabienbellanger/go-url-shortener/server/repositories"
+	"github.com/fabienbellanger/go-url-shortener/server/utils"
 	"github.com/gofiber/fiber/v2"
 )
 

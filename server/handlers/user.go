@@ -9,10 +9,10 @@ import (
 	"github.com/spf13/viper"
 	"gorm.io/gorm"
 
-	"github.com/fabienbellanger/go-url-shortener/db"
-	models "github.com/fabienbellanger/go-url-shortener/models"
-	"github.com/fabienbellanger/go-url-shortener/repositories"
-	"github.com/fabienbellanger/go-url-shortener/utils"
+	"github.com/fabienbellanger/go-url-shortener/server/db"
+	models "github.com/fabienbellanger/go-url-shortener/server/models"
+	"github.com/fabienbellanger/go-url-shortener/server/repositories"
+	"github.com/fabienbellanger/go-url-shortener/server/utils"
 )
 
 type userLogin struct {

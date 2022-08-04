@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/fabienbellanger/go-url-shortener/models"
-	"github.com/fabienbellanger/go-url-shortener/repositories"
-	"github.com/fabienbellanger/go-url-shortener/utils"
+	"github.com/fabienbellanger/go-url-shortener/server/models"
+	"github.com/fabienbellanger/go-url-shortener/server/repositories"
+	"github.com/fabienbellanger/go-url-shortener/server/utils"
 	"github.com/spf13/cobra"
 )
 

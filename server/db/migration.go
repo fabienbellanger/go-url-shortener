@@ -1,6 +1,6 @@
 package db
 
-import "github.com/fabienbellanger/go-url-shortener/models"
+import "github.com/fabienbellanger/go-url-shortener/server/models"
 
 // modelsList lists all models to automigrate.
 var modelsList = []interface{}{
