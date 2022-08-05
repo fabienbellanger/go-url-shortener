@@ -16,10 +16,22 @@
             <Drawer />
         </q-drawer>
 
-        <q-page-container>
-            <router-view />
-            <div class="text-caption text-grey-6 text-center">&copy; {{ year }} Apitic</div>
+        <q-page-container class="column">
+            <div>
+                <router-view />
+            </div>
+            <div class="text-caption text-grey-6 text-center"></div>
         </q-page-container>
+
+        <q-footer class="bg-transparent">
+            <q-toolbar class="bg-dark q-mt-md">
+                <q-toolbar-title>
+                    <div class="text-caption text-grey-6 text-center">
+                        &copy; {{ year }} <a class="text-grey-6" href="https://www.apitic.com" target="_blank">Apitic</a>
+                    </div>
+                </q-toolbar-title>
+            </q-toolbar>
+        </q-footer>
     </q-layout>
 </template>
 
@@ -56,3 +68,6 @@ export default defineComponent({
     },
 });
 </script>
+
+<style scoped>
+</style>

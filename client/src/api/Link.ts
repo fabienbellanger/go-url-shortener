@@ -1,4 +1,3 @@
-import { exportFile } from 'quasar';
 import Link from 'src/models/Link';
 import Http from '../services/Http';
 

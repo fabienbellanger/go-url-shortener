@@ -120,7 +120,7 @@
 </template>
 
 <script lang="ts">
-import { useQuasar } from 'quasar';
+import { useQuasar, date } from 'quasar';
 import Link from '../../models/Link';
 import { defineComponent, ref } from 'vue';
 import { LinkAPI } from '../../api/Link';
@@ -176,7 +176,11 @@ export default defineComponent({
         ];
 
         const clearLinkCreation = () => {
-            currentLink.value = new Link('', '', (new Date().toISOString()).substr(0, 10));
+            currentLink.value = new Link(
+                '',
+                '',
+                (date.addToDate(new Date(), {years: 50}).toISOString()).substr(0, 10)
+            );
         };
 
         const deleteLink = () => {

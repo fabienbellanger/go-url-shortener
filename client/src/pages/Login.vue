@@ -38,7 +38,9 @@
         <q-separator />
 
         <q-card-actions class="row justify-center">
-            <div class="text-caption text-grey-6">&copy; {{ year }} Apitic</div>
+            <div class="text-caption text-grey-6">
+                &copy; {{ year }} <a class="text-grey-6" href="https://www.apitic.com" target="_blank">Apitic</a>
+            </div>
         </q-card-actions>
     </q-card>
 </template>
