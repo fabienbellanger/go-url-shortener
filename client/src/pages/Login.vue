@@ -7,30 +7,32 @@
                         <q-icon name="account_circle" size="70px" />
                     </div>
                     <div class="row items-center justify-center text-h5 text-weight-medium" style="height: 40px">
-                        URL Shortener Admin
+                        URL Shortener
                     </div>
                 </q-header>
 
                 <q-page-container>
-                    <q-page class="q-pa-md">
-                        <div class="q-mx-none q-my-sm">
-                            <q-input ref="loginInput" outlined dense autofocus label="Login" v-model="login">
-                                <template v-slot:before>
-                                    <q-icon name="person" />
-                                </template>
-                            </q-input>
-                        </div>
-                        <div class="q-mx-none q-my-sm">
-                            <q-input outlined dense type="password" label="Password" v-model="password">
-                                <template v-slot:before>
-                                    <q-icon name="lock" />
-                                </template>
-                            </q-input>
-                        </div>
-                        <div class="q-mx-none q-my-lg">
-                            <q-btn color="primary" label="Se connecter" class="full-width" @click="signIn" :disable="!valid" />
-                        </div>
-                    </q-page>
+                    <q-form @submit="signIn">
+                        <q-page class="q-pa-md">
+                            <div class="q-mx-none q-my-sm">
+                                <q-input ref="loginInput" type="email" outlined dense autofocus label="Login" v-model="login">
+                                    <template v-slot:before>
+                                        <q-icon name="person" />
+                                    </template>
+                                </q-input>
+                            </div>
+                            <div class="q-mx-none q-my-sm">
+                                <q-input outlined dense type="password" label="Password" v-model="password" >
+                                    <template v-slot:before>
+                                        <q-icon name="lock" />
+                                    </template>
+                                </q-input>
+                            </div>
+                            <div class="q-mx-none q-my-lg">
+                                <q-btn color="primary" label="Se connecter" type="submit" class="full-width" :disable="!valid" />
+                            </div>
+                        </q-page>
+                    </q-form>
                 </q-page-container>
             </q-layout>
         </q-card-section>

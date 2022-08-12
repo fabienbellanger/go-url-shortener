@@ -1,8 +1,6 @@
 package handlers
 
 import (
-	"log"
-
 	"github.com/fabienbellanger/go-url-shortener/server/db"
 	models "github.com/fabienbellanger/go-url-shortener/server/models"
 	"github.com/fabienbellanger/go-url-shortener/server/repositories"
@@ -50,7 +48,7 @@ func CreateLink(db *db.DB) fiber.Handler {
 
 		newLink, err := repositories.CreateLink(db, link)
 		if err != nil {
-			return fiber.NewError(fiber.StatusInternalServerError, "Error when creating link")
+			return fiber.NewError(fiber.StatusInternalServerError, err.Error())
 		}
 
 		return c.JSON(newLink)
@@ -72,7 +70,6 @@ func UpdateLink(db *db.DB) fiber.Handler {
 		if err != nil {
 			return fiber.NewError(fiber.StatusNotFound, "No link found")
 		}
-		log.Printf("%+v\n", link)
 
 		linkForm := new(models.LinkForm)
 		if err := c.BodyParser(linkForm); err != nil {
@@ -98,7 +95,7 @@ func UpdateLink(db *db.DB) fiber.Handler {
 
 		err = repositories.UpdateLink(db, link)
 		if err != nil {
-			return fiber.NewError(fiber.StatusInternalServerError, "Error when updating link")
+			return fiber.NewError(fiber.StatusInternalServerError, err.Error())
 		}
 
 		return c.SendStatus(fiber.StatusNoContent)
@@ -119,7 +116,7 @@ func DeleteLink(db *db.DB) fiber.Handler {
 
 		err := repositories.DeleteLink(db, id)
 		if err != nil {
-			return fiber.NewError(fiber.StatusInternalServerError, "Error when deleting link")
+			return fiber.NewError(fiber.StatusInternalServerError, err.Error())
 		}
 
 		return c.SendStatus(fiber.StatusNoContent)

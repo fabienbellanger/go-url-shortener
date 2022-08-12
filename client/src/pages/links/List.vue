@@ -53,7 +53,7 @@
             </template>
             <template v-slot:top-right>
                 <q-input clearable dense debounce="300" v-model="filter" placeholder="Search">
-                    <template v-slot:append>
+                    <template v-slot:prepend>
                         <q-icon name="search" />
                     </template>
                 </q-input>
@@ -129,19 +129,13 @@ export default defineComponent({
     name: 'LinksList',
 
     setup() {
-        const formatDatetime = (datetime: string) => {
-            if (datetime) {
-                return datetime.substr(0, 10) + ' ' + datetime.substr(11, 5);
-            }
-            return '';
-        };
-
         const $q = useQuasar();
         const links = ref<Link[]>();
         const confirmDeleteDialog = ref<boolean>(false);
         const confirmCreationDialog = ref<boolean>(false);
         const confirmDeleteLink = ref<boolean>(false);
         const currentLink = ref<Link>();
+        const valid = ref<boolean>();
 
         const headers = [
             {
@@ -175,6 +169,13 @@ export default defineComponent({
             },
         ];
 
+        const formatDatetime = (datetime: string) => {
+            if (datetime) {
+                return datetime.substr(0, 10) + ' ' + datetime.substr(11, 5);
+            }
+            return '';
+        };
+
         const clearLinkCreation = () => {
             currentLink.value = new Link(
                 '',
@@ -195,11 +196,12 @@ export default defineComponent({
                     });
                 })
                 .catch((error) => {
+                    getList();
                     currentLink.value.id = '';
 
                     $q.notify({
                         type: 'negative',
-                        message: 'Error during link deletion',
+                        message: `Error: ${error}`,
                     });
                     console.error(error);
                 });
@@ -231,7 +233,7 @@ export default defineComponent({
                 .catch((error) => {
                     $q.notify({
                         type: 'negative',
-                        message: 'Error during link creation',
+                        message: `Error: ${error}`,
                     });
                     console.error(error);
                 });
@@ -248,9 +250,11 @@ export default defineComponent({
                     });
                 })
                 .catch((error) => {
+                    getList();
+
                     $q.notify({
                         type: 'negative',
-                        message: 'Error during link update',
+                        message: `Error: ${error}`,
                     });
                     console.error(error);
                 });
@@ -288,6 +292,7 @@ export default defineComponent({
             confirmDeleteDialog,
             confirmCreationDialog,
             confirmDeleteLink,
+            valid,
             filter: ref(''),
             initialPagination: {
                 sortBy: 'name',

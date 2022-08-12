@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import axios, { AxiosInstance, AxiosRequestConfig, Method } from 'axios';
+import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, Method } from 'axios';
 import User from 'src/models/User';
 
 /**
@@ -129,7 +129,7 @@ class Http
 
                         return requestConfig;
                     },
-                    (error) =>
+                    (error: AxiosError) =>
                     {
                         return Promise.reject(error);
                     },
@@ -144,11 +144,12 @@ class Http
 
                         return response;
                     },
-                    (error: any) =>
+                    (error: AxiosError) =>
                     {
                         // Http.manageError(error.response);
-
-                        return Promise.reject(error);
+                        const message = error.response.data.message ?? 'Unknown error';
+                        
+                        return Promise.reject(message);
                     },
                 );
 

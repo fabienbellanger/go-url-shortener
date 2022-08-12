@@ -2,7 +2,6 @@ package repositories
 
 import (
 	"errors"
-	"log"
 	"time"
 
 	database "github.com/fabienbellanger/go-url-shortener/server/db"
@@ -33,23 +32,12 @@ func CreateLink(db *database.DB, link *models.LinkForm) (newLink models.Link, er
 	// Check if original URL is not already in database.
 	links, err := getLinksFromURL(db, link.URL)
 
-	log.Printf("%+v\n", links)
-
 	if err != nil {
-		return newLink, errors.New("too many links with the same URL")
+		return newLink, errors.New("error when searching links with this URL")
 	} else if len(links) > 1 {
 		return newLink, errors.New("too many links with the same URL")
 	} else if len(links) == 1 {
-		updatedLink := links[0]
-		if link.ExpiredAt != updatedLink.ExpiredAt {
-			// Update expired datetime
-			// -----------------------
-			result := db.Model(&updatedLink).Update("expired_at", link.ExpiredAt)
-			if result.Error != nil {
-				return newLink, result.Error
-			}
-		}
-		return updatedLink, nil
+		return newLink, errors.New("a link with the same URL already exists")
 	}
 
 	// Create new link
