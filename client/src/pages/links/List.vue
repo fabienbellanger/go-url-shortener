@@ -63,6 +63,12 @@
             </template>
             <template v-slot:top-left>
                 <q-btn round color="primary" icon="add" @click="newLink" />
+                <q-btn
+                    color="primary"
+                    icon-right="archive"
+                    label="Export to csv"
+                    no-caps
+                    @click="exportCSV"/>
             </template>
         </q-table>
 
@@ -123,10 +129,11 @@
 </template>
 
 <script lang="ts">
-import { useQuasar, date } from 'quasar';
+import { exportFile, useQuasar, date } from 'quasar';
 import Link from '../../models/Link';
 import { defineComponent, ref } from 'vue';
 import { LinkAPI, LinkAPIList } from '../../api/Link';
+import { stringify } from 'csv-stringify/browser/esm';
 
 export default defineComponent({
     name: 'LinksList',
@@ -300,12 +307,30 @@ export default defineComponent({
                 });
         };
 
+        const exportCSV = () => {
+            stringify([
+                ['Titre 1', 'Titre 2'],
+                [154, 'lorem'],
+            ], {
+                delimiter: ';',
+            }, (err, output) => {
+                console.log(output);
+            });
+        };
+
         void getList();
 
         return {
             links,
             currentLink,
             headers,
+            confirmDeleteDialog,
+            confirmCreationDialog,
+            confirmDeleteLink,
+            valid,
+            pagination,
+            filter,
+            loading,
             formatDatetime,
             deleteLink,
             newLink,
@@ -315,13 +340,7 @@ export default defineComponent({
             openLink,
             getList,
             clearLinkCreation,
-            confirmDeleteDialog,
-            confirmCreationDialog,
-            confirmDeleteLink,
-            valid,
-            pagination,
-            filter,
-            loading,
+            exportCSV,
         };
     },
 });
