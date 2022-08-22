@@ -1,6 +1,11 @@
 import Link from 'src/models/Link';
 import Http from '../services/Http';
 
+type LinkAPIList = {
+    total: number;
+    links: Link[];
+};
+
 /**
  * Classe gérant les appels API des liens
  *
@@ -11,16 +16,32 @@ class LinkAPI {
      * Liste des liens
      *
      * @author Fabien Bellanger
-     * @return {Promise<Link[]>}
+     * @return {Promise<LinkAPIList>}
      */
-    public static list(): Promise<Link[]> {
+    public static list(filter: string, page: number, rowsPerPage: number, sortBy: string, descending: boolean): Promise<LinkAPIList> {
         return new Promise((resolve, reject) => {
-            Http.request('GET', 'links', true)
-                .then((links: Link[]) => {
+            // Construct URL
+            const url = new URL('https://www.apitic.com/links');
+            url.searchParams.append('page', page.toString());
+            url.searchParams.append('limit', rowsPerPage.toString());
+            url.searchParams.append('sort', descending ? 'desc' : 'asc');
+            if (filter) {
+                url.searchParams.append('s', filter);
+            }
+            if (sortBy) {
+                url.searchParams.append('sort-by', sortBy);
+            }
+
+            Http.request('GET', url.pathname + url.search, true)
+                .then((data) => {
+                    const links = data.links;
                     for (const i in links) {
                         links[i] = new Link(links[i].id, links[i].url, links[i].expired_at);
                     }
-                    resolve(links);
+                    resolve({
+                        total: data.total,
+                        links: links,
+                    });
                 })
                 .catch((error) => {
                     reject(error);
@@ -114,3 +135,4 @@ class LinkAPI {
 }
 
 export { LinkAPI };
+export type { LinkAPIList }

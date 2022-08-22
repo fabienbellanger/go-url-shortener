@@ -17,12 +17,26 @@ func getLinksFromURL(db *database.DB, url string) (links []models.Link, err erro
 	return
 }
 
-func GetAllLinks(db *database.DB, page, limit string) (links []models.Link, err error) {
-	var total int64
+// GetAllLinks returns all links.
+func GetAllLinks(db *database.DB, page, limit, search, sortBy, sort string) (links []models.Link, total int64, err error) {
 	db.Model(&links).Count(&total)
 
-	if result := db.Scopes(database.Paginate(page, limit)).Find(&links); result.Error != nil {
-		return links, result.Error
+	var q = db.Scopes(database.Paginate(page, limit))
+	if search != "" {
+		q.Where("url LIKE ?", "%"+search+"%")
+	}
+	if sort != "desc" {
+		sort = "asc"
+	}
+	switch sortBy {
+	case "url":
+		q.Order("url " + sort)
+	case "expired_at":
+		q.Order("expired_at " + sort)
+	}
+
+	if result := q.Find(&links); result.Error != nil {
+		return links, total, result.Error
 	}
 	return
 }

@@ -17,7 +17,7 @@ import (
 )
 
 const (
-	MAX_LIMIT = 50
+	MAX_LIMIT = 500
 )
 
 // TODO: Add a custom logger for GORM : https://www.soberkoder.com/go-gorm-logging/

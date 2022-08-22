@@ -5,11 +5,14 @@
             :rows="links"
             :columns="headers"
             :filter="filter"
-            :pagination="initialPagination"
-            :rows-per-page-options="[50, 100, 200, 500]"
+            v-model:pagination="pagination"
+            :rows-per-page-options="[25, 50, 100, 200, 500]"
+            :loading="loading"
+            @request="getList"
             row-key="id"
             no-data-label="No link"
-            color="primary">
+            color="primary"
+            binary-state-sort>
             <template v-slot:body="props">
                 <q-tr :props="props">
                     <q-td key="id" :props="props">
@@ -123,7 +126,7 @@
 import { useQuasar, date } from 'quasar';
 import Link from '../../models/Link';
 import { defineComponent, ref } from 'vue';
-import { LinkAPI } from '../../api/Link';
+import { LinkAPI, LinkAPIList } from '../../api/Link';
 
 export default defineComponent({
     name: 'LinksList',
@@ -134,8 +137,17 @@ export default defineComponent({
         const confirmDeleteDialog = ref<boolean>(false);
         const confirmCreationDialog = ref<boolean>(false);
         const confirmDeleteLink = ref<boolean>(false);
+        const loading = ref<boolean>(false);
         const currentLink = ref<Link>();
         const valid = ref<boolean>();
+        const filter = ref('');
+        const pagination = ref({
+            sortBy: 'url',
+            descending: false,
+            rowsPerPage: 25,
+            page: 1,
+            rowsNumber: 50,
+        });
 
         const headers = [
             {
@@ -264,13 +276,27 @@ export default defineComponent({
             window.open(currentLink.value.url, '_blank');
         };
 
-        const getList = () => {
-            LinkAPI.list()
-                .then((linksList: Link[]) => {
-                    links.value = linksList;
+        const getList = (props?) => {
+            loading.value = true;
+
+            const filter = props ? props.filter : '';
+            const { page, rowsPerPage, sortBy, descending } = props ? props.pagination : pagination.value;
+
+            LinkAPI.list(filter, page, rowsPerPage, sortBy, descending)
+                .then((linksList: LinkAPIList) => {
+                    pagination.value.page = page,
+                    pagination.value.rowsPerPage = rowsPerPage,
+                    pagination.value.sortBy = sortBy,
+                    pagination.value.descending = descending,
+                    pagination.value.rowsNumber = linksList.total;
+
+                    links.value = linksList.links;
+
+                    loading.value = false;
                 })
                 .catch((error) => {
                     console.error(error);
+                    loading.value = false;
                 });
         };
 
@@ -293,12 +319,9 @@ export default defineComponent({
             confirmCreationDialog,
             confirmDeleteLink,
             valid,
-            filter: ref(''),
-            initialPagination: {
-                sortBy: 'name',
-                descending: false,
-                rowsPerPage: 50,
-            },
+            pagination,
+            filter,
+            loading,
         };
     },
 });

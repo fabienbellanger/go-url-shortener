@@ -10,17 +10,22 @@ import (
 )
 
 // LinksList returns the list of all links
-// TODO: Paginate!!
 func LinksList(db *db.DB) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		page := c.Query("page")
 		limit := c.Query("limit")
+		search := c.Query("s")
+		sortBy := c.Query("sort-by")
+		sort := c.Query("sort") // asc or desc
 
-		links, err := repositories.GetAllLinks(db, page, limit)
+		links, total, err := repositories.GetAllLinks(db, page, limit, search, sortBy, sort)
 		if err != nil {
 			return fiber.NewError(fiber.StatusInternalServerError, "Error when getting all links")
 		}
-		return c.JSON(links)
+		return c.JSON(fiber.Map{
+			"total": total,
+			"links": links,
+		})
 	}
 }
 
