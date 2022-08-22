@@ -6,7 +6,7 @@ require (
 	github.com/fabienbellanger/goutils v1.0.17
 	github.com/go-playground/validator/v10 v10.11.0
 	github.com/gofiber/fiber/v2 v2.36.0
-	github.com/gofiber/jwt/v2 v2.2.7
+	github.com/gofiber/jwt/v3 v3.2.14
 	github.com/golang-jwt/jwt/v4 v4.4.2
 	github.com/google/uuid v1.3.0
 	github.com/itchyny/base58-go v0.2.0
