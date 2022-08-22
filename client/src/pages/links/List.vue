@@ -133,7 +133,7 @@ import { exportFile, useQuasar, date } from 'quasar';
 import Link from '../../models/Link';
 import { defineComponent, ref } from 'vue';
 import { LinkAPI, LinkAPIList } from '../../api/Link';
-import { stringify } from 'csv-stringify/browser/esm';
+import { stringify} from 'csv-stringify/browser/esm';
 
 export default defineComponent({
     name: 'LinksList',
