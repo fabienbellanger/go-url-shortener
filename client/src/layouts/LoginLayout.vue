@@ -17,10 +17,17 @@ export default defineComponent({
 
     setup() {
         const $q = useQuasar();
+        
+        // Theme from OS
+        // -------------
+        const darkThemeOS = window.matchMedia('(prefers-color-scheme: dark)');
+        if (localStorage.getItem('dark-mode') === null) {
+            localStorage.setItem('dark-mode', darkThemeOS.matches.toString());
+        }
 
         // Enable Dark mode
         // ----------------
-        $q.dark.set(true);
+        $q.dark.set(localStorage.getItem('dark-mode') !== 'false');
 
         return {};
     },

@@ -1,7 +1,7 @@
 <template>
     <q-card class="q-pa-none q-mt-xl">
         <q-card-section class="q-pa-none">
-            <q-layout view="lhh lpr lFf" container style="height: 340px" class="shadow-2 rounded-borders">
+            <q-layout view="lhh lpr lFf" container style="height: 340px" class="rounded-borders">
                 <q-header color="red">
                     <div class="row items-center justify-center text-h5" style="height: 80px">
                         <q-icon name="account_circle" size="70px" />
@@ -28,7 +28,7 @@
                                     </template>
                                 </q-input>
                             </div>
-                            <div class="q-mx-none q-my-lg">
+                            <div class="q-mx-none q-mt-lg">
                                 <q-btn color="primary" label="Se connecter" type="submit" class="full-width" :disable="!valid" />
                             </div>
                         </q-page>
@@ -36,8 +36,6 @@
                 </q-page-container>
             </q-layout>
         </q-card-section>
-
-        <q-separator />
 
         <q-card-actions class="row justify-center">
             <div class="text-caption text-grey-6">

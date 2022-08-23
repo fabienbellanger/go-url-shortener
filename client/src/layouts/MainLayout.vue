@@ -5,14 +5,17 @@
                 <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
                 <q-toolbar-title>Apitic - URL Shortener</q-toolbar-title>
                 <div>
-                    <q-btn flat label="Logout" :to="{ name: 'logout' }" margin="sm" />
+                    <q-btn flat label="Logout" :to="{ name: 'logout' }" class="q-mx-sm" />
+                    <q-btn flat round
+                        :icon="$q.dark.isActive ? 'light_mode' : 'dark_mode'"
+                        @click="toggleDarkMode"/>
                 </div>
             </q-toolbar>
         </q-header>
 
         <q-drawer v-model="leftDrawerOpen" show-if-above bordered :width="220"
             :mini="miniState" @mouseover="miniState = false" @mouseout="miniState = true"
-            mini-to-overlay>
+            mini-to-overlay dark>
             <Drawer />
         </q-drawer>
 
@@ -53,14 +56,27 @@ export default defineComponent({
         const miniState = ref(true)
         const year = ref(new Date().getFullYear());
 
+        // Theme from OS
+        // -------------
+        const darkThemeOS = window.matchMedia('(prefers-color-scheme: dark)');
+        if (localStorage.getItem('dark-mode') === null) {
+            localStorage.setItem('dark-mode', darkThemeOS.matches.toString());
+        }
+
         // Enable Dark mode
         // ----------------
-        $q.dark.set(true);
+        $q.dark.set(localStorage.getItem('dark-mode') !== 'false');
+
+        const toggleDarkMode = () => {
+            $q.dark.toggle();
+            localStorage.setItem('dark-mode', $q.dark.isActive.toString());
+        };
 
         return {
             year,
             leftDrawerOpen,
             miniState,
+            toggleDarkMode,
             toggleLeftDrawer() {
                 leftDrawerOpen.value = !leftDrawerOpen.value;
             },
