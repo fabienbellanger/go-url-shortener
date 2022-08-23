@@ -67,8 +67,9 @@
                     color="primary"
                     icon-right="archive"
                     label="Export to csv"
-                    no-caps
-                    @click="exportCSV"/>
+                    class="q-mx-md"
+                    @click="exportCSV"
+                    no-caps/>
             </template>
         </q-table>
 
@@ -133,7 +134,7 @@ import { exportFile, useQuasar, date } from 'quasar';
 import Link from '../../models/Link';
 import { defineComponent, ref } from 'vue';
 import { LinkAPI, LinkAPIList } from '../../api/Link';
-import { stringify} from 'csv-stringify/browser/esm';
+import CSV from '../../services/CSV';
 
 export default defineComponent({
     name: 'LinksList',
@@ -308,14 +309,44 @@ export default defineComponent({
         };
 
         const exportCSV = () => {
-            stringify([
-                ['Titre 1', 'Titre 2'],
-                [154, 'lorem'],
-            ], {
-                delimiter: ';',
-            }, (err, output) => {
-                console.log(output);
-            });
+            // Headers
+            const csvHeaders = headers
+                .filter((line) => line.name != 'actions')
+                .map((line) => line.label);
+
+            // Body
+            const csvBody = links.value
+                .map((link) => [
+                    link.id,
+                    link.url,
+                    link.expired_at,
+                ]);
+
+            const CSVService = new CSV(';');
+            CSVService.stringify(csvHeaders, csvBody)
+                .then((content) => {
+                    const status = exportFile(
+                        `${date.formatDate(Date.now(), 'YYYYMMDDHHmmss')}_url-shortener.csv`, // TODO: Add timestamp
+                        content,
+                        'text/csv',
+                    );
+                    if (status !== true) {
+                        $q.notify({
+                            color: 'negative',
+                            icon: 'warning',
+                            message: 'Browser denied file download',
+                        });
+                    }
+                })
+                .catch(() => {
+                    $q.notify({
+                        color: 'negative',
+                        icon: 'warning',
+                        message: 'Error during CSV creation',
+                    });
+                });
+
+            
         };
 
         void getList();
