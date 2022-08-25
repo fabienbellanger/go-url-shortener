@@ -1,5 +1,4 @@
 import { stringify } from 'csv-stringify/browser/esm';
-import { arrayBuffer } from 'stream/consumers';
 
 /**
  * Service gérant l'export de fichier CSV

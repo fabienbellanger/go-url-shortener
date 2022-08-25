@@ -5,8 +5,7 @@ import {
     createWebHashHistory,
     createWebHistory,
 } from 'vue-router';
-import { StateInterface } from '../store';
-import { userType } from '../store/types';
+import { useUserStore } from 'src/stores/user';
 import routes from './routes';
 
 /*
@@ -18,7 +17,7 @@ import routes from './routes';
  * with the Router instance.
  */
 
-export default route<StateInterface>(function ({ store /*, ssrContext*/ }) {
+export default route(function ({ /*store, ssrContext*/ }) {
     const createHistory = process.env.SERVER
         ? createMemoryHistory
         : process.env.VUE_ROUTER_MODE === 'history'
@@ -38,14 +37,13 @@ export default route<StateInterface>(function ({ store /*, ssrContext*/ }) {
     });
 
     router.beforeEach((to /* , from*/) => {
-        const user = store.state.user.user;
-        const isAuthenticated = user !== null ? user.isAuthenticated() : false;
+        const userStore = useUserStore();
+        const isAuthenticated = userStore.isAuthenticated;
 
         if (to.name !== 'login' && !isAuthenticated) {
             return 'login';
         } else if (to.name === 'logout') {
-            store.dispatch(userType.A_LOGOUT)
-                .catch((error: Error) => console.error(error));
+            userStore.logout();
             return 'login';
         } else if (to.name === 'login' && isAuthenticated) {
             return '';

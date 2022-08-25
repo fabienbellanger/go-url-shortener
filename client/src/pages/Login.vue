@@ -49,8 +49,7 @@
 import { defineComponent, ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
-import { useStore } from '../store';
-import { userType } from '../store/types';
+import { useUserStore } from '../stores/user';
 import { AuthUser } from '../api/Auth';
 
 export default defineComponent({
@@ -58,7 +57,7 @@ export default defineComponent({
 
     setup() {
         const $q = useQuasar();
-        const $store = useStore();
+        const store = useUserStore();
         const router = useRouter();
 
         const loginInput = ref<HTMLInputElement | null>(null);
@@ -93,8 +92,7 @@ export default defineComponent({
             if (valid.value) {
                 let user: AuthUser = { email: login.value, password: password.value };
 
-                $store
-                    .dispatch(userType.A_INIT, user)
+                store.init(user)
                     .then(() => {
                         $q.notify({
                             type: 'positive',

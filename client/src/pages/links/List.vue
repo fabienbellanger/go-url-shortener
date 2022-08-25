@@ -379,6 +379,6 @@ export default defineComponent({
 
 <style scoped>
 tr:nth-child(odd) {
-  background-color: #83838314 !important;
+  background-color: #93939314 !important;
 }
 </style>
