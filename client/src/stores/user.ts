@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import User from 'src/models/User';
-import { Auth, AuthUser } from 'src/api/Auth';
+import { UserAPI, AuthUser } from 'src/api/User';
 
 interface State {
     user: User;
@@ -26,7 +26,7 @@ export const useUserStore = defineStore('user', {
     actions: {
         init(userAuth: AuthUser): Promise<User> {
             return new Promise((resolve, reject) => {
-                Auth.login(userAuth)
+                UserAPI.login(userAuth)
                     .then((user) => {
                         this.user = user;
                         if (user.isAuthenticated()) {

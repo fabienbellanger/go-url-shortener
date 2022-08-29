@@ -7,6 +7,7 @@ export default class User {
     id = '';
     lastname = '';
     firstname = '';
+    username = '';
     created_at = '';
     updated_at = '';
     token = '';
@@ -15,6 +16,7 @@ export default class User {
         id: string,
         lastname: string,
         firstname: string,
+        username: string,
         created_at: string,
         updated_at: string,
         token: string,
@@ -22,13 +24,14 @@ export default class User {
         this.id = id;
         this.lastname = lastname;
         this.firstname = firstname;
+        this.username = username;
         this.created_at = created_at;
         this.updated_at = updated_at;
         this.token = token;
     }
 
     static initEmpty(): User {
-        return new User('', '', '', '', '', '');
+        return new User('', '', '', '', '', '', '');
     }
 
     static fromUser(user: User): User {
@@ -39,6 +42,7 @@ export default class User {
             user.id,
             user.lastname,
             user.firstname,
+            user.username,
             user.created_at,
             user.updated_at,
             user.token

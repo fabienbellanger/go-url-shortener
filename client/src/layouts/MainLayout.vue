@@ -5,7 +5,8 @@
                 <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
                 <q-toolbar-title>Apitic - URL Shortener</q-toolbar-title>
                 <div>
-                    <q-btn flat label="Logout" :to="{ name: 'logout' }" class="q-mx-sm" />
+                    <span>Hi {{userStore.user.firstname}},</span>
+                    <q-btn flat round :to="{ name: 'logout' }" class="q-mx-sm" icon="logout" />
                     <q-btn flat round
                         :icon="$q.dark.isActive ? 'light_mode' : 'dark_mode'"
                         @click="toggleDarkMode"/>
@@ -41,6 +42,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { useQuasar } from 'quasar';
+import { useUserStore } from '../stores/user';
 import Drawer from 'components/Drawer.vue';
 
 export default defineComponent({
@@ -55,6 +57,7 @@ export default defineComponent({
         const leftDrawerOpen = ref(false);
         const miniState = ref(true)
         const year = ref(new Date().getFullYear());
+        const userStore = useUserStore();
 
         // Theme from OS
         // -------------
@@ -76,6 +79,7 @@ export default defineComponent({
             year,
             leftDrawerOpen,
             miniState,
+            userStore,
             toggleDarkMode,
             toggleLeftDrawer() {
                 leftDrawerOpen.value = !leftDrawerOpen.value;

@@ -50,7 +50,7 @@ import { defineComponent, ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
 import { useUserStore } from '../stores/user';
-import { AuthUser } from '../api/Auth';
+import { AuthUser } from '../api/User';
 
 export default defineComponent({
     name: 'PageLogin',

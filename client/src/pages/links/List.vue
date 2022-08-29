@@ -1,6 +1,7 @@
 <template>
     <div class="q-px-md">
         <h4 class="q-mt-lg">Links list</h4>
+        
         <q-table
             :rows="links"
             :columns="headers"
@@ -379,6 +380,6 @@ export default defineComponent({
 
 <style scoped>
 tr:nth-child(odd) {
-  background-color: #93939314 !important;
+    background-color: #93939314 !important;
 }
 </style>
