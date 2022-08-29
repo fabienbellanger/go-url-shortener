@@ -25,12 +25,12 @@ const links = [
         icon: 'dns',
         url: '/links',
     },
-    {
-        title: 'Users',
-        caption: '',
-        icon: 'group',
-        url: '/users',
-    },
+    // {
+    //     title: 'Users',
+    //     caption: '',
+    //     icon: 'group',
+    //     url: '/users',
+    // },
 ];
 
 export default defineComponent({

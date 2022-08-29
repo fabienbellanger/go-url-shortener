@@ -1,7 +1,7 @@
 <template>
     <div class="q-px-md">
         <h4 class="q-mt-lg">Links list</h4>
-        
+
         <q-table
             :rows="links"
             :columns="headers"
@@ -16,7 +16,10 @@
             binary-state-sort>
             <template v-slot:body="props">
                 <q-tr :props="props">
-                    <q-td key="id" :props="props">
+                    <q-td key="id" :props="props" @click="copyLink(props.row.id)" style="cursor: pointer">
+                        <q-tooltip transition-show="scale" transition-hide="scale" >
+                            Copy link to clipboard
+                        </q-tooltip>
                         {{ props.row.id }}
                     </q-td>
                     <q-td key="url" :props="props">
@@ -28,12 +31,26 @@
                     <q-td key="actions" :props="props">
                         <q-btn
                             size="sm"
+                            icon="content_copy"
+                            color="orange"
+                            @click="copyLink(props.row.id)">
+                            <q-tooltip transition-show="scale" transition-hide="scale" >
+                                Copy link to clipboard
+                            </q-tooltip>
+                        </q-btn>
+                        &nbsp;
+                        <q-btn
+                            size="sm"
                             icon="link"
                             color="blue"
                             @click="
                                 currentLink = props.row;
                                 openLink();
-                            "></q-btn>
+                            ">
+                            <q-tooltip transition-show="scale" transition-hide="scale" >
+                                Open link in a new window
+                            </q-tooltip>
+                        </q-btn>
                         &nbsp;
                         <q-btn
                             size="sm"
@@ -42,7 +59,11 @@
                             @click="
                                 currentLink = props.row;
                                 confirmCreationDialog = true;
-                            "></q-btn>
+                            ">
+                            <q-tooltip transition-show="scale" transition-hide="scale" >
+                                Update link
+                            </q-tooltip>
+                        </q-btn>
                         &nbsp;
                         <q-btn
                             size="sm"
@@ -51,26 +72,34 @@
                             @click="
                                 currentLink = props.row;
                                 confirmDeleteDialog = true;
-                            "></q-btn>
+                            ">
+                            <q-tooltip transition-show="scale" transition-hide="scale" >
+                                Remove link
+                            </q-tooltip>
+                        </q-btn>
                     </q-td>
                 </q-tr>
             </template>
             <template v-slot:top-right>
-                <q-input clearable dense debounce="300" v-model="filter" placeholder="Search">
+                <q-input clearable dense debounce="300" v-model="filter" placeholder="Search" class="search_input">
                     <template v-slot:prepend>
                         <q-icon name="search" />
                     </template>
                 </q-input>
             </template>
             <template v-slot:top-left>
-                <q-btn round color="primary" icon="add" @click="newLink" />
+                <q-btn round color="primary" icon="add" @click="newLink">
+                    <q-tooltip transition-show="scale" transition-hide="scale" >
+                        Add a new link
+                    </q-tooltip>
+                </q-btn>
                 <q-btn
                     color="primary"
                     icon-right="archive"
                     label="Export to csv"
                     class="q-mx-md"
                     @click="exportCSV"
-                    no-caps/>
+                    no-caps></q-btn>
             </template>
         </q-table>
 
@@ -131,7 +160,7 @@
 </template>
 
 <script lang="ts">
-import { exportFile, useQuasar, date } from 'quasar';
+import { exportFile, useQuasar, date, copyToClipboard } from 'quasar';
 import Link from '../../models/Link';
 import { defineComponent, ref } from 'vue';
 import { LinkAPI, LinkAPIList } from '../../api/Link';
@@ -185,7 +214,7 @@ export default defineComponent({
                 name: 'actions',
                 label: 'Actions',
                 align: 'left',
-                style: 'width: 200px',
+                style: 'width: 260px',
                 required: true,
             },
         ];
@@ -350,6 +379,23 @@ export default defineComponent({
             
         };
 
+        const copyLink = (id) => {
+            copyToClipboard(`${process.env.SORT_URL_BASE}/${id}`)
+                .then(() => {
+                    $q.notify({
+                        color: 'positive',
+                        message: 'Link successfully copied',
+                    });
+                })
+                .catch(() => {
+                    $q.notify({
+                        color: 'negative',
+                        icon: 'warning',
+                        message: 'Error when copying link to clipboard',
+                    });
+                });
+        };
+
         void getList();
 
         return {
@@ -373,6 +419,7 @@ export default defineComponent({
             getList,
             clearLinkCreation,
             exportCSV,
+            copyLink,
         };
     },
 });
@@ -381,5 +428,9 @@ export default defineComponent({
 <style scoped>
 tr:nth-child(odd) {
     background-color: #93939314 !important;
+}
+
+.search_input {
+    width: 320px;
 }
 </style>

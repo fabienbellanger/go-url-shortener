@@ -6,10 +6,18 @@
                 <q-toolbar-title>Apitic - URL Shortener</q-toolbar-title>
                 <div>
                     <span>Hi {{userStore.user.firstname}},</span>
-                    <q-btn flat round :to="{ name: 'logout' }" class="q-mx-sm" icon="logout" />
+                    <q-btn flat round :to="{ name: 'logout' }" class="q-mx-sm" icon="logout">
+                        <q-tooltip transition-show="scale" transition-hide="scale" >
+                            Logout
+                        </q-tooltip>
+                    </q-btn>
                     <q-btn flat round
                         :icon="$q.dark.isActive ? 'light_mode' : 'dark_mode'"
-                        @click="toggleDarkMode"/>
+                        @click="toggleDarkMode">
+                        <q-tooltip transition-show="scale" transition-hide="scale" >
+                            Change theme
+                        </q-tooltip>
+                    </q-btn>
                 </div>
             </q-toolbar>
         </q-header>
