@@ -8,6 +8,7 @@ export default class User {
     lastname = '';
     firstname = '';
     username = '';
+    password = '';
     created_at = '';
     updated_at = '';
     token = '';

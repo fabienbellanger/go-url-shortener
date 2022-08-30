@@ -140,10 +140,12 @@ func CreateUser(db *db.DB) fiber.Handler {
 
 		// Data validation
 		// ---------------
-		if user.Firstname == "" || user.Lastname == "" || user.Username == "" || user.Password == "" {
+		createErrors := utils.ValidateStruct(*user)
+		if createErrors != nil {
 			return c.Status(fiber.StatusBadRequest).JSON(utils.HTTPError{
 				Code:    fiber.StatusBadRequest,
-				Message: "Bad Parameters",
+				Message: "Bad Request",
+				Details: createErrors,
 			})
 		}
 

@@ -29,7 +29,7 @@
                         {{ formatDatetime(props.row.created_at) }}
                     </q-td>
                     <q-td key="actions" :props="props">
-                        <q-btn
+                        <!-- <q-btn
                             size="sm"
                             icon="edit"
                             color="green"
@@ -37,7 +37,7 @@
                                 currentUser = props.row;
                                 confirmCreationDialog = true;
                             "></q-btn>
-                        &nbsp;
+                        &nbsp; -->
                         <q-btn
                             size="sm"
                             icon="delete"
@@ -57,7 +57,10 @@
                 </q-input>
             </template>
             <template v-slot:top-left>
-                <q-btn round color="primary" icon="add" @click="newUser" />
+                <q-btn round color="primary" icon="add" @click="
+                    clearUserCreation();
+                    confirmCreationDialog = true;
+                " />
             </template>
         </q-table>
 
@@ -75,6 +78,45 @@
                 </q-card-actions>
             </q-card>
         </q-dialog>
+
+        <!-- User creation/update dialog -->
+        <q-dialog v-model="confirmCreationDialog" medium @hide="clearUserCreation">
+            <q-card>
+                <q-form @submit="editUser">
+                    <q-card-section class="row items-center">
+                        <span class="q-ml-sm text-h6">
+                            <span v-if="currentUser.id">User update</span>
+                            <span v-else>User creation</span>
+                        </span>
+                    </q-card-section>
+
+                    <q-card-section>
+                        <q-input v-model="currentUser.lastname" label="Lastname" style="width: 320px" autofocus
+                            :rules="[val => !!val || 'Lastname is required']"/>
+                    </q-card-section>
+
+                    <q-card-section>
+                        <q-input v-model="currentUser.firstname" label="Firstname" style="width: 320px" autofocus
+                            :rules="[val => !!val || 'Firstname is required']"/>
+                    </q-card-section>
+
+                    <q-card-section>
+                        <q-input v-model="currentUser.username" label="Username" style="width: 320px" autofocus type="email"
+                            :rules="[val => !!val || 'Username is required', val => checkEmail(val) || 'Email is not valid']"/>
+                    </q-card-section>
+
+                    <q-card-section v-if="!currentUser.id">
+                        <q-input v-model="currentUser.password" label="Password" style="width: 320px" autofocus type="password" autocomplete="new-password"
+                            :rules="[val => !!val || 'Password is required', val => val.length >= 8 || 'Please use at least 8 characters']"/>
+                    </q-card-section>
+
+                    <q-card-actions align="right">
+                        <q-btn flat label="Cancel" color="primary" v-close-popup @click="clearUserCreation" />
+                        <q-btn label="Save" color="primary" type="submit"/>
+                    </q-card-actions>
+                </q-form>
+            </q-card>
+        </q-dialog>
     </div>
 </template>
 
@@ -84,6 +126,7 @@ import User from '../../models/User';
 import { defineComponent, ref } from 'vue';
 import { useUserStore } from '../../stores/user';
 import { UserAPI } from '../../api/User';
+import * as EmailValidator from 'email-validator';
 
 export default defineComponent({
     name: 'UsersList',
@@ -139,7 +182,7 @@ export default defineComponent({
                 name: 'actions',
                 label: 'Actions',
                 align: 'left',
-                style: 'width: 140px',
+                style: 'width: 80px',
                 required: true,
             },
         ];
@@ -149,6 +192,14 @@ export default defineComponent({
                 return datetime.substr(0, 10) + ' ' + datetime.substr(11, 5);
             }
             return '';
+        };
+
+        const clearUserCreation = () => {
+            currentUser.value = User.initEmpty();
+        };
+
+        const checkEmail = (email: string) => {
+            return EmailValidator.validate(email);
         };
 
         const getList = () => {
@@ -193,6 +244,39 @@ export default defineComponent({
                 });
         };
 
+        const editUser = () => {
+            if (currentUser.value.id) {
+                updateUser();
+            } else {
+                addUser();
+            }
+
+            confirmCreationDialog.value = false;
+        };
+
+        const addUser = () => {
+            UserAPI.add(currentUser.value)
+                .then(() => {
+                    getList();
+
+                    $q.notify({
+                        type: 'positive',
+                        message: 'Successfull user creation',
+                    });
+                })
+                .catch((error) => {
+                    $q.notify({
+                        type: 'negative',
+                        message: `Error: ${error}`,
+                    });
+                    console.error(error);
+                });
+        };
+
+        const updateUser = () => {
+            return;
+        };
+
         getList();
 
         return {
@@ -206,6 +290,9 @@ export default defineComponent({
             formatDatetime,
             getList,
             deleteUser,
+            clearUserCreation,
+            editUser,
+            checkEmail,
         };
     },
 });

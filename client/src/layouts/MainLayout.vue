@@ -3,7 +3,10 @@
         <q-header elevated>
             <q-toolbar>
                 <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
-                <q-toolbar-title>Apitic - URL Shortener</q-toolbar-title>
+                <q-toolbar-title>
+                    <q-img src="/logo_white.png" class="q-mr-sm" style="height: 32px; width: 57px" />
+                    <span>URL Shortener</span>
+                </q-toolbar-title>
                 <div>
                     <span>Hi {{userStore.user.firstname}},</span>
                     <q-btn flat round :to="{ name: 'logout' }" class="q-mx-sm" icon="logout">

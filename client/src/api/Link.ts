@@ -36,7 +36,7 @@ class LinkAPI {
                 .then((data) => {
                     const links = data.links;
                     for (const i in links) {
-                        links[i] = new Link(links[i].id, links[i].url, links[i].expired_at);
+                        links[i] = new Link(links[i].id, links[i].url, links[i].name, links[i].expired_at);
                     }
                     resolve({
                         total: data.total,
@@ -58,10 +58,10 @@ class LinkAPI {
      */
      public static add(link: Link): Promise<Link> {
         return new Promise((resolve, reject) => {
-            if (link.url !== '' && link.expired_at !== '')
-            {
+            if (link.url !== '' && link.expired_at !== '') {
                 Http.request('POST', '/links', true, {
                     url: link.url,
+                    name: link.name,
                     expired_at: (new Date(link.expired_at)).toISOString()
                 })
                     .then((link: Link) => {
@@ -70,9 +70,7 @@ class LinkAPI {
                     .catch((error) => {
                         reject(error);
                     });
-            }
-            else
-            {
+            } else {
                 reject(new Error('invalid URL or expired date'));
             }
         });
@@ -91,6 +89,7 @@ class LinkAPI {
             {
                 Http.request('PUT', `/links/${link.id}`, true, {
                     url: link.url,
+                    name: link.name,
                     expired_at: (new Date(link.expired_at)).toISOString()
                 })
                     .then((link: Link) => {

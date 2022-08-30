@@ -71,7 +71,7 @@ func UpdateLink(db *db.DB) fiber.Handler {
 			})
 		}
 
-		link, err := repositories.GetLinkFromID(db, id)
+		link, err := repositories.GetLinkFromID(db, id, true)
 		if err != nil {
 			return fiber.NewError(fiber.StatusNotFound, "No link found")
 		}
@@ -96,6 +96,7 @@ func UpdateLink(db *db.DB) fiber.Handler {
 		}
 
 		link.URL = linkForm.URL
+		link.Name = linkForm.Name
 		link.ExpiredAt = linkForm.ExpiredAt
 
 		err = repositories.UpdateLink(db, link)
@@ -136,7 +137,7 @@ func RedirectURL(db *db.DB, logger *zap.Logger) fiber.Handler {
 			c.SendStatus(fiber.StatusNotFound)
 		}
 
-		link, err := repositories.GetLinkFromID(db, id)
+		link, err := repositories.GetLinkFromID(db, id, false)
 		if err != nil {
 			return c.SendStatus(fiber.StatusNotFound)
 		}

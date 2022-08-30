@@ -31,11 +31,11 @@ const routes: RouteRecordRaw[] = [
                 name: 'links-list',
                 component: () => import('pages/links/List.vue'),
             },
-            // {
-            //     path: '/users',
-            //     name: 'users-list',
-            //     component: () => import('pages/users/List.vue'),
-            // },
+            {
+                path: '/users',
+                name: 'users-list',
+                component: () => import('pages/users/List.vue'),
+            },
         ],
     },
     // Always leave this as last one,

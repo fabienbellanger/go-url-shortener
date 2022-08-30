@@ -22,6 +22,9 @@
                         </q-tooltip>
                         {{ props.row.id }}
                     </q-td>
+                    <q-td key="name" :props="props">
+                        {{ props.row.name }}
+                    </q-td>
                     <q-td key="url" :props="props">
                         {{ props.row.url }}
                     </q-td>
@@ -121,39 +124,45 @@
         <!-- link creation dialog -->
         <q-dialog v-model="confirmCreationDialog" medium @hide="clearLinkCreation">
             <q-card>
-                <q-card-section class="row items-center">
-                    <span class="q-ml-sm text-h6">
-                        <span v-if="currentLink.id">Link update ({{ currentLink.id }})</span>
-                        <span v-else>Link creation</span>
-                    </span>
-                </q-card-section>
+                <q-form @submit="editLink">
+                    <q-card-section class="row items-center">
+                        <span class="q-ml-sm text-h6">
+                            <span v-if="currentLink.id">Link update ({{ currentLink.id }})</span>
+                            <span v-else>Link creation</span>
+                        </span>
+                    </q-card-section>
 
-                <q-card-section>
-                    <q-input v-model="currentLink.url" label="URL" style="width: 320px" autofocus type="url" 
-                        :rules="[val => (val.startsWith('http://') || val.startsWith('https://')) || 'URL is required']"/>
-                </q-card-section>
+                    <q-card-section>
+                        <q-input v-model="currentLink.url" label="URL*" style="width: 320px" autofocus type="url" 
+                            :rules="[val => (val.startsWith('http://') || val.startsWith('https://')) || 'URL is required']"/>
+                    </q-card-section>
 
-                <q-card-section>
-                    <q-input v-model="currentLink.expired_at" label="Expired At" style="width: 320px"
-                        :rules="[val => !!val || 'Expiration date is required']">
-                        <template v-slot:prepend>
-                            <q-icon name="event" class="cursor-pointer">
-                                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                                    <q-date v-model="currentLink.expired_at" first-day-of-week="1" mask="YYYY-MM-DD">
-                                        <div class="row items-center justify-end">
-                                            <q-btn v-close-popup label="Close" color="primary" flat />
-                                        </div>
-                                    </q-date>
-                                </q-popup-proxy>
-                            </q-icon>
-                        </template>
-                    </q-input>
-                </q-card-section>
+                    <q-card-section>
+                        <q-input v-model="currentLink.name" label="Name" style="width: 320px"/>
+                    </q-card-section>
 
-                <q-card-actions align="right">
-                    <q-btn flat label="Cancel" color="primary" v-close-popup @click="clearLinkCreation" />
-                    <q-btn label="Save" color="primary" v-close-popup @click="editLink" />
-                </q-card-actions>
+                    <q-card-section>
+                        <q-input v-model="currentLink.expired_at" label="Expired At*" style="width: 320px"
+                            :rules="[val => !!val || 'Expiration date is required']">
+                            <template v-slot:prepend>
+                                <q-icon name="event" class="cursor-pointer">
+                                    <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                                        <q-date v-model="currentLink.expired_at" first-day-of-week="1" mask="YYYY-MM-DD">
+                                            <div class="row items-center justify-end">
+                                                <q-btn v-close-popup label="Close" color="primary" flat />
+                                            </div>
+                                        </q-date>
+                                    </q-popup-proxy>
+                                </q-icon>
+                            </template>
+                        </q-input>
+                    </q-card-section>
+
+                    <q-card-actions align="right">
+                        <q-btn flat label="Cancel" color="primary" v-close-popup @click="clearLinkCreation" />
+                        <q-btn label="Save" color="primary" type="submit" />
+                    </q-card-actions>
+                </q-form>
             </q-card>
         </q-dialog>
     </div>
@@ -196,6 +205,13 @@ export default defineComponent({
                 style: 'width: 120px',
             },
             {
+                name: 'name',
+                label: 'Name',
+                field: 'name',
+                align: 'left',
+                sortable: true,
+            },
+            {
                 name: 'url',
                 label: 'URL',
                 field: 'url',
@@ -228,6 +244,7 @@ export default defineComponent({
 
         const clearLinkCreation = () => {
             currentLink.value = new Link(
+                '',
                 '',
                 '',
                 (date.addToDate(new Date(), {years: 50}).toISOString()).substr(0, 10)
@@ -268,6 +285,8 @@ export default defineComponent({
             } else {
                 addLink();
             }
+            
+            confirmCreationDialog.value = false;
         };
 
         const addLink = () => {
@@ -311,7 +330,7 @@ export default defineComponent({
         };
 
         const openLink = () => {
-            window.open(currentLink.value.url, '_blank');
+            window.open(`${process.env.SORT_URL_BASE}/${currentLink.value.id}`, '_blank');
         };
 
         const getList = (props?) => {
@@ -348,6 +367,7 @@ export default defineComponent({
             const csvBody = links.value
                 .map((link) => [
                     link.id,
+                    link.name,
                     link.url,
                     link.expired_at,
                 ]);

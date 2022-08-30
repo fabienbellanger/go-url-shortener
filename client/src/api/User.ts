@@ -72,8 +72,7 @@ class UserAPI {
      */
      public static delete(id: string): Promise<User> {
         return new Promise((resolve, reject) => {
-            if (id !== '')
-            {
+            if (id !== '') {
                 Http.request('DELETE', `/users/${id}`)
                     .then((user: User) => {
                         resolve(user);
@@ -81,10 +80,36 @@ class UserAPI {
                     .catch((error) => {
                         reject(error);
                     });
-            }
-            else
-            {
+            } else {
                 reject(new Error('invalid id'));
+            }
+        });
+    }
+
+    /**
+     * Ajout d'un utilisateur
+     *
+     * @author Fabien Bellanger
+     * @param user User Utilisateur
+     * @return {Promise<user>}
+     */
+     public static add(user: User): Promise<User> {
+        return new Promise((resolve, reject) => {
+            if (user.lastname !== '' && user.firstname !== '' && user.username !== '') {
+                Http.request('POST', '/register', true, {
+                    lastname: user.lastname,
+                    firstname: user.firstname,
+                    username: user.username,
+                    password: user.password,
+                })
+                    .then((user: User) => {
+                        resolve(user);
+                    })
+                    .catch((error) => {
+                        reject(error);
+                    });
+            } else {
+                reject(new Error('invalid user properties'));
             }
         });
     }

@@ -31,6 +31,8 @@ func GetAllLinks(db *database.DB, page, limit, search, sortBy, sort string) (lin
 	switch sortBy {
 	case "url":
 		q.Order("url " + sort)
+	case "name":
+		q.Order("name " + sort)
 	case "expired_at":
 		q.Order("expired_at " + sort)
 	}
@@ -81,8 +83,12 @@ func UpdateLink(db *database.DB, link *models.Link) error {
 }
 
 // GetLinkFromID returns a link if ID exists, else returns an error.
-func GetLinkFromID(db *database.DB, id string) (link *models.Link, err error) {
-	result := db.Where("expired_at >= ?", time.Now()).First(&link, "id = ?", id)
+func GetLinkFromID(db *database.DB, id string, expired bool) (link *models.Link, err error) {
+	q := db
+	if !expired {
+		q.Where("expired_at >= ?", time.Now())
+	}
+	result := q.First(&link, "id = ?", id)
 	if result.Error != nil {
 		return link, result.Error
 	}
