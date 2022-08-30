@@ -45,7 +45,11 @@
                             @click="
                                 currentUser = props.row;
                                 confirmDeleteDialog = true;
-                            "></q-btn>
+                            ">
+                            <q-tooltip transition-show="scale" transition-hide="scale" >
+                                Remove user
+                            </q-tooltip>
+                        </q-btn>
                     </q-td>
                 </q-tr>
             </template>
@@ -60,7 +64,11 @@
                 <q-btn round color="primary" icon="add" @click="
                     clearUserCreation();
                     confirmCreationDialog = true;
-                " />
+                ">
+                    <q-tooltip transition-show="scale" transition-hide="scale" >
+                        Add a new user
+                    </q-tooltip>
+                </q-btn>
             </template>
         </q-table>
 
