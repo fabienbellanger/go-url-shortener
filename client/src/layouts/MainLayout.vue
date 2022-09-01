@@ -43,6 +43,7 @@
                 <q-toolbar-title>
                     <div class="text-caption text-grey-6 text-center">
                         &copy; {{ year }} <a class="text-grey-6" href="https://www.apitic.com" target="_blank">Apitic</a>
+                        <span v-if="version"> - {{ version }}</span>
                     </div>
                 </q-toolbar-title>
             </q-toolbar>
@@ -69,6 +70,7 @@ export default defineComponent({
         const miniState = ref(true)
         const year = ref(new Date().getFullYear());
         const userStore = useUserStore();
+        const version = process.env.VERSION;
 
         // Theme from OS
         // -------------
@@ -91,6 +93,7 @@ export default defineComponent({
             leftDrawerOpen,
             miniState,
             userStore,
+            version,
             toggleDarkMode,
             toggleLeftDrawer() {
                 leftDrawerOpen.value = !leftDrawerOpen.value;

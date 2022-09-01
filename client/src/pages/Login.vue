@@ -40,6 +40,7 @@
         <q-card-actions class="row justify-center">
             <div class="text-caption text-grey-6">
                 &copy; {{ year }} <a class="text-grey-6" href="https://www.apitic.com" target="_blank">Apitic</a>
+                <span v-if="version"> - {{ version }}</span>
             </div>
         </q-card-actions>
     </q-card>
@@ -60,11 +61,11 @@ export default defineComponent({
         const store = useUserStore();
         const router = useRouter();
 
+        const version = process.env.VERSION;
         const loginInput = ref<HTMLInputElement | null>(null);
         const year = ref(new Date().getFullYear());
         const login = ref('');
         const password = ref('');
-
         const valid = computed(() => login.value !== '' && password.value !== '');
 
         /**
@@ -116,8 +117,9 @@ export default defineComponent({
             login,
             password,
             year,
-            signIn,
             valid,
+            version,
+            signIn,
         };
     },
 });
