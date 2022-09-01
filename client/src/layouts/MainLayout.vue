@@ -4,7 +4,7 @@
             <q-toolbar>
                 <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
                 <q-toolbar-title>
-                    <q-img src="/logo_white.png" class="q-mr-sm" style="height: 32px; width: 57px" />
+                    <q-img src="/logo_white_small.png" class="q-mr-sm" style="height: 32px; width: 57px" />
                     <span>URL Shortener</span>
                 </q-toolbar-title>
                 <div>

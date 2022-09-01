@@ -51,7 +51,7 @@
                                 openLink();
                             ">
                             <q-tooltip transition-show="scale" transition-hide="scale" >
-                                Open link in a new window
+                                Open short link
                             </q-tooltip>
                         </q-btn>
                         &nbsp;
@@ -77,7 +77,7 @@
                                 confirmDeleteDialog = true;
                             ">
                             <q-tooltip transition-show="scale" transition-hide="scale" >
-                                Remove link
+                                Delete link
                             </q-tooltip>
                         </q-btn>
                     </q-td>

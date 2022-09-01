@@ -16,11 +16,11 @@
                     <q-td key="id" :props="props">
                         {{ props.row.id }}
                     </q-td>
-                    <q-td key="firstname" :props="props">
-                        {{ props.row.firstname }}
-                    </q-td>
                     <q-td key="lastname" :props="props">
                         {{ props.row.lastname }}
+                    </q-td>
+                    <q-td key="firstname" :props="props">
+                        {{ props.row.firstname }}
                     </q-td>
                     <q-td key="username" :props="props">
                         {{ props.row.username }}
@@ -47,7 +47,7 @@
                                 confirmDeleteDialog = true;
                             ">
                             <q-tooltip transition-show="scale" transition-hide="scale" >
-                                Remove user
+                                Delete user
                             </q-tooltip>
                         </q-btn>
                     </q-td>
@@ -99,22 +99,22 @@
                     </q-card-section>
 
                     <q-card-section>
-                        <q-input v-model="currentUser.lastname" label="Lastname" style="width: 320px" autofocus
+                        <q-input v-model="currentUser.lastname" label="Lastname*" style="width: 320px" autofocus
                             :rules="[val => !!val || 'Lastname is required']"/>
                     </q-card-section>
 
                     <q-card-section>
-                        <q-input v-model="currentUser.firstname" label="Firstname" style="width: 320px" autofocus
+                        <q-input v-model="currentUser.firstname" label="Firstname*" style="width: 320px" autofocus
                             :rules="[val => !!val || 'Firstname is required']"/>
                     </q-card-section>
 
                     <q-card-section>
-                        <q-input v-model="currentUser.username" label="Username" style="width: 320px" autofocus type="email"
+                        <q-input v-model="currentUser.username" label="Username*" style="width: 320px" autofocus type="email"
                             :rules="[val => !!val || 'Username is required', val => checkEmail(val) || 'Email is not valid']"/>
                     </q-card-section>
 
                     <q-card-section v-if="!currentUser.id">
-                        <q-input v-model="currentUser.password" label="Password" style="width: 320px" autofocus type="password" autocomplete="new-password"
+                        <q-input v-model="currentUser.password" label="Password*" style="width: 320px" autofocus type="password" autocomplete="new-password"
                             :rules="[val => !!val || 'Password is required', val => val.length >= 8 || 'Please use at least 8 characters']"/>
                     </q-card-section>
 
@@ -158,16 +158,16 @@ export default defineComponent({
                 style: 'width: 160px',
             },
             {
-                name: 'firstname',
-                label: 'Firstname',
-                field: 'firstname',
+                name: 'lastname',
+                label: 'Lastname',
+                field: 'lastname',
                 align: 'left',
                 sortable: true,
             },
             {
-                name: 'lastname',
-                label: 'Lastname',
-                field: 'lastname',
+                name: 'firstname',
+                label: 'Firstname',
+                field: 'firstname',
                 align: 'left',
                 sortable: true,
             },
@@ -210,6 +210,10 @@ export default defineComponent({
             return EmailValidator.validate(email);
         };
 
+        const isAuthenticatedUser = () => {
+            return userStore.user.id === currentUser.value.id;
+        };
+
         const getList = () => {
             UserAPI.list()
                 .then((usersList: User[]) => {
@@ -221,7 +225,7 @@ export default defineComponent({
         };
 
         const deleteUser = () => {
-            if (userStore.user.id === currentUser.value.id) {
+            if (isAuthenticatedUser()) {
                 $q.notify({
                     type: 'negative',
                     message: 'Error: authenticated user cannot be deleted',
@@ -301,6 +305,7 @@ export default defineComponent({
             clearUserCreation,
             editUser,
             checkEmail,
+            isAuthenticatedUser,
         };
     },
 });

@@ -4,7 +4,7 @@
             <q-layout view="lhh lpr lFf" container style="height: 340px" class="rounded-borders">
                 <q-header color="red">
                     <div class="row items-center justify-center text-h5" style="height: 80px">
-                        <q-icon name="account_circle" size="70px" />
+                        <q-img src="/logo_white.png" class="q-mr-sm" style="height: 64px; max-width: 115px" />
                     </div>
                     <div class="row items-center justify-center text-h5 text-weight-medium" style="height: 40px">
                         URL Shortener
