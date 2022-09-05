@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm/clause"
 
 	"github.com/fabienbellanger/go-url-shortener/server/db"
 	"github.com/fabienbellanger/go-url-shortener/server/models"
@@ -58,6 +59,14 @@ func GetUser(db *db.DB, id string) (user models.User, err error) {
 	return user, err
 }
 
+// GetUser returns a user from its username.
+func GetUserByUsername(db *db.DB, username string) (user models.User, err error) {
+	if result := db.Find(&user, "username = ?", username); result.Error != nil {
+		return user, result.Error
+	}
+	return user, err
+}
+
 // DeleteUser deletes a user from database.
 func DeleteUser(db *db.DB, id string) error {
 	result := db.Delete(&models.User{}, "id = ?", id)
@@ -88,4 +97,13 @@ func UpdateUser(db *db.DB, id string, userForm *models.UserForm) (user models.Us
 		return user, err
 	}
 	return user, err
+}
+
+// CreatePasswordReset add a reset password request in database.
+func CreatePasswordReset(db *db.DB, passwordReset *models.PasswordResets) error {
+	result := db.Clauses(clause.OnConflict{
+		UpdateAll: true,
+	}).Create(&passwordReset)
+
+	return result.Error
 }

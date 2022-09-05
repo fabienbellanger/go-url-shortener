@@ -6,6 +6,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v4"
+	"github.com/google/uuid"
 	"github.com/spf13/viper"
 	"gorm.io/gorm"
 
@@ -219,5 +220,38 @@ func UpdateUser(db *db.DB) fiber.Handler {
 		}
 
 		return c.JSON(updatedUser)
+	}
+}
+
+// ForgottenPassword save a forgotten password request.
+func ForgottenPassword(db *db.DB) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		// Find user
+		user, err := repositories.GetUserByUsername(db, c.Params("email"))
+		if err != nil {
+			return fiber.NewError(fiber.StatusInternalServerError, "Error when retrieving user")
+		}
+		if user.ID == "" {
+			return c.Status(fiber.StatusNotFound).JSON(utils.HTTPError{
+				Code:    fiber.StatusNotFound,
+				Message: "No user found",
+			})
+		}
+
+		// Sale line in database
+		passwordReset := models.PasswordResets{
+			UserID:    user.ID,
+			Token:     uuid.New().String(),
+			ExpiredAt: time.Now().Add(time.Hour), // TODO Add in .env
+		}
+		err = repositories.CreatePasswordReset(db, &passwordReset)
+		if err != nil {
+			return fiber.NewError(fiber.StatusInternalServerError, "Error when requesting new password")
+		}
+
+		// Send email with link
+		// TODO Add in .env
+
+		return c.SendStatus(fiber.StatusNoContent)
 	}
 }

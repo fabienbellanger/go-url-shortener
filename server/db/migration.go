@@ -6,4 +6,5 @@ import "github.com/fabienbellanger/go-url-shortener/server/models"
 var modelsList = []interface{}{
 	&models.User{},
 	&models.Link{},
+	&models.PasswordResets{},
 }
