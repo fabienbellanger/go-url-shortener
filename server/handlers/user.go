@@ -14,6 +14,7 @@ import (
 	models "github.com/fabienbellanger/go-url-shortener/server/models"
 	"github.com/fabienbellanger/go-url-shortener/server/repositories"
 	"github.com/fabienbellanger/go-url-shortener/server/utils"
+	"github.com/fabienbellanger/goutils/mail"
 )
 
 type userLogin struct {
@@ -250,7 +251,13 @@ func ForgottenPassword(db *db.DB) fiber.Handler {
 		}
 
 		// Send email with link
-		// TODO Add in .env
+		// TODO !!
+		to := make([]string, 1)
+		to[0] = "tutu@test.com"
+		err = mail.Send("test@test.com", to, "subject", "body", "", "", viper.GetString("SMTP_HOST"), viper.GetInt("SMTP_PORT"))
+		if err != nil {
+			return fiber.NewError(fiber.StatusInternalServerError, "Error when sending password reset email")
+		}
 
 		return c.SendStatus(fiber.StatusNoContent)
 	}
