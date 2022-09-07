@@ -121,8 +121,8 @@ func UpdateUserPassword(db *db.DB, id, password string) error {
 	return nil
 }
 
-// CreatePasswordReset add a reset password request in database.
-func CreatePasswordReset(db *db.DB, passwordReset *models.PasswordResets) error {
+// CreateOrUpdatePasswordReset add a reset password request in database or update it if a line already exists.
+func CreateOrUpdatePasswordReset(db *db.DB, passwordReset *models.PasswordResets) error {
 	result := db.Clauses(clause.OnConflict{
 		UpdateAll: true,
 	}).Create(&passwordReset)

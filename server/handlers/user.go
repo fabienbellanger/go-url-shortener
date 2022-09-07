@@ -248,7 +248,7 @@ func ForgottenPassword(db *db.DB) fiber.Handler {
 			Token:     uuid.New().String(),
 			ExpiredAt: time.Now().Add(viper.GetDuration("FORGOTTEN_PASSWORD_EXPIRATION_DURATION") * time.Hour).UTC(),
 		}
-		err = repositories.CreatePasswordReset(db, &passwordReset)
+		err = repositories.CreateOrUpdatePasswordReset(db, &passwordReset)
 		if err != nil {
 			return fiber.NewError(fiber.StatusInternalServerError, "Error when requesting new password")
 		}
