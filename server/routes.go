@@ -26,6 +26,7 @@ func registerPublicAPIRoutes(r fiber.Router, db *db.DB) {
 
 	// Password reset
 	v1.Post("/forgotten-password/:email", handlers.ForgottenPassword(db))
+	v1.Patch("/update-password/:token", handlers.UpdateUserPassword(db))
 }
 
 func registerProtectedAPIRoutes(r fiber.Router, db *db.DB) {

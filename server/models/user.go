@@ -33,3 +33,8 @@ type PasswordResets struct {
 	Token     string    `json:"token" xml:"token" form:"token" gorm:"size:36;not null" validate:"required,uuid"`
 	ExpiredAt time.Time `json:"expired_at" xml:"expired_at" gorm:"not null" form:"expired_at"`
 }
+
+// UserUpdatePassword use to update user password.
+type UserUpdatePassword struct {
+	Password string `validate:"required,min=8"`
+}

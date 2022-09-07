@@ -3,6 +3,7 @@ package repositories
 import (
 	"crypto/sha512"
 	"encoding/hex"
+	"time"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm/clause"
@@ -99,6 +100,27 @@ func UpdateUser(db *db.DB, id string, userForm *models.UserForm) (user models.Us
 	return user, err
 }
 
+// UpdateUserPassword updates user passwords.
+func UpdateUserPassword(db *db.DB, id, password string) error {
+	// Hash password
+	// -------------
+	hashedPassword := sha512.Sum512([]byte(password))
+
+	result := db.Exec(`
+		UPDATE users
+		SET password = ?, updated_at = ?
+		WHERE id = ?`,
+		hex.EncodeToString(hashedPassword[:]),
+		time.Now().UTC(),
+		id,
+	)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}
+
 // CreatePasswordReset add a reset password request in database.
 func CreatePasswordReset(db *db.DB, passwordReset *models.PasswordResets) error {
 	result := db.Clauses(clause.OnConflict{
@@ -106,4 +128,34 @@ func CreatePasswordReset(db *db.DB, passwordReset *models.PasswordResets) error 
 	}).Create(&passwordReset)
 
 	return result.Error
+}
+
+// GetUserIDFromPasswordReset update user password and delete password_resets line.
+func GetUserIDFromPasswordReset(db *db.DB, token, password string) (string, error) {
+	data := struct {
+		ID string
+	}{}
+
+	result := db.Raw(`
+			SELECT u.id AS id
+			FROM password_resets pr
+				INNER JOIN users u ON u.id = pr.user_id AND u.deleted_at IS NULL
+			WHERE pr.token = ?
+				AND pr.expired_at >= ?`,
+		token,
+		time.Now().UTC()).Scan(&data)
+	if result.Error != nil {
+		return "", result.Error
+	}
+
+	return data.ID, nil
+}
+
+// DeletePasswordReset deletes user password reset.
+func DeletePasswordReset(db *db.DB, userId string) error {
+	result := db.Where("user_id = ?", userId).Delete(&models.PasswordResets{})
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
 }

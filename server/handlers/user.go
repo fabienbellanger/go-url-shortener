@@ -1,7 +1,10 @@
 package handlers
 
 import (
+	"bytes"
 	"errors"
+	"fmt"
+	"html/template"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -243,7 +246,7 @@ func ForgottenPassword(db *db.DB) fiber.Handler {
 		passwordReset := models.PasswordResets{
 			UserID:    user.ID,
 			Token:     uuid.New().String(),
-			ExpiredAt: time.Now().Add(time.Hour), // TODO Add in .env
+			ExpiredAt: time.Now().Add(viper.GetDuration("FORGOTTEN_PASSWORD_EXPIRATION_DURATION") * time.Hour).UTC(),
 		}
 		err = repositories.CreatePasswordReset(db, &passwordReset)
 		if err != nil {
@@ -251,14 +254,80 @@ func ForgottenPassword(db *db.DB) fiber.Handler {
 		}
 
 		// Send email with link
-		// TODO !!
 		to := make([]string, 1)
-		to[0] = "tutu@test.com"
-		err = mail.Send("test@test.com", to, "subject", "body", "", "", viper.GetString("SMTP_HOST"), viper.GetInt("SMTP_PORT"))
+		to[0] = user.Username
+		subject := fmt.Sprintf("[%s] Forgotten password", viper.GetString("APP_NAME"))
+		var body bytes.Buffer
+
+		tp, err := template.ParseFiles("templates/forgotten_password.gohtml")
+		if err != nil {
+			return fiber.NewError(fiber.StatusInternalServerError, "Error when creating password reset email")
+		}
+		err = tp.Execute(&body, struct {
+			Title string
+			Link  string
+		}{
+			Title: fmt.Sprintf("%s - Forgotten password", viper.GetString("APP_NAME")),
+			Link:  fmt.Sprintf("%s/%s", viper.GetString("FORGOTTEN_PASSWORD_BASE_URL"), passwordReset.Token),
+		})
+		if err != nil {
+			return fiber.NewError(fiber.StatusInternalServerError, "Error when creating password reset email")
+		}
+
+		err = mail.Send(viper.GetString("FORGOTTEN_PASSWORD_EMAIL_FROM"), to, subject, body.String(), "", "", viper.GetString("SMTP_HOST"), viper.GetInt("SMTP_PORT"))
 		if err != nil {
 			return fiber.NewError(fiber.StatusInternalServerError, "Error when sending password reset email")
 		}
 
-		return c.SendStatus(fiber.StatusNoContent)
+		return c.JSON(passwordReset)
+	}
+}
+
+// UpdateUserPassword update user password.
+func UpdateUserPassword(db *db.DB) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		token := c.Params("token")
+
+		newPassword := new(models.UserUpdatePassword)
+		if err := c.BodyParser(newPassword); err != nil {
+			return c.Status(fiber.StatusBadRequest).JSON(utils.HTTPError{
+				Code:    fiber.StatusBadRequest,
+				Message: "Bad Request",
+			})
+		}
+
+		// Data validation
+		// ---------------
+		createErrors := utils.ValidateStruct(*newPassword)
+		if createErrors != nil {
+			return c.Status(fiber.StatusBadRequest).JSON(utils.HTTPError{
+				Code:    fiber.StatusBadRequest,
+				Message: "Bad Request",
+				Details: createErrors,
+			})
+		}
+
+		// Update user password
+		// --------------------
+		userID, err := repositories.GetUserIDFromPasswordReset(db, token, newPassword.Password)
+		if err != nil {
+			return fiber.NewError(fiber.StatusInternalServerError, "Error when searching user")
+		}
+		if userID == "" {
+			return fiber.NewError(fiber.StatusNotFound, "no user found")
+		}
+		err = repositories.UpdateUserPassword(db, userID, newPassword.Password)
+		if err != nil {
+			return fiber.NewError(fiber.StatusInternalServerError, "Error when updating user password")
+		}
+
+		// Delete password reset
+		// ---------------------
+		err = repositories.DeletePasswordReset(db, userID)
+		if err != nil {
+			return fiber.NewError(fiber.StatusInternalServerError, "Error when deleting user password reset")
+		}
+
+		return c.SendStatus(fiber.StatusOK)
 	}
 }
