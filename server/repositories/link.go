@@ -64,6 +64,7 @@ func CreateLink(db *database.DB, link *models.LinkForm) (newLink models.Link, er
 	}
 	newLink = models.Link{
 		ID:        id,
+		Name:      link.Name,
 		URL:       link.URL,
 		ExpiredAt: link.ExpiredAt,
 	}
