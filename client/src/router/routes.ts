@@ -14,6 +14,11 @@ const routes: RouteRecordRaw[] = [
                 path: '/forgotten-password',
                 name: 'forgotten-password',
                 component: () => import('pages/user/ForgottenPassword.vue'),
+            },
+            {
+                path: '/update-password/:token',
+                name: 'update-password',
+                component: () => import('pages/user/UpdatePassword.vue'),
             }
         ],
     },

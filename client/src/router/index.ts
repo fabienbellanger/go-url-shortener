@@ -40,7 +40,7 @@ export default route(function ({ /*store, ssrContext*/ }) {
         const userStore = useUserStore();
         const isAuthenticated = userStore.isAuthenticated;
 
-        if (to.name !== 'login' && to.name !== 'forgotten-password' && !isAuthenticated) {
+        if (to.name !== 'login' && to.name !== 'forgotten-password' && to.name !== 'update-password' && !isAuthenticated) {
             return 'login';
         } else if (to.name === 'logout') {
             userStore.logout();

@@ -1,5 +1,6 @@
 import User from 'src/models/User';
 import Http from '../services/Http';
+import * as EmailValidator from 'email-validator';
 
 interface AuthUser {
     email: string,
@@ -110,6 +111,55 @@ class UserAPI {
                     });
             } else {
                 reject(new Error('invalid user properties'));
+            }
+        });
+    }
+
+    /**
+     * Mot de passe oublié
+     *
+     * @author Fabien Bellanger
+     * @param email string Mail de l'utilisateur
+     * @return {Promise<void>}
+     */
+    public static forgottenPassword(email: string): Promise<void> {
+        return new Promise((resolve, reject) => {
+            if (EmailValidator.validate(email)) {
+                Http.request('POST', `/forgotten-password/${email}`)
+                    .then(() => {
+                        resolve();
+                    })
+                    .catch((error) => {
+                        reject(error);
+                    });
+            } else {
+                reject(new Error('invalid email'))
+            }
+        });
+    }
+
+    /**
+     * Changement du mot de passe
+     *
+     * @author Fabien Bellanger
+     * @param token string Token
+     * @param password string Mot de passe de l'utilisateur
+     * @return {Promise<ForgottenPassword>}
+     */
+    public static updatePassword(token: string, password: string): Promise<void> {
+        return new Promise((resolve, reject) => {
+            if (token.length === 36 && password.length >= 8) {
+                Http.request('PATCH', `/update-password/${token}`, false, {
+                    password,
+                })
+                    .then(() => {
+                        resolve();
+                    })
+                    .catch((error) => {
+                        reject(error);
+                    });
+            } else {
+                reject(new Error('invalid token or password'))
             }
         });
     }

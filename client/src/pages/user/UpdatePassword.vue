@@ -1,19 +1,25 @@
 <template>
     <q-form @submit="submit">
         <q-page class="q-pa-md">
-            <div class="text-h5 q-mb-md">Forgotten password</div>
-            <div class="text-italic text-caption q-mb-md">Enter the email address associated with your account</div>
-
+            <div class="text-h5 q-mb-md">New password</div>
+            
             <div class="q-mx-none q-my-sm">
-                <q-input ref="emailInput" type="email" outlined dense autofocus label="Email" v-model="email">
+                <q-input ref="passwordInput" type="password" outlined dense autofocus label="New password" v-model="password">
                     <template v-slot:before>
-                        <q-icon name="alternate_email" />
+                        <q-icon name="lock" />
                     </template>
                 </q-input>
             </div>
 
+            <div class="q-mx-none q-my-sm">
+                <q-input ref="password2Input" type="password" outlined dense autofocus label="New password confirmation" v-model="password2">
+                    <template v-slot:before>
+                        <q-icon name="lock" />
+                    </template>
+                </q-input>
+            </div>
             <div class="q-mx-none q-mt-lg">
-                <q-btn color="primary" label="Send" type="submit" class="full-width" :disable="!valid" />
+                <q-btn color="primary" label="Save" type="submit" class="full-width" :disable="!valid" />
             </div>
             <div class="q-mx-none q-mt-md">
                 <q-btn flat color="primary" label="Back to login" class="full-width" 
@@ -26,19 +32,22 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from 'vue';
 import { useQuasar } from 'quasar';
-import { useRouter } from 'vue-router';
-import * as EmailValidator from 'email-validator';
+import { useRouter, useRoute } from 'vue-router';
 import { UserAPI } from '../../api/User';
 
 export default defineComponent({
-    name: 'PageForgottenPassword',
+    name: 'PageUpdatePassword',
 
     setup() {
         const $q = useQuasar();
         const router = useRouter();
-        const emailInput = ref<HTMLInputElement | null>(null);
-        const email = ref('');
-        const valid = computed(() => email.value !== '' && EmailValidator.validate(email.value));
+        const route = useRoute();
+        const passwordInput = ref<HTMLInputElement | null>(null);
+        const password2Input = ref<HTMLInputElement | null>(null);
+        const password = ref('');
+        const password2 = ref('');
+        const valid = computed(() => password.value.length >= 8 && password2.value.length >= 8 && password.value === password2.value);
+        const token = route.params.token;
 
         /**
          * Display authentication error
@@ -47,12 +56,13 @@ export default defineComponent({
          * @param error Error
          */
         const displayError = (error: Error) => {
-            email.value = '';
-            emailInput.value?.focus();
+            password.value = '';
+            password2.value = '';
+            passwordInput.value?.focus();
 
             $q.notify({
                 type: 'negative',
-                message: 'Error during password reset process: ' + error,
+                message: 'Error when enter a new password: ' + error,
             });
             console.error(error);
         };
@@ -64,7 +74,7 @@ export default defineComponent({
          */
         const submit = () => {
             if (valid.value) {
-                UserAPI.forgottenPassword(email.value)
+                UserAPI.updatePassword(token.toString(), password.value)
                     .then(() => {
                         // Redirect to login route
                         // -----------------------
@@ -75,7 +85,7 @@ export default defineComponent({
                             .then(() => {
                                 $q.notify({
                                     type: 'positive',
-                                    message: 'Successfull password reset. Check your email to change your password',
+                                    message: 'Successfull password update',
                                 });
                             })
                             .catch((error: Error) => displayError(error));
@@ -87,8 +97,10 @@ export default defineComponent({
         };
 
         return {
-            emailInput,
-            email,
+            passwordInput,
+            password2Input,
+            password,
+            password2,
             valid,
             submit,
         };

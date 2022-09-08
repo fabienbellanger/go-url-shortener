@@ -1,6 +1,7 @@
 <template>
     <q-form @submit="signIn">
         <q-page class="q-pa-md">
+            <div class="text-h5 q-mb-md">Sign in</div>
             <div class="q-mx-none q-my-sm">
                 <q-input ref="loginInput" type="email" outlined dense autofocus label="Login" v-model="login">
                     <template v-slot:before>
@@ -18,8 +19,8 @@
             <div class="q-mx-none q-mt-lg">
                 <q-btn color="primary" label="Sign in" type="submit" class="full-width" :disable="!valid" />
             </div>
-            <div class="q-mx-none q-mt-lg">
-                <q-btn flat no-caps size="sm" color="primary" label="Forgotten password" class="full-width" 
+            <div class="q-mx-none q-mt-md">
+                <q-btn flat no-caps color="primary" label="Forgotten password" class="full-width" 
                     :to="{ name: 'forgotten-password' }"/>
             </div>
         </q-page>
@@ -30,6 +31,7 @@
 import { defineComponent, ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
+import * as EmailValidator from 'email-validator';
 import { useUserStore } from '../../stores/user';
 import { AuthUser } from '../../api/User';
 
@@ -44,7 +46,9 @@ export default defineComponent({
         const loginInput = ref<HTMLInputElement | null>(null);
         const login = ref('');
         const password = ref('');
-        const valid = computed(() => login.value !== '' && password.value !== '');
+        const valid = computed(() => login.value !== '' 
+            && EmailValidator.validate(login.value) 
+            && password.value.length >= 8);
 
         /**
          * Display authentication error

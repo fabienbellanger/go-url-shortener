@@ -101,7 +101,7 @@ func UpdateUser(db *db.DB, id string, userForm *models.UserForm) (user models.Us
 }
 
 // UpdateUserPassword updates user passwords.
-func UpdateUserPassword(db *db.DB, id, password string) error {
+func UpdateUserPassword(db *db.DB, id, currentPassword, password string) error {
 	// Hash password
 	// -------------
 	hashedPassword := sha512.Sum512([]byte(password))
@@ -131,13 +131,14 @@ func CreateOrUpdatePasswordReset(db *db.DB, passwordReset *models.PasswordResets
 }
 
 // GetUserIDFromPasswordReset update user password and delete password_resets line.
-func GetUserIDFromPasswordReset(db *db.DB, token, password string) (string, error) {
+func GetUserIDFromPasswordReset(db *db.DB, token, password string) (string, string, error) {
 	data := struct {
-		ID string
+		ID       string
+		Password string
 	}{}
 
 	result := db.Raw(`
-			SELECT u.id AS id
+			SELECT u.id AS id, u.password AS passwors
 			FROM password_resets pr
 				INNER JOIN users u ON u.id = pr.user_id AND u.deleted_at IS NULL
 			WHERE pr.token = ?
@@ -145,10 +146,10 @@ func GetUserIDFromPasswordReset(db *db.DB, token, password string) (string, erro
 		token,
 		time.Now().UTC()).Scan(&data)
 	if result.Error != nil {
-		return "", result.Error
+		return "", "", result.Error
 	}
 
-	return data.ID, nil
+	return data.ID, data.Password, nil
 }
 
 // DeletePasswordReset deletes user password reset.

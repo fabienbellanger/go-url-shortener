@@ -4,7 +4,7 @@
             <div class="col-lg-3 col-3 col-md-4 col-sm-6 col-xs-12">
                 <q-card class="q-pa-none q-mt-xl">
                     <q-card-section class="q-pa-none">
-                        <q-layout view="lhh lpr lFf" container style="height: 360px" class="rounded-borders">
+                        <q-layout view="lhh lpr lFf" container style="min-height: 400px" class="rounded-borders">
                             <q-header color="red">
                                 <div class="row items-center justify-center text-h5" style="height: 80px">
                                     <q-img src="/logo_white.png" class="q-mr-sm" style="height: 64px; max-width: 115px" />

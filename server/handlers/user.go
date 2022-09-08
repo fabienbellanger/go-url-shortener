@@ -2,6 +2,8 @@ package handlers
 
 import (
 	"bytes"
+	"crypto/sha512"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"html/template"
@@ -309,14 +311,21 @@ func UpdateUserPassword(db *db.DB) fiber.Handler {
 
 		// Update user password
 		// --------------------
-		userID, err := repositories.GetUserIDFromPasswordReset(db, token, newPassword.Password)
+		userID, currentPassword, err := repositories.GetUserIDFromPasswordReset(db, token, newPassword.Password)
 		if err != nil {
 			return fiber.NewError(fiber.StatusInternalServerError, "Error when searching user")
 		}
 		if userID == "" {
 			return fiber.NewError(fiber.StatusNotFound, "no user found")
 		}
-		err = repositories.UpdateUserPassword(db, userID, newPassword.Password)
+
+		// Change by the same password is forbidden
+		hashedPassword := sha512.Sum512([]byte(newPassword.Password))
+		if hex.EncodeToString(hashedPassword[:]) == currentPassword {
+			return fiber.NewError(fiber.StatusBadRequest, "new password cannot be the same as the current one")
+		}
+
+		err = repositories.UpdateUserPassword(db, userID, currentPassword, newPassword.Password)
 		if err != nil {
 			return fiber.NewError(fiber.StatusInternalServerError, "Error when updating user password")
 		}
