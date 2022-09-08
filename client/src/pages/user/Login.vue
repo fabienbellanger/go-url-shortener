@@ -1,7 +1,7 @@
 <template>
     <q-form @submit="signIn">
         <q-page class="q-pa-md">
-            <div class="text-h5 q-mb-md">Sign in</div>
+            <div class="text-h5 q-mb-md">Connection</div>
             <div class="q-mx-none q-my-sm">
                 <q-input ref="loginInput" type="email" outlined dense autofocus label="Login" v-model="login">
                     <template v-slot:before>
