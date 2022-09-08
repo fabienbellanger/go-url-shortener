@@ -1,7 +1,7 @@
 # Variables
 # ---------
 @baseUrl = http://{{$dotenv APP_ADDR}}:{{$dotenv APP_PORT}}/api/v1
-@token = eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJjcmVhdGVkQXQiOiIyMDIxLTA4LTI3VDE1OjIzOjMyLjIyNloiLCJleHAiOjE2NjAyMTQ1MDAsImZpcnN0bmFtZSI6IlRvdG8gMiIsImlhdCI6MTY1OTM1MDUwMCwiaWQiOiJiNzg4ODkzZS02MWU2LTRhODQtOGRlYi0xZjhmNWFhNTYzMWUiLCJsYXN0bmFtZSI6IlRlc3QiLCJuYmYiOjE2NTkzNTA1MDAsInVzZXJuYW1lIjoidGVzdEBnbWFpbC5jb20ifQ.NnEFKMb-fBfZhaB_V-7n6PKMn5p-wT8EEVhi32XHHtUMy7oEVBlZ9JNq7f_Vw0Davrf3k0ot9E0EoJhq7OktCQ
+@token = eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJjcmVhdGVkQXQiOiIyMDIxLTA4LTI3VDE1OjIzOjMyLjIyNloiLCJleHAiOjE2NjM1MTY2MzIsImZpcnN0bmFtZSI6IlRvdG8gMiIsImlhdCI6MTY2MjY1MjYzMiwiaWQiOiJiNzg4ODkzZS02MWU2LTRhODQtOGRlYi0xZjhmNWFhNTYzMWUiLCJsYXN0bmFtZSI6IlRlc3QiLCJuYmYiOjE2NjI2NTI2MzIsInVzZXJuYW1lIjoidGVzdEBnbWFpbC5jb20ifQ._8aVrKnncADSaqB1eKQR8E1o3FWD6e7YnrqkgK1xEgyNbAd6G9oWr4SS_eboFZBwfx_WN4ztCJLsA13F2Pvg8g
 
 
 # Users
@@ -9,7 +9,7 @@
 @userId = b788893e-61e6-4a84-8deb-1f8f5aa5631e
 @userIdToDelete = bf8cfc85-1554-4817-9674-96e5b8ddf5a7
 @userEmail = test@gmail.com
-@passwordResetToken = 262c8ac8-b74b-4ebe-9c6a-fd5e0d14d642
+@passwordResetToken = f419fee9-cae3-4e02-a0c6-55925640c4f2
 
 # Login
 POST {{baseUrl}}/login
@@ -31,7 +31,7 @@ PATCH {{baseUrl}}/update-password/{{passwordResetToken}}
 Content-Type: application/json
 
 {
-    "password": "12345678"
+    "password": "00000000"
 }
 ###
 

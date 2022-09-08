@@ -37,7 +37,7 @@ func registerProtectedAPIRoutes(r fiber.Router, db *db.DB) {
 
 	// Users
 	users := v1.Group("/users")
-	users.Get("/", handlers.GetAllUsers(db))
+	users.Get("", handlers.GetAllUsers(db))
 	users.Get("/:id", handlers.GetUser(db))
 	users.Put("/:id", handlers.UpdateUser(db))
 	users.Delete("/:id", handlers.DeleteUser(db))
