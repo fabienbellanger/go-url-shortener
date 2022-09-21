@@ -255,6 +255,142 @@ paths:
             $ref: "#/components/responses/MethodNotAllowed"
         '500':
             $ref: "#/components/responses/InternalServerError"
+  /links:
+    get:
+      summary: ""
+      description: List all links
+      tags:
+        - "Links"
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+          required: false
+          description: Page number
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            maximum: 500
+          required: false
+          description: Limit of links per page
+        - in: query
+          name: s
+          schema:
+            type: string
+          required: false
+          description: Search
+        - in: query
+          name: sort-by
+          schema:
+            type: string
+          required: false
+          description: Sort by
+        - in: query
+          name: sort
+          schema:
+            type: string
+            enum: ["asc", "desc"]
+          required: false
+          description: Sort
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  links:
+                    type: array
+                    items: 
+                      $ref: '#/components/schemas/Link'
+                  total:
+                    type: integer
+        '400':
+            $ref: "#/components/responses/BadRequest"
+        '401':
+            $ref: "#/components/responses/Unauthorized"
+        '500':
+            $ref: "#/components/responses/InternalServerError"
+    post:
+      summary: ""
+      description: Create a new link
+      tags:
+        - "Links"
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LinkForm'
+      responses:
+        '204':
+          description: OK
+        '400':
+            $ref: "#/components/responses/BadRequest"
+        '401':
+            $ref: "#/components/responses/Unauthorized"
+        '500':
+            $ref: "#/components/responses/InternalServerError"
+  /links/{id}:
+    delete:
+      summary: ""
+      description: Delete a link
+      tags:
+        - "Links"
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: Link ID
+      responses:
+        '204':
+          description: OK
+        '400':
+            $ref: "#/components/responses/BadRequest"
+        '401':
+            $ref: "#/components/responses/Unauthorized"
+        '500':
+            $ref: "#/components/responses/InternalServerError"
+    put:
+      summary: ""
+      description: Update a link
+      tags:
+        - "Links"
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+          description: Link ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LinkForm'
+      responses:
+        '204':
+          description: OK
+        '400':
+            $ref: "#/components/responses/BadRequest"
+        '401':
+            $ref: "#/components/responses/Unauthorized"
+        '500':
+            $ref: "#/components/responses/InternalServerError"
 components:
   securitySchemes:
     bearerAuth:
@@ -416,3 +552,36 @@ components:
           minLength: 8
       required:
         - password
+    Link:
+      type: object
+      properties:
+        id:
+          type: string
+        url:
+          type: string
+          format: uri
+        name:
+          type: string
+        expired_at:
+          type: string
+          format: date-time
+      required:
+        - id
+        - url
+        - name
+        - expired_at
+    LinkForm:
+      type: object
+      properties:
+        url:
+          type: string
+          format: uri
+        name:
+          type: string
+        expired_at:
+          type: string
+          format: date-time
+      required:
+        - url
+        - name
+        - expired_at
