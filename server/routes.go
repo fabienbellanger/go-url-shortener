@@ -12,6 +12,8 @@ import (
 // ----------
 
 func registerPublicWebRoutes(r fiber.Router, db *db.DB, logger *zap.Logger) {
+	// API documentation
+	r.Get("/doc/api-v1", handlers.DocAPIv1())
 	// Shorted URL
 	r.Get("/:id", handlers.RedirectURL(db, logger))
 }

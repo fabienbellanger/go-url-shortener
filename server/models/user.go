@@ -16,7 +16,7 @@ type User struct {
 	CreatedAt     time.Time      `json:"created_at" xml:"created_at" form:"created_at" gorm:"autoCreateTime"`
 	UpdatedAt     time.Time      `json:"updated_at" xml:"updated_at" form:"updated_at" gorm:"autoUpdateTime"`
 	DeletedAt     gorm.DeletedAt `json:"-" xml:"-" form:"deleted_at" gorm:"index"`
-	PasswordReset PasswordResets `gorm:"constraint:OnDelete:CASCADE"`
+	PasswordReset PasswordResets `json:"-" xml:"-" form:"-" gorm:"constraint:OnDelete:CASCADE"`
 }
 
 // UserForm is used to create or update a user.

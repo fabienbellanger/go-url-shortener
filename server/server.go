@@ -2,6 +2,7 @@ package server
 
 import (
 	"fmt"
+	"net/http"
 	"os"
 	"os/signal"
 	"strings"
@@ -12,11 +13,13 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/basicauth"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/favicon"
+	"github.com/gofiber/fiber/v2/middleware/filesystem"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/pprof"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
 	jwtware "github.com/gofiber/jwt/v3"
+	"github.com/gofiber/template/html"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
 
@@ -82,6 +85,7 @@ func initConfig(logger *zap.Logger) fiber.Config {
 		EnablePrintRoutes:     false, // viper.GetString("APP_ENV") == "development",
 		Concurrency:           256 * 1024 * 1024,
 		ReduceMemoryUsage:     true,
+		Views:                 html.New("./templates", ".gohtml"),
 		// Errors handling
 		// ---------------
 		ErrorHandler: func(c *fiber.Ctx, err error) error {
@@ -199,6 +203,15 @@ func initMiddlewares(s *fiber.App, loggerZap *zap.Logger) {
 			},
 		}))
 	}
+
+	// Filesystem
+	// ----------
+	s.Use(filesystem.New(filesystem.Config{
+		Root:   http.Dir("./assets"),
+		Browse: false,
+		Index:  "index.html",
+		MaxAge: 3600,
+	}))
 }
 
 func initTools(s *fiber.App) {
