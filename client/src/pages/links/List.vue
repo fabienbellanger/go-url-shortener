@@ -192,8 +192,8 @@ export default defineComponent({
         const valid = ref<boolean>();
         const filter = ref('');
         const pagination = ref({
-            sortBy: 'url',
-            descending: false,
+            sortBy: 'created_at',
+            descending: true,
             rowsPerPage: 25,
             page: 1,
             rowsNumber: 50,
@@ -348,10 +348,10 @@ export default defineComponent({
         const getList = (props?) => {
             loading.value = true;
 
-            const filter = props ? props.filter : '';
+            const search = props ? props.filter : filter.value;
             const { page, rowsPerPage, sortBy, descending } = props ? props.pagination : pagination.value;
 
-            LinkAPI.list(filter, page, rowsPerPage, sortBy, descending)
+            LinkAPI.list(search, page, rowsPerPage, sortBy, descending)
                 .then((linksList: LinkAPIList) => {
                     pagination.value.page = page,
                     pagination.value.rowsPerPage = rowsPerPage,
