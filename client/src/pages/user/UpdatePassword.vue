@@ -12,7 +12,7 @@
             </div>
 
             <div class="q-mx-none q-my-sm">
-                <q-input ref="password2Input" type="password" outlined dense autofocus label="New password confirmation" v-model="password2">
+                <q-input ref="password2Input" type="password" outlined dense label="New password confirmation" v-model="password2">
                     <template v-slot:before>
                         <q-icon name="lock" />
                     </template>
