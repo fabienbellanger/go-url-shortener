@@ -19,7 +19,12 @@ func getLinksFromURL(db *database.DB, url string) (links []models.Link, err erro
 
 // GetAllLinks returns all links.
 func GetAllLinks(db *database.DB, page, limit, search, sortBy, sort string) (links []models.Link, total int64, err error) {
-	db.Model(&links).Count(&total)
+	// Total rows
+	total_query := db.Model(&links)
+	if search != "" {
+		total_query.Where("url LIKE ? OR name LIKE ?", "%"+search+"%", "%"+search+"%")
+	}
+	total_query.Count(&total)
 
 	var q = db.Scopes(database.Paginate(page, limit))
 	if search != "" {
