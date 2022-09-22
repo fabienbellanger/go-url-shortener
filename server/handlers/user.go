@@ -270,7 +270,7 @@ func ForgottenPassword(db *db.DB) fiber.Handler {
 			Link  string
 		}{
 			Title: fmt.Sprintf("%s - Forgotten password", viper.GetString("APP_NAME")),
-			Link:  fmt.Sprintf("%s/%s", viper.GetString("FORGOTTEN_PASSWORD_BASE_URL"), passwordReset.Token),
+			Link:  fmt.Sprintf("%s/update-password/%s", viper.GetString("FORGOTTEN_PASSWORD_BASE_URL"), passwordReset.Token),
 		})
 		if err != nil {
 			return fiber.NewError(fiber.StatusInternalServerError, "Error when creating password reset email")
