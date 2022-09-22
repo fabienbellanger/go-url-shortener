@@ -4,7 +4,9 @@ import (
 	"net/http"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/basicauth"
 	"github.com/gofiber/fiber/v2/middleware/filesystem"
+	"github.com/spf13/viper"
 	"go.uber.org/zap"
 
 	"github.com/fabienbellanger/go-url-shortener/server/db"
@@ -15,15 +17,25 @@ import (
 // ----------
 
 func registerPublicWebRoutes(r fiber.Router, db *db.DB, logger *zap.Logger) {
+	// Basic Auth
+	// ----------
+	cfg := basicauth.Config{
+		Users: map[string]string{
+			viper.GetString("SERVER_BASICAUTH_USERNAME"): viper.GetString("SERVER_BASICAUTH_PASSWORD"),
+		},
+	}
+
 	// API documentation
-	r.Get("/doc/api-v1", handlers.DocAPIv1())
+	doc := r.Group("/doc")
+	doc.Use(basicauth.New(cfg))
+	doc.Get("/api-v1", handlers.DocAPIv1())
+
 	// Shorted URL
 	r.Get("/:id", handlers.RedirectURL(db, logger))
 
-	assets := r.Group("/assets")
-
 	// Filesystem
 	// ----------
+	assets := r.Group("/assets")
 	assets.Use(filesystem.New(filesystem.Config{
 		Root:   http.Dir("./assets"),
 		Browse: false,
