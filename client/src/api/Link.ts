@@ -36,7 +36,8 @@ class LinkAPI {
                 .then((data) => {
                     const links = data.links;
                     for (const i in links) {
-                        links[i] = new Link(links[i].id, links[i].url, links[i].name, links[i].expired_at);
+                        console.log(links[i]);
+                        links[i] = new Link(links[i].id, links[i].url, links[i].name, links[i].expired_at, links[i].created_at);
                     }
                     resolve({
                         total: data.total,

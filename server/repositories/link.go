@@ -23,7 +23,7 @@ func GetAllLinks(db *database.DB, page, limit, search, sortBy, sort string) (lin
 
 	var q = db.Scopes(database.Paginate(page, limit))
 	if search != "" {
-		q.Where("url LIKE ?", "%"+search+"%")
+		q.Where("url LIKE ? OR name LIKE ?", "%"+search+"%", "%"+search+"%")
 	}
 	if sort != "desc" {
 		sort = "asc"

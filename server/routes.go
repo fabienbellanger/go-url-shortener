@@ -1,7 +1,10 @@
 package server
 
 import (
+	"net/http"
+
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/filesystem"
 	"go.uber.org/zap"
 
 	"github.com/fabienbellanger/go-url-shortener/server/db"
@@ -16,6 +19,17 @@ func registerPublicWebRoutes(r fiber.Router, db *db.DB, logger *zap.Logger) {
 	r.Get("/doc/api-v1", handlers.DocAPIv1())
 	// Shorted URL
 	r.Get("/:id", handlers.RedirectURL(db, logger))
+
+	assets := r.Group("/assets")
+
+	// Filesystem
+	// ----------
+	assets.Use(filesystem.New(filesystem.Config{
+		Root:   http.Dir("./assets"),
+		Browse: false,
+		Index:  "index.html",
+		MaxAge: 3600,
+	}))
 }
 
 // API routes

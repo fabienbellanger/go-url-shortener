@@ -31,6 +31,9 @@
                     <q-td key="expired_at" :props="props">
                         {{ formatDatetime(props.row.expired_at) }}
                     </q-td>
+                    <q-td key="created_at" :props="props">
+                        {{ formatDatetime(props.row.created_at) }}
+                    </q-td>
                     <q-td key="actions" :props="props">
                         <q-btn
                             size="sm"
@@ -227,6 +230,14 @@ export default defineComponent({
                 style: 'width: 100px',
             },
             {
+                name: 'created_at',
+                label: 'Created at',
+                field: 'created_at',
+                align: 'left',
+                sortable: true,
+                style: 'width: 100px',
+            },
+            {
                 name: 'actions',
                 label: 'Actions',
                 align: 'left',
@@ -247,7 +258,8 @@ export default defineComponent({
                 '',
                 '',
                 '',
-                (date.addToDate(new Date(), {years: 50}).toISOString()).substr(0, 10)
+                (date.addToDate(new Date(), {years: 50}).toISOString()).substr(0, 10),
+                '',
             );
         };
 
@@ -370,13 +382,14 @@ export default defineComponent({
                     link.name,
                     link.url,
                     link.expired_at,
+                    link.created_at,
                 ]);
 
             const CSVService = new CSV(';');
             CSVService.stringify(csvHeaders, csvBody)
                 .then((content) => {
                     const status = exportFile(
-                        `${date.formatDate(Date.now(), 'YYYYMMDDHHmmss')}_url-shortener.csv`, // TODO: Add timestamp
+                        `${date.formatDate(Date.now(), 'YYYYMMDDHHmmss')}_url-shortener.csv`,
                         content,
                         'text/csv',
                     );

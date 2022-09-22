@@ -2,7 +2,6 @@ package server
 
 import (
 	"fmt"
-	"net/http"
 	"os"
 	"os/signal"
 	"strings"
@@ -13,7 +12,6 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/basicauth"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/favicon"
-	"github.com/gofiber/fiber/v2/middleware/filesystem"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/pprof"
 	"github.com/gofiber/fiber/v2/middleware/recover"
@@ -203,15 +201,6 @@ func initMiddlewares(s *fiber.App, loggerZap *zap.Logger) {
 			},
 		}))
 	}
-
-	// Filesystem
-	// ----------
-	s.Use(filesystem.New(filesystem.Config{
-		Root:   http.Dir("./assets"),
-		Browse: false,
-		Index:  "index.html",
-		MaxAge: 3600,
-	}))
 }
 
 func initTools(s *fiber.App) {

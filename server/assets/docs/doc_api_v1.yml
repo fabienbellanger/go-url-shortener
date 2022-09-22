@@ -566,11 +566,15 @@ components:
         expired_at:
           type: string
           format: date-time
+        created_at:
+          type: string
+          format: date-time
       required:
         - id
         - url
         - name
         - expired_at
+        - created_at
     LinkForm:
       type: object
       properties:
