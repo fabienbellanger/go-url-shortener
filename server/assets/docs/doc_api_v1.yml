@@ -17,6 +17,8 @@ servers:
         enum:
           - "3000"
         default: "3000"
+  - url: https://apitic.fr/api/v1
+    description: Production server
 security:
   - bearerAuth: []
 paths:
