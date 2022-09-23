@@ -83,6 +83,7 @@ func initConfig(logger *zap.Logger) fiber.Config {
 		EnablePrintRoutes:     false, // viper.GetString("APP_ENV") == "development",
 		Concurrency:           256 * 1024 * 1024,
 		ReduceMemoryUsage:     true,
+		UnescapePath:          true,
 		Views:                 html.New("./templates", ".gohtml"),
 		// Errors handling
 		// ---------------
