@@ -1,8 +1,7 @@
 # Variables
 # ---------
 @baseUrl = http://{{$dotenv APP_ADDR}}:{{$dotenv APP_PORT}}/api/v1
-@token = eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJjcmVhdGVkQXQiOiIyMDIxLTA4LTI3VDE1OjIzOjMyLjIyNloiLCJleHAiOjE2NjM1MTY2MzIsImZpcnN0bmFtZSI6IlRvdG8gMiIsImlhdCI6MTY2MjY1MjYzMiwiaWQiOiJiNzg4ODkzZS02MWU2LTRhODQtOGRlYi0xZjhmNWFhNTYzMWUiLCJsYXN0bmFtZSI6IlRlc3QiLCJuYmYiOjE2NjI2NTI2MzIsInVzZXJuYW1lIjoidGVzdEBnbWFpbC5jb20ifQ._8aVrKnncADSaqB1eKQR8E1o3FWD6e7YnrqkgK1xEgyNbAd6G9oWr4SS_eboFZBwfx_WN4ztCJLsA13F2Pvg8g
-
+@token = eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJjcmVhdGVkQXQiOiIyMDIxLTA4LTI3VDE1OjIzOjMyLjIyNloiLCJleHAiOjE2Njc4MzY3MjksImZpcnN0bmFtZSI6IlRvdG8gMiIsImlhdCI6MTY2Njk3MjcyOSwiaWQiOiJiNzg4ODkzZS02MWU2LTRhODQtOGRlYi0xZjhmNWFhNTYzMWUiLCJsYXN0bmFtZSI6IlRlc3QiLCJuYmYiOjE2NjY5NzI3MjksInVzZXJuYW1lIjoidGVzdEBnbWFpbC5jb20ifQ.c-Oa62R_OsLPHpHgbco2Qi0I5RjagbNS9nEJsxypC-NxG9bjk0al5pa_Yh0v65CNzYISqZDRoDbxr6z5d3ytqQ
 
 # Users
 # -----
@@ -98,4 +97,10 @@ Authorization: Bearer {{token}}
     "url": "https://google.com",
     "expired_at": "2024-12-31T00:00:00.222Z"
 }
+###
+
+# Upload from CSV
+POST {{baseUrl}}/links/upload
+Content-Type: application/json
+Authorization: Bearer {{token}}
 ###

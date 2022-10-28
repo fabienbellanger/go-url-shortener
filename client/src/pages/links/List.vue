@@ -2,14 +2,18 @@
     <div class="q-px-md">
         <h4 class="q-mt-lg">Links list</h4>
 
+        <div class="q-mb-md" v-if="showUploader">
+            <csv-uploader @finished="uploadFinished"></csv-uploader>
+        </div>
+
         <q-table
+            @request="getList"
             :rows="links"
             :columns="headers"
             :filter="filter"
-            v-model:pagination="pagination"
             :rows-per-page-options="[25, 50, 100, 200, 500]"
             :loading="loading"
-            @request="getList"
+            v-model:pagination="pagination"
             row-key="id"
             no-data-label="No link"
             color="primary"
@@ -101,7 +105,14 @@
                 </q-btn>
                 <q-btn
                     color="primary"
-                    icon-right="archive"
+                    icon-right="file_upload"
+                    label="Import csv"
+                    class="q-mx-md"
+                    @click="showUploader = true"
+                    no-caps></q-btn>
+                <q-btn
+                    color="primary"
+                    icon-right="file_download"
                     label="Export to csv"
                     class="q-mx-md"
                     @click="exportCSV"
@@ -177,8 +188,10 @@ import Link from '../../models/Link';
 import { defineComponent, ref } from 'vue';
 import { LinkAPI, LinkAPIList } from '../../api/Link';
 import CSV from '../../services/CSV';
+import CsvUploader from './CsvUploader.vue';
 
 export default defineComponent({
+  components: { CsvUploader },
     name: 'LinksList',
 
     setup() {
@@ -188,6 +201,7 @@ export default defineComponent({
         const confirmCreationDialog = ref<boolean>(false);
         const confirmDeleteLink = ref<boolean>(false);
         const loading = ref<boolean>(false);
+        const showUploader = ref<boolean>(false);
         const currentLink = ref<Link>();
         const valid = ref<boolean>();
         const filter = ref('');
@@ -429,6 +443,21 @@ export default defineComponent({
                 });
         };
 
+        const importCSV = () => {
+            console.log('Import CSV file');
+        }
+
+        const uploadFinished = () => {
+            console.log('Upload has finished');
+
+            // Hide uploader
+            showUploader.value = false;
+
+            // Reload links list
+            getList();
+            
+        }
+
         void getList();
 
         return {
@@ -438,6 +467,7 @@ export default defineComponent({
             confirmDeleteDialog,
             confirmCreationDialog,
             confirmDeleteLink,
+            showUploader,
             valid,
             pagination,
             filter,
@@ -452,7 +482,9 @@ export default defineComponent({
             getList,
             clearLinkCreation,
             exportCSV,
+            importCSV,
             copyLink,
+            uploadFinished,
         };
     },
 });

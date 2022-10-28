@@ -144,3 +144,10 @@ func RedirectURL(db *db.DB, logger *zap.Logger) fiber.Handler {
 		return c.Redirect(link.URL)
 	}
 }
+
+// UploadLink creates links from CSV file.
+func UploadLink(db *db.DB) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		return c.SendString("OK")
+	}
+}

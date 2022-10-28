@@ -1,4 +1,5 @@
 import Link from 'src/models/Link';
+import User from 'src/models/User';
 import Http from '../services/Http';
 
 type LinkAPIList = {
@@ -128,6 +129,30 @@ class LinkAPI {
             else
             {
                 reject(new Error('invalid id'));
+            }
+        });
+    }
+
+    /**
+     * Upload d'un fichier CSV
+     *
+     * @author Fabien Bellanger
+     * @return {Promise<any>}
+     */
+     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     public static upload(): Promise<any> {
+        return new Promise((resolve, reject) => {
+            const user = User.fromSession();
+            if (user.token !== null && user.token !== '') {
+                resolve({
+                    url: `${Http.baseURL}/links/upload`,
+                    method: 'POST',
+                    headers: [
+                        { name: 'Authorization', value: `Bearer ${user.token}` }
+                    ]
+                })
+            } else {
+                reject('Empty token');
             }
         });
     }
