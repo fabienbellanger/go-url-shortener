@@ -57,7 +57,7 @@ func registerPublicAPIRoutes(r fiber.Router, db *db.DB) {
 	v1.Patch("/update-password/:token", handlers.UpdateUserPassword(db))
 }
 
-func registerProtectedAPIRoutes(r fiber.Router, db *db.DB) {
+func registerProtectedAPIRoutes(r fiber.Router, db *db.DB, logger *zap.Logger) {
 	v1 := r.Group("/v1")
 
 	// Register
@@ -74,7 +74,7 @@ func registerProtectedAPIRoutes(r fiber.Router, db *db.DB) {
 	links := v1.Group("/links")
 	links.Get("", handlers.LinksList(db))
 	links.Post("", handlers.CreateLink(db))
-	links.Post("/upload", handlers.UploadLink(db))
+	links.Post("/upload", handlers.UploadLink(db, logger))
 	links.Put("/:id", handlers.UpdateLink(db))
 	links.Delete("/:id", handlers.DeleteLink(db))
 }

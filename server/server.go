@@ -45,7 +45,7 @@ func Run(db *db.DB, logger *zap.Logger) {
 	// Protected routes
 	// ----------------
 	initJWT(app)
-	registerProtectedAPIRoutes(api, db)
+	registerProtectedAPIRoutes(api, db, logger)
 
 	// Custom 404 (after all routes but not available because of JWT)
 	// --------------------------------------------------------------
@@ -85,6 +85,7 @@ func initConfig(logger *zap.Logger) fiber.Config {
 		ReduceMemoryUsage:     true,
 		UnescapePath:          true,
 		Views:                 html.New("./templates", ".gohtml"),
+		BodyLimit:             1 * 1024 * 1024, // 1MB
 		// Errors handling
 		// ---------------
 		ErrorHandler: func(c *fiber.Ctx, err error) error {

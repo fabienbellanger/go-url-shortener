@@ -1,11 +1,18 @@
 package handlers
 
 import (
+	"encoding/csv"
+	"fmt"
+	"log"
+	"os"
+	"strings"
+
 	"github.com/fabienbellanger/go-url-shortener/server/db"
 	models "github.com/fabienbellanger/go-url-shortener/server/models"
 	"github.com/fabienbellanger/go-url-shortener/server/repositories"
 	"github.com/fabienbellanger/go-url-shortener/server/utils"
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 	"go.uber.org/zap"
 )
 
@@ -146,8 +153,47 @@ func RedirectURL(db *db.DB, logger *zap.Logger) fiber.Handler {
 }
 
 // UploadLink creates links from CSV file.
-func UploadLink(db *db.DB) fiber.Handler {
+func UploadLink(db *db.DB, logger *zap.Logger) fiber.Handler {
 	return func(c *fiber.Ctx) error {
+		if form, err := c.MultipartForm(); err == nil {
+			for _, files := range form.File {
+				for _, file := range files {
+					if file.Header["Content-Type"][0] == "text/csv" {
+						fileName := fmt.Sprintf("./uploads/csv/%s.csv", uuid.New().String())
+
+						// Save the files to disk
+						if err := c.SaveFile(file, fileName); err != nil {
+							return err
+						}
+						defer func() {
+							// Remove file
+							err = os.Remove(fileName)
+							if err != nil {
+								logger.Error("error when removing CSV upload file", zap.Error(err))
+							}
+						}()
+
+						// Read file
+						f, err := os.ReadFile(fileName)
+						if err != nil {
+							return err
+						}
+
+						// CSV parser
+						r := csv.NewReader(strings.NewReader(string(f)))
+						r.Comma = ';'
+						records, err := r.ReadAll()
+						if err != nil {
+							return err
+						}
+						log.Println(records)
+
+						// Save links
+					}
+				}
+			}
+		}
+
 		return c.SendString("OK")
 	}
 }
