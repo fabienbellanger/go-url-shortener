@@ -179,6 +179,8 @@
                 </q-form>
             </q-card>
         </q-dialog>
+
+        <import-links-dialog :visible="displayImportCsvDialog" results=""/>
     </div>
 </template>
 
@@ -189,9 +191,10 @@ import { defineComponent, ref } from 'vue';
 import { LinkAPI, LinkAPIList } from '../../api/Link';
 import CSV from '../../services/CSV';
 import CsvUploader from './CsvUploader.vue';
+import ImportLinksDialog from './dialogs/ImportLinksDialog.vue';
 
 export default defineComponent({
-  components: { CsvUploader },
+    components: { CsvUploader, ImportLinksDialog },
     name: 'LinksList',
 
     setup() {
@@ -200,6 +203,7 @@ export default defineComponent({
         const confirmDeleteDialog = ref<boolean>(false);
         const confirmCreationDialog = ref<boolean>(false);
         const confirmDeleteLink = ref<boolean>(false);
+        const displayImportCsvDialog = ref<boolean>(false);
         const loading = ref<boolean>(false);
         const showUploader = ref<boolean>(false);
         const currentLink = ref<Link>();
@@ -422,8 +426,6 @@ export default defineComponent({
                         message: 'Error during CSV creation',
                     });
                 });
-
-            
         };
 
         const copyLink = (id) => {
@@ -453,9 +455,11 @@ export default defineComponent({
             // Hide uploader
             showUploader.value = false;
 
+            // Open dialog
+            displayImportCsvDialog.value = true;
+
             // Reload links list
             getList();
-            
         }
 
         void getList();
@@ -467,6 +471,7 @@ export default defineComponent({
             confirmDeleteDialog,
             confirmCreationDialog,
             confirmDeleteLink,
+            displayImportCsvDialog,
             showUploader,
             valid,
             pagination,

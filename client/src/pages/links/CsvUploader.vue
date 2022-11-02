@@ -6,12 +6,12 @@
             @failed ="onFailed"
             :factory="uploadFile"
             ref="uploader"
-            label="Upload links from CSV file"
+            label="Upload links from CSV file (100 lines max)"
             color="primary"
             max-file-size="1048576"
             accept=".csv, text/csv"
-            style="max-width: 320px"
-      />
+            style="max-width: 360px"
+        />
     </div>
 </template>
 
@@ -40,15 +40,31 @@ export default defineComponent({
             });
         }
 
-        const onUploaded = () => {
-            console.log('Uploaded');
-            uploader.value.reset();
+        const onFailed = (error) => {
+            let response = JSON.parse(error.xhr.response);
 
-            ctx.emit('finished');
+            $q.notify({
+                type: 'negative',
+                message: `Error: ${response?.details}`,
+            });
         }
 
-        const onFailed = () => {
-            console.log('Failed');
+        const onUploaded = (info) => {
+            const response = JSON.parse(info.xhr.response);
+            const errors = response.errors ?? {};
+            const insertedLinks = response.inserted_links ?? 0;
+
+            uploader.value.reset();
+            ctx.emit('finished', response);
+
+            $q.notify({
+                type: 'positive',
+                html: true,
+                message: `
+                    Inserted links: <b>${insertedLinks}</b><br>
+                    Errors: ${errors}
+                `,
+            });
         }
 
         return {

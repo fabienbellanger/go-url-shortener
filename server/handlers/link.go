@@ -3,7 +3,6 @@ package handlers
 import (
 	"encoding/csv"
 	"fmt"
-	"log"
 	"os"
 	"strings"
 
@@ -11,6 +10,7 @@ import (
 	models "github.com/fabienbellanger/go-url-shortener/server/models"
 	"github.com/fabienbellanger/go-url-shortener/server/repositories"
 	"github.com/fabienbellanger/go-url-shortener/server/utils"
+	"github.com/fabienbellanger/goutils"
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 	"go.uber.org/zap"
@@ -105,7 +105,6 @@ func UpdateLink(db *db.DB) fiber.Handler {
 		link.URL = linkForm.URL
 		link.Name = linkForm.Name
 		link.ExpiredAt = linkForm.ExpiredAt
-
 		err = repositories.UpdateLink(db, link)
 		if err != nil {
 			return fiber.NewError(fiber.StatusInternalServerError, err.Error())
@@ -163,7 +162,7 @@ func UploadLink(db *db.DB, logger *zap.Logger) fiber.Handler {
 
 						// Save the files to disk
 						if err := c.SaveFile(file, fileName); err != nil {
-							return err
+							return fiber.NewError(fiber.StatusInternalServerError, err.Error())
 						}
 						defer func() {
 							// Remove file
@@ -176,24 +175,64 @@ func UploadLink(db *db.DB, logger *zap.Logger) fiber.Handler {
 						// Read file
 						f, err := os.ReadFile(fileName)
 						if err != nil {
-							return err
+							return fiber.NewError(fiber.StatusInternalServerError, err.Error())
 						}
 
 						// CSV parser
-						r := csv.NewReader(strings.NewReader(string(f)))
-						r.Comma = ';'
-						records, err := r.ReadAll()
+						reader := csv.NewReader(strings.NewReader(string(f)))
+						reader.Comma = ';'
+						records, err := reader.ReadAll()
 						if err != nil {
-							return err
+							return fiber.NewError(fiber.StatusInternalServerError, err.Error())
 						}
-						log.Println(records)
 
-						// Save links
+						// 100 lines max
+						if len(records) > 100 {
+							return c.Status(fiber.StatusBadRequest).JSON(utils.HTTPError{
+								Code:    fiber.StatusBadRequest,
+								Message: "Bad Request",
+								Details: "Too many lines (max: 100)",
+							})
+						}
+
+						// Save links in database
+						linesError := make(map[int]string)
+						insertedLinks := 0
+						for i, line := range records {
+							// Skip CSV headers
+							if i == 0 {
+								continue
+							}
+
+							expiratedAt, err := goutils.SQLDatetimeToTime(line[2])
+							if err != nil {
+								linesError[i] = fmt.Sprintf("%v", line)
+								continue
+							}
+
+							link := models.LinkForm{
+								URL:       line[0],
+								Name:      &line[1],
+								ExpiredAt: expiratedAt,
+							}
+
+							_, err = repositories.CreateLink(db, &link)
+							if err != nil {
+								linesError[i] = fmt.Sprintf("%v", line)
+								continue
+							}
+							insertedLinks++
+						}
+
+						return c.Status(fiber.StatusOK).JSON(fiber.Map{
+							"inserted_links": insertedLinks,
+							"errors":         linesError,
+						})
 					}
 				}
 			}
 		}
 
-		return c.SendString("OK")
+		return fiber.NewError(fiber.StatusInternalServerError, "invalid or empty CSV file")
 	}
 }
