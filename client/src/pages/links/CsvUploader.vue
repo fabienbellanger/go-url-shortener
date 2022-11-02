@@ -2,7 +2,6 @@
     <div>
         <q-uploader
             @rejected="onRejected"
-            @finished="onFinished"
             @uploaded ="onUploaded"
             @failed ="onFailed"
             :factory="uploadFile"
@@ -41,18 +40,11 @@ export default defineComponent({
             });
         }
 
-        const onFinished = () => {
-            ctx.emit('finished');
-
-            $q.notify({
-                type: 'negative',
-                message: 'Error: Invalid file size (< 1MB) or type (.csv)',
-            });
-        }
-
         const onUploaded = () => {
             console.log('Uploaded');
             uploader.value.reset();
+
+            ctx.emit('finished');
         }
 
         const onFailed = () => {
@@ -62,7 +54,6 @@ export default defineComponent({
         return {
             uploader,
             onRejected,
-            onFinished,
             onUploaded,
             onFailed,
         }
