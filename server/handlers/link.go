@@ -206,7 +206,7 @@ func UploadLink(db *db.DB, logger *zap.Logger) fiber.Handler {
 
 							expiratedAt, err := goutils.SQLDatetimeToTime(line[2])
 							if err != nil {
-								linesError[i] = fmt.Sprintf("%v", line)
+								linesError[i+1] = fmt.Sprintf("%s;%s;%s", line[0], line[1], line[2])
 								continue
 							}
 
@@ -218,7 +218,7 @@ func UploadLink(db *db.DB, logger *zap.Logger) fiber.Handler {
 
 							_, err = repositories.CreateLink(db, &link)
 							if err != nil {
-								linesError[i] = fmt.Sprintf("%v", line)
+								linesError[i+1] = fmt.Sprintf("%s;%s;%s", line[0], line[1], line[2])
 								continue
 							}
 							insertedLinks++

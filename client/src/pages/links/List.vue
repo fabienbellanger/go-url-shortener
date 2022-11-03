@@ -180,7 +180,7 @@
             </q-card>
         </q-dialog>
 
-        <import-links-dialog :visible="displayImportCsvDialog" results=""/>
+        <import-links-dialog v-model="displayImportCsvDialog" :errors="importLinksErrors"/>
     </div>
 </template>
 
@@ -216,6 +216,7 @@ export default defineComponent({
             page: 1,
             rowsNumber: 50,
         });
+        const importLinksErrors = ref({});
 
         const headers = [
             {
@@ -449,14 +450,16 @@ export default defineComponent({
             console.log('Import CSV file');
         }
 
-        const uploadFinished = () => {
-            console.log('Upload has finished');
-
+        const uploadFinished = (errors) => {
             // Hide uploader
             showUploader.value = false;
 
-            // Open dialog
-            displayImportCsvDialog.value = true;
+            // Open dialog with errors
+            if (Object.keys(errors).length > 0)
+            {
+                importLinksErrors.value = errors;
+                displayImportCsvDialog.value = true;
+            }
 
             // Reload links list
             getList();
@@ -477,6 +480,7 @@ export default defineComponent({
             pagination,
             filter,
             loading,
+            importLinksErrors,
             formatDatetime,
             deleteLink,
             newLink,

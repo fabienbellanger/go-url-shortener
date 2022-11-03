@@ -55,14 +55,14 @@ export default defineComponent({
             const insertedLinks = response.inserted_links ?? 0;
 
             uploader.value.reset();
-            ctx.emit('finished', response);
+            ctx.emit('finished', errors);
 
             $q.notify({
                 type: 'positive',
                 html: true,
                 message: `
                     Inserted links: <b>${insertedLinks}</b><br>
-                    Errors: ${errors}
+                    Errors: <b>${Object.keys(errors).length}</b>
                 `,
             });
         }

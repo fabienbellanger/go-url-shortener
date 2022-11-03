@@ -54,7 +54,7 @@
                 </q-tr>
             </template>
             <template v-slot:top-right>
-                <q-input clearable dense debounce="300" v-model="filter" placeholder="Search">
+                <q-input clearable dense debounce="300" v-model="filter" placeholder="Search" class="search_input">
                     <template v-slot:prepend>
                         <q-icon name="search" />
                     </template>
@@ -314,5 +314,9 @@ export default defineComponent({
 <style scoped>
 tr:nth-child(odd) {
     background-color: #93939314 !important;
+}
+
+.search_input {
+    width: 320px;
 }
 </style>
