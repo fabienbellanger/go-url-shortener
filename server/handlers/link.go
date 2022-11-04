@@ -16,6 +16,20 @@ import (
 	"go.uber.org/zap"
 )
 
+type LinkImportError struct {
+	Line int    `json:"line"`
+	Err  string `json:"err"`
+	Data string `json:"data"`
+}
+
+func newLinkImportError(index int, err string, line []string) LinkImportError {
+	return LinkImportError{
+		Line: index + 1,
+		Err:  err,
+		Data: fmt.Sprintf("\"%s\";\"%s\";\"%s\"", line[0], line[1], line[2]),
+	}
+}
+
 // LinksList returns the list of all links
 func LinksList(db *db.DB) fiber.Handler {
 	return func(c *fiber.Ctx) error {
@@ -196,7 +210,8 @@ func UploadLink(db *db.DB, logger *zap.Logger) fiber.Handler {
 						}
 
 						// Save links in database
-						linesError := make(map[int]string)
+						var linesError []LinkImportError
+
 						insertedLinks := 0
 						for i, line := range records {
 							// Skip CSV headers
@@ -206,7 +221,7 @@ func UploadLink(db *db.DB, logger *zap.Logger) fiber.Handler {
 
 							expiratedAt, err := goutils.SQLDatetimeToTime(line[2])
 							if err != nil {
-								linesError[i+1] = fmt.Sprintf("%s;%s;%s", line[0], line[1], line[2])
+								linesError = append(linesError, newLinkImportError(i, "Invalid expiration date", line))
 								continue
 							}
 
@@ -218,7 +233,7 @@ func UploadLink(db *db.DB, logger *zap.Logger) fiber.Handler {
 
 							_, err = repositories.CreateLink(db, &link)
 							if err != nil {
-								linesError[i+1] = fmt.Sprintf("%s;%s;%s", line[0], line[1], line[2])
+								linesError = append(linesError, newLinkImportError(i, "Error during creation", line))
 								continue
 							}
 							insertedLinks++

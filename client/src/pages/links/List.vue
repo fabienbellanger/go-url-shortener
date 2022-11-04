@@ -2,10 +2,6 @@
     <div class="q-px-md">
         <h4 class="q-mt-lg">Links list</h4>
 
-        <div class="q-mb-md" v-if="showUploader">
-            <csv-uploader @finished="uploadFinished"></csv-uploader>
-        </div>
-
         <q-table
             @request="getList"
             :rows="links"
@@ -108,7 +104,7 @@
                     icon-right="file_upload"
                     label="Import csv"
                     class="q-mx-md"
-                    @click="showUploader = true"
+                    @click="showUploaderDialog = true"
                     no-caps></q-btn>
                 <q-btn
                     color="primary"
@@ -180,7 +176,7 @@
             </q-card>
         </q-dialog>
 
-        <import-links-dialog v-model="displayImportCsvDialog" :errors="importLinksErrors"/>
+        <import-links-dialog v-model="showUploaderDialog" @close="uploadFinished"/>
     </div>
 </template>
 
@@ -190,11 +186,10 @@ import Link from '../../models/Link';
 import { defineComponent, ref } from 'vue';
 import { LinkAPI, LinkAPIList } from '../../api/Link';
 import CSV from '../../services/CSV';
-import CsvUploader from './CsvUploader.vue';
 import ImportLinksDialog from './dialogs/ImportLinksDialog.vue';
 
 export default defineComponent({
-    components: { CsvUploader, ImportLinksDialog },
+    components: { ImportLinksDialog },
     name: 'LinksList',
 
     setup() {
@@ -203,9 +198,8 @@ export default defineComponent({
         const confirmDeleteDialog = ref<boolean>(false);
         const confirmCreationDialog = ref<boolean>(false);
         const confirmDeleteLink = ref<boolean>(false);
-        const displayImportCsvDialog = ref<boolean>(false);
         const loading = ref<boolean>(false);
-        const showUploader = ref<boolean>(false);
+        const showUploaderDialog = ref<boolean>(false);
         const currentLink = ref<Link>();
         const valid = ref<boolean>();
         const filter = ref('');
@@ -216,7 +210,6 @@ export default defineComponent({
             page: 1,
             rowsNumber: 50,
         });
-        const importLinksErrors = ref({});
 
         const headers = [
             {
@@ -450,19 +443,14 @@ export default defineComponent({
             console.log('Import CSV file');
         }
 
-        const uploadFinished = (errors) => {
-            // Hide uploader
-            showUploader.value = false;
-
-            // Open dialog with errors
-            if (Object.keys(errors).length > 0)
-            {
-                importLinksErrors.value = errors;
-                displayImportCsvDialog.value = true;
-            }
+        const uploadFinished = (reload) => {
+            // Hide uploader dialog
+            showUploaderDialog.value = false;
 
             // Reload links list
-            getList();
+            if (reload) {
+                getList();
+            }
         }
 
         void getList();
@@ -474,13 +462,11 @@ export default defineComponent({
             confirmDeleteDialog,
             confirmCreationDialog,
             confirmDeleteLink,
-            displayImportCsvDialog,
-            showUploader,
+            showUploaderDialog,
             valid,
             pagination,
             filter,
             loading,
-            importLinksErrors,
             formatDatetime,
             deleteLink,
             newLink,

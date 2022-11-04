@@ -40,6 +40,8 @@ func GetAllLinks(db *database.DB, page, limit, search, sortBy, sort string) (lin
 		q.Order("name " + sort)
 	case "expired_at":
 		q.Order("expired_at " + sort)
+	case "created_at":
+		q.Order("created_at " + sort)
 	}
 
 	if result := q.Find(&links); result.Error != nil {

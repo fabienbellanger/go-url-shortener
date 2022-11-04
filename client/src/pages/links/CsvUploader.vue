@@ -6,7 +6,7 @@
             @failed ="onFailed"
             :factory="uploadFile"
             ref="uploader"
-            label="Upload links from CSV file (100 lines max)"
+            label="Upload links from CSV file"
             color="primary"
             max-file-size="1048576"
             accept=".csv, text/csv"
@@ -30,7 +30,6 @@ export default defineComponent({
     },
     setup(_props, ctx) {
         const $q = useQuasar();
-
         const uploader = ref<QUploader | null>(null);
 
         const onRejected = () => {
@@ -51,18 +50,29 @@ export default defineComponent({
 
         const onUploaded = (info) => {
             const response = JSON.parse(info.xhr.response);
-            const errors = response.errors ?? {};
+            const errors = response.errors ?? [];
             const insertedLinks = response.inserted_links ?? 0;
 
+            let notifyType = 'positive';
+            if (errors.length > 0) {
+                if (insertedLinks == 0) {
+                    notifyType = 'negative';
+                } else {
+                    notifyType = 'warning';
+                }
+            } else if (insertedLinks == 0) {
+                notifyType = 'warning';
+            }
+
             uploader.value.reset();
-            ctx.emit('finished', errors);
+            ctx.emit('finished', insertedLinks, errors);
 
             $q.notify({
-                type: 'positive',
+                type: notifyType,
                 html: true,
                 message: `
                     Inserted links: <b>${insertedLinks}</b><br>
-                    Errors: <b>${Object.keys(errors).length}</b>
+                    Errors: <b>${errors.length}</b>
                 `,
             });
         }
