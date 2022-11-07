@@ -23,10 +23,16 @@
                         {{ props.row.id }}
                     </q-td>
                     <q-td key="name" :props="props">
-                        {{ props.row.name }}
+                        <div class="ellipsis">
+                            {{ props.row.name }}
+                            <q-tooltip>{{ props.row.name }}</q-tooltip>
+                        </div>
                     </q-td>
                     <q-td key="url" :props="props">
-                        {{ props.row.url }}
+                        <div class="ellipsis">
+                            {{ props.row.url }}
+                            <q-tooltip>{{ props.row.url }}</q-tooltip>
+                        </div>
                     </q-td>
                     <q-td key="expired_at" :props="props">
                         {{ formatDatetime(props.row.expired_at) }}
@@ -225,6 +231,7 @@ export default defineComponent({
                 field: 'name',
                 align: 'left',
                 sortable: true,
+                style: 'max-width: 200px',
             },
             {
                 name: 'url',
@@ -232,6 +239,7 @@ export default defineComponent({
                 field: 'url',
                 align: 'left',
                 sortable: true,
+                style: 'max-width: 500px',
             },
             {
                 name: 'expired_at',
@@ -253,7 +261,7 @@ export default defineComponent({
                 name: 'actions',
                 label: 'Actions',
                 align: 'left',
-                style: 'width: 260px',
+                style: 'width: 240px',
                 required: true,
             },
         ];
