@@ -22,7 +22,7 @@ import { LinkAPI } from '../../api/Link';
 
 export default defineComponent({
     name: 'CsvUploader',
-    emits: ['finished'],
+    emits: ['uploaded'],
     methods: {
         uploadFile() {
             return LinkAPI.upload();
@@ -65,7 +65,7 @@ export default defineComponent({
             }
 
             uploader.value.reset();
-            ctx.emit('finished', insertedLinks, errors);
+            ctx.emit('uploaded', insertedLinks, errors);
 
             $q.notify({
                 type: notifyType,

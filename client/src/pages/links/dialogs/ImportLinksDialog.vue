@@ -8,21 +8,22 @@
             <q-card-section v-if="showUploader">
                 <div class="q-mb-sm">
                     <div class="row items-center">
-                        <q-icon name="info" color="blue" class="text-h5" />
+                        <q-icon name="warning" color="warning" class="text-h5" />
                         <span class="text-subtitle1 q-ml-sm">Information about CSV file</span>
                     </div>
                     <ul>
                         <li>Format: "URL";"Name";"Expiration datetime (YYYY-MM-DD HH:MM:SS)"</li>
+                        <li>File must have an header at line 1 ("URL";"Name";"Expiration datetime")</li>
                         <li>; as separator</li>
                         <li>1MB max for file size</li>
-                        <li>100 lines max</li>
+                        <li>100 lines max (with header)</li>
                     </ul>
                 </div>
 
                 <q-separator />
 
                 <div class="row justify-center q-mt-md">
-                    <csv-uploader @finished="uploadFinished"></csv-uploader>
+                    <csv-uploader @uploaded="uploadFinished"></csv-uploader>
                 </div>
             </q-card-section>
 
@@ -35,7 +36,7 @@
                     <q-item v-for="error in errors" :key="error.line">
                         <q-item-section>
                             <q-item-label caption lines="1">Line {{ error.line }} | {{ error.err }}</q-item-label>
-                            <q-item-label lines="2">{{ error.data}}</q-item-label>
+                            <q-item-label lines="3">{{ error.data}}</q-item-label>
                         </q-item-section>
                     </q-item>
                 </q-list>

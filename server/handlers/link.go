@@ -182,7 +182,7 @@ func UploadLink(db *db.DB, logger *zap.Logger) fiber.Handler {
 							// Remove file
 							err = os.Remove(fileName)
 							if err != nil {
-								logger.Error("error when removing CSV upload file", zap.Error(err))
+								logger.Error(fmt.Sprintf("error when removing CSV upload file %v", fileName), zap.Error(err))
 							}
 						}()
 

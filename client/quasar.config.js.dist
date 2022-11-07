@@ -74,7 +74,7 @@ module.exports = configure(function (/* ctx */) {
       env: {
         API_BASE_URL: 'http://localhost:3000/api/v1',
         SORT_URL_BASE: 'https://apitic.fr',
-        VERSION: 'v1.0.7',
+        VERSION: 'v1.1.0',
       },
 
       // rawDefine: {}

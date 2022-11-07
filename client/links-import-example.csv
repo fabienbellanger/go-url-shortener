@@ -1,4 +1,4 @@
-"URL";"Name";"Expiration date"
+"URL";"Name";"Expiration datetime"
 "https://www.apitic.com/test-url";"Apitic";"2050-01-01"
 "https://www.apitic.fr/test-url";"Apitic FR";"2040-01-01 08:00:00"
 "https://www.apitic.fr/test-url2";"Apitic FR";"2040-01-01 08:00:00"
