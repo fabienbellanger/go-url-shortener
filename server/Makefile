@@ -29,10 +29,10 @@ install:
 	$(GO_INSTALL) ./...
 
 update:
-	$(GO_GET) -u && $(GO_MOD) tidy
+	$(GO_GET) -u ./... && $(GO_MOD) tidy
 
 update-all:
-	$(GO_GET) -u all && $(GO_MOD) tidy
+	$(GO_GET) -u all ./... && $(GO_MOD) tidy
 
 serve:
 	$(GO_RUN) $(MAIN_PATH) run
