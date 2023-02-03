@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/fabienbellanger/goutils v1.0.18
 	github.com/go-playground/validator/v10 v10.11.2
-	github.com/gofiber/fiber/v2 v2.41.0
+	github.com/gofiber/fiber/v2 v2.42.0
 	github.com/gofiber/jwt/v3 v3.3.5
 	github.com/golang-jwt/jwt/v4 v4.4.3
 	github.com/google/uuid v1.3.0
@@ -16,7 +16,14 @@ require (
 	github.com/stretchr/testify v1.8.1
 	go.uber.org/zap v1.24.0
 	gorm.io/driver/mysql v1.4.5
-	gorm.io/gorm v1.24.4
+	gorm.io/gorm v1.24.5
+)
+
+require (
+	github.com/philhofer/fwd v1.1.2 // indirect
+	github.com/savsgio/dictpool v0.0.0-20221023140959-7bf2e61cea94 // indirect
+	github.com/savsgio/gotils v0.0.0-20230203094617-bcbc01813b4f // indirect
+	github.com/tinylib/msgp v1.1.8 // indirect
 )
 
 require (
