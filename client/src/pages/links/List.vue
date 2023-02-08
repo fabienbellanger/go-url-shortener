@@ -373,10 +373,10 @@ export default defineComponent({
 
             LinkAPI.list(search, page, rowsPerPage, sortBy, descending)
                 .then((linksList: LinkAPIList) => {
-                    pagination.value.page = page,
-                    pagination.value.rowsPerPage = rowsPerPage,
-                    pagination.value.sortBy = sortBy,
-                    pagination.value.descending = descending,
+                    pagination.value.page = page;
+                    pagination.value.rowsPerPage = rowsPerPage;
+                    pagination.value.sortBy = sortBy;
+                    pagination.value.descending = descending;
                     pagination.value.rowsNumber = linksList.total;
 
                     links.value = linksList.links;
