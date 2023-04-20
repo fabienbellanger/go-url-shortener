@@ -9,13 +9,21 @@
             :filter="filter"
             :rows-per-page-options="[25, 50, 100, 200, 500]"
             :loading="loading"
-            v-model:pagination="pagination"
             row-key="id"
+            v-model:pagination="pagination"
+            v-model:selected="selectedLinks"
             no-data-label="No link"
             color="primary"
+            selection="multiple"
             binary-state-sort>
+            <template v-slot:header-selection="scope">
+                <q-checkbox v-model="scope.selected" size="sm"/>
+            </template>
             <template v-slot:body="props">
                 <q-tr :props="props">
+                    <q-td>
+                        <q-checkbox v-model="props.selected" size="sm"/>
+                    </q-td>
                     <q-td key="id" :props="props" @click="copyLink(props.row.id)" style="cursor: pointer">
                         <q-tooltip transition-show="scale" transition-hide="scale" >
                             Copy link to clipboard
@@ -68,6 +76,7 @@
                             size="sm"
                             icon="edit"
                             color="green"
+                            :disable="selectedLinks.length != 0"
                             @click="
                                 currentLink = props.row;
                                 confirmCreationDialog = true;
@@ -81,6 +90,7 @@
                             size="sm"
                             icon="delete"
                             color="red"
+                            :disable="selectedLinks.length != 0"
                             @click="
                                 currentLink = props.row;
                                 confirmDeleteDialog = true;
@@ -105,20 +115,30 @@
                         Add a new link
                     </q-tooltip>
                 </q-btn>
-                <q-btn
-                    color="primary"
-                    icon-right="file_upload"
-                    label="Import csv"
-                    class="q-mx-md"
-                    @click="showUploaderDialog = true"
-                    no-caps></q-btn>
-                <q-btn
-                    color="primary"
-                    icon-right="file_download"
-                    label="Export to csv"
-                    class="q-mx-md"
-                    @click="exportCSV"
-                    no-caps></q-btn>
+                <div v-if="selectedLinks.length == 0">
+                    <q-btn
+                        color="primary"
+                        icon-right="file_upload"
+                        label="Import csv"
+                        class="q-mx-md"
+                        @click="showUploaderDialog = true"
+                        no-caps></q-btn>
+                    <q-btn
+                        color="primary"
+                        icon-right="file_download"
+                        label="Export to csv"
+                        class="q-mx-md"
+                        @click="exportCSV"
+                        no-caps></q-btn>
+                </div>
+                <div v-else>
+                    <q-btn
+                        flat round
+                        icon="delete"
+                        color="red"
+                        class="q-mx-md"
+                        @click="deleteSelectedLinks"></q-btn>
+                </div>
             </template>
         </q-table>
 
@@ -216,6 +236,7 @@ export default defineComponent({
             page: 1,
             rowsNumber: 50,
         });
+        const selectedLinks = ref([]);
 
         const headers = [
             {
@@ -461,6 +482,10 @@ export default defineComponent({
             }
         }
 
+        const deleteSelectedLinks = () => {
+            console.log(selectedLinks.value);
+        }
+
         void getList();
 
         return {
@@ -475,6 +500,7 @@ export default defineComponent({
             pagination,
             filter,
             loading,
+            selectedLinks,
             formatDatetime,
             deleteLink,
             newLink,
@@ -488,6 +514,7 @@ export default defineComponent({
             importCSV,
             copyLink,
             uploadFinished,
+            deleteSelectedLinks,
         };
     },
 });
