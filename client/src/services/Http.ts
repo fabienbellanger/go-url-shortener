@@ -73,7 +73,8 @@ class Http
      * @param {string}      method                  Méthode {'get', 'post', 'put', 'patch', 'delete'}
      * @param {string}      url                     URL
      * @param {boolean}     withCredentials=true    Paramètres à transmettre (pour les requêtes POST, PUT et PATCH)
-     * @param {object}      parameters={}           Paramètres à transmettre (pour les requêtes GET et DELETE)
+     * @param {object}      parameters={}           Paramètres type query parameters
+     * @param {object}      data={}                 Body
      * @param {object}      headers={}              Headers
      * @param {string}      baseUrl=''              Base URL autre que celle de la caisse
      * @return {Promise<any>}
@@ -83,6 +84,7 @@ class Http
         url: string,
         withCredentials = true,
         parameters = {},
+        data = {},
         headers = {},
         baseUrl = ''): Promise<any>
     {
@@ -104,9 +106,9 @@ class Http
                     headers,
                     withCredentials,
                     baseURL:         baseUrl === '' ? this.baseURL : baseUrl,
-                    params:          method === 'GET' || method === 'DELETE' ? parameters : {},
+                    params:          parameters,
                     responseType:    'json',
-                    data:            method === 'POST' || method === 'PUT' || method === 'PATCH' ? parameters : {},
+                    data:            data,
                 };
                 const axiosInstance: AxiosInstance = axios.create(config);
 

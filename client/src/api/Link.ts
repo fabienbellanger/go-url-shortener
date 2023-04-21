@@ -60,7 +60,7 @@ class LinkAPI {
      public static add(link: Link): Promise<Link> {
         return new Promise((resolve, reject) => {
             if (link.url !== '' && link.expired_at !== '') {
-                Http.request('POST', '/links', true, {
+                Http.request('POST', '/links', true, {}, {
                     url: link.url,
                     name: link.name,
                     expired_at: (new Date(link.expired_at)).toISOString()
@@ -88,7 +88,7 @@ class LinkAPI {
         return new Promise((resolve, reject) => {
             if (link.url !== '' && link.expired_at !== '')
             {
-                Http.request('PUT', `/links/${link.id}`, true, {
+                Http.request('PUT', `/links/${link.id}`, true, {}, {
                     url: link.url,
                     name: link.name,
                     expired_at: (new Date(link.expired_at)).toISOString()
@@ -112,7 +112,7 @@ class LinkAPI {
      *
      * @author Fabien Bellanger
      * @param id string ID du lien
-     * @return {Promise<Link[]>}
+     * @return {Promise<Link>}
      */
     public static delete(id: string): Promise<Link> {
         return new Promise((resolve, reject) => {
@@ -121,6 +121,32 @@ class LinkAPI {
                 Http.request('DELETE', `/links/${id}`)
                     .then((link: Link) => {
                         resolve(link);
+                    })
+                    .catch((error) => {
+                        reject(error);
+                    });
+            }
+            else
+            {
+                reject(new Error('invalid id'));
+            }
+        });
+    }
+
+    /**
+     * Suppression d'un ensemble de liens
+     *
+     * @author Fabien Bellanger
+     * @param ids string[] ID des liens
+     * @return {Promise<Link[]>}
+     */
+    public static deleteSelectedLinks(ids: string[]): Promise<void> {
+        return new Promise((resolve, reject) => {
+            if (ids.length !== 0)
+            {
+                Http.request('DELETE', '/links/selected', true, {}, ids)
+                    .then(() => {
+                        resolve();
                     })
                     .catch((error) => {
                         reject(error);

@@ -486,6 +486,26 @@ export default defineComponent({
 
         const deleteSelectedLinks = () => {
             console.log(selectedLinks.value);
+            const linksIds = selectedLinks.value.map(v => v.id);
+            
+            LinkAPI.deleteSelectedLinks(linksIds)
+                .then(() => {
+                    getList();
+
+                    $q.notify({
+                        type: 'positive',
+                        message: 'Successfull links deletion',
+                    });
+                })
+                .catch((error) => {
+                    getList();
+
+                    $q.notify({
+                        type: 'negative',
+                        message: `Error: ${error}`,
+                    });
+                    console.error(error);
+                });
         }
 
         void getList();

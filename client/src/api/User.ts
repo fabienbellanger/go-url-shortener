@@ -22,7 +22,7 @@ class UserAPI {
      */
      public static login(authUser: AuthUser): Promise<User> {
         return new Promise((resolve, reject) => {
-            Http.request('POST', 'login', false, { username: authUser.email, password: authUser.password })
+            Http.request('POST', 'login', false, {}, { username: authUser.email, password: authUser.password })
                 .then((user: User) => {
                     resolve(User.fromUser(user));
                 })
@@ -97,7 +97,7 @@ class UserAPI {
      public static add(user: User): Promise<User> {
         return new Promise((resolve, reject) => {
             if (user.lastname !== '' && user.firstname !== '' && user.username !== '') {
-                Http.request('POST', '/register', true, {
+                Http.request('POST', '/register', true, {}, {
                     lastname: user.lastname,
                     firstname: user.firstname,
                     username: user.username,
@@ -149,7 +149,7 @@ class UserAPI {
     public static updatePassword(token: string, password: string): Promise<void> {
         return new Promise((resolve, reject) => {
             if (token.length === 36 && password.length >= 8) {
-                Http.request('PATCH', `/update-password/${token}`, false, {
+                Http.request('PATCH', `/update-password/${token}`, false, {}, {
                     password,
                 })
                     .then(() => {
