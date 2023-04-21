@@ -133,8 +133,9 @@
                 </div>
                 <div v-else>
                     <q-btn
-                        flat round
+                        flat
                         icon="delete"
+                        :label="'(' + selectedLinks.length + ')'"
                         color="red"
                         class="q-mx-md"
                         @click="deleteSelectedLinks"></q-btn>
@@ -388,6 +389,7 @@ export default defineComponent({
 
         const getList = (props?) => {
             loading.value = true;
+            selectedLinks.value = [];
 
             const search = props ? props.filter : filter.value;
             const { page, rowsPerPage, sortBy, descending } = props ? props.pagination : pagination.value;

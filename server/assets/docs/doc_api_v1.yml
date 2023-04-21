@@ -394,6 +394,29 @@ paths:
             $ref: "#/components/responses/Unauthorized"
         '500':
             $ref: "#/components/responses/InternalServerError"
+  /links/selected:
+    delete:
+      summary: ""
+      description: Delete selected links
+      tags:
+        - "Links"
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LinksIdForm'
+      responses:
+        '204':
+          description: OK
+        '400':
+            $ref: "#/components/responses/BadRequest"
+        '401':
+            $ref: "#/components/responses/Unauthorized"
+        '500':
+            $ref: "#/components/responses/InternalServerError"
 components:
   securitySchemes:
     bearerAuth:
@@ -592,3 +615,7 @@ components:
         - url
         - name
         - expired_at
+    LinksIdForm:
+      type: array
+      items:
+        type: string

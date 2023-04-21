@@ -111,3 +111,16 @@ func DeleteLink(db *database.DB, id string) error {
 	}
 	return nil
 }
+
+// DeleteLinks remove selected links.
+func DeleteLinks(db *database.DB, ids []string) error {
+	if len(ids) == 0 {
+		return errors.New("links id list is empty")
+	}
+
+	r := db.Where("id IN ?", ids).Delete(&models.Link{})
+	if r.Error != nil {
+		return r.Error
+	}
+	return nil
+}

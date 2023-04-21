@@ -22,6 +22,8 @@ type LinkImportError struct {
 	Data string `json:"data"`
 }
 
+type LinksIdForm = []string
+
 func newLinkImportError(index int, err string, line []string) LinkImportError {
 	return LinkImportError{
 		Line: index + 1,
@@ -141,6 +143,28 @@ func DeleteLink(db *db.DB) fiber.Handler {
 		}
 
 		err := repositories.DeleteLink(db, id)
+		if err != nil {
+			return fiber.NewError(fiber.StatusInternalServerError, err.Error())
+		}
+
+		return c.SendStatus(fiber.StatusNoContent)
+	}
+}
+
+// DeleteLinks delete selected links.
+func DeleteLinks(db *db.DB) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		links := new(LinksIdForm)
+		if err := c.BodyParser(links); err != nil {
+			return c.Status(fiber.StatusBadRequest).JSON(utils.HTTPError{
+				Code:    fiber.StatusBadRequest,
+				Message: "Bad Request",
+			})
+		}
+
+		fmt.Printf("ids=%v\n", links)
+
+		err := repositories.DeleteLinks(db, *links)
 		if err != nil {
 			return fiber.NewError(fiber.StatusInternalServerError, err.Error())
 		}
