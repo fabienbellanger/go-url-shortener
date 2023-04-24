@@ -11,7 +11,7 @@ import (
 	"go.uber.org/zap"
 )
 
-const version = "0.0.1"
+const version = "1.2.0"
 
 var rootCmd = &cobra.Command{
 	Use:     "go-url-shortener",
