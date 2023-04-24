@@ -138,7 +138,7 @@
                         :label="'(' + selectedLinks.length + ')'"
                         color="red"
                         class="q-mx-md"
-                        @click="deleteSelectedLinks"></q-btn>
+                        @click="confirmDeleteSelectedDialog = true"></q-btn>
                 </div>
             </template>
         </q-table>
@@ -154,6 +154,21 @@
                 <q-card-actions align="right">
                     <q-btn flat label="Cancel" color="primary" v-close-popup />
                     <q-btn flat label="Delete" color="primary" v-close-popup @click="deleteLink" />
+                </q-card-actions>
+            </q-card>
+        </q-dialog>
+
+        <!-- Confirm links deletion dialog -->
+        <q-dialog v-model="confirmDeleteSelectedDialog" persistent>
+            <q-card>
+                <q-card-section class="row items-center">
+                    <q-icon name="warning" color="warning" class="text-h4" />
+                    <span class="q-ml-sm text-h6">Do you really want to delete selected links ({{ selectedLinks.length }})?</span>
+                </q-card-section>
+
+                <q-card-actions align="right">
+                    <q-btn flat label="Cancel" color="primary" v-close-popup />
+                    <q-btn flat label="Delete" color="primary" v-close-popup @click="deleteSelectedLinks" />
                 </q-card-actions>
             </q-card>
         </q-dialog>
@@ -225,6 +240,7 @@ export default defineComponent({
         const confirmDeleteDialog = ref<boolean>(false);
         const confirmCreationDialog = ref<boolean>(false);
         const confirmDeleteLink = ref<boolean>(false);
+        const confirmDeleteSelectedDialog = ref<boolean>(false);
         const loading = ref<boolean>(false);
         const showUploaderDialog = ref<boolean>(false);
         const currentLink = ref<Link>();
@@ -516,6 +532,7 @@ export default defineComponent({
             headers,
             confirmDeleteDialog,
             confirmCreationDialog,
+            confirmDeleteSelectedDialog,
             confirmDeleteLink,
             showUploaderDialog,
             valid,
