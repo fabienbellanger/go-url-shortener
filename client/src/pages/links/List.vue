@@ -486,10 +486,6 @@ export default defineComponent({
                 });
         };
 
-        const importCSV = () => {
-            console.log('Import CSV file');
-        }
-
         const uploadFinished = (reload) => {
             // Hide uploader dialog
             showUploaderDialog.value = false;
@@ -501,7 +497,6 @@ export default defineComponent({
         }
 
         const deleteSelectedLinks = () => {
-            console.log(selectedLinks.value);
             const linksIds = selectedLinks.value.map(v => v.id);
             
             LinkAPI.deleteSelectedLinks(linksIds)
@@ -550,7 +545,6 @@ export default defineComponent({
             getList,
             clearLinkCreation,
             exportCSV,
-            importCSV,
             copyLink,
             uploadFinished,
             deleteSelectedLinks,
