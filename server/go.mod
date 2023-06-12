@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/fabienbellanger/goutils v1.0.18
-	github.com/go-playground/validator/v10 v10.14.0
+	github.com/go-playground/validator/v10 v10.14.1
 	github.com/gofiber/fiber/v2 v2.46.0
 	github.com/gofiber/jwt/v3 v3.3.10
 	github.com/golang-jwt/jwt/v4 v4.5.0
@@ -12,7 +12,7 @@ require (
 	github.com/itchyny/base58-go v0.2.1
 	github.com/logrusorgru/aurora/v3 v3.0.0
 	github.com/spf13/cobra v1.7.0
-	github.com/spf13/viper v1.15.0
+	github.com/spf13/viper v1.16.0
 	github.com/stretchr/testify v1.8.3
 	go.uber.org/zap v1.24.0
 	gorm.io/driver/mysql v1.5.1
