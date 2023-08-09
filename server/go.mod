@@ -1,6 +1,6 @@
 module github.com/fabienbellanger/go-url-shortener/server
 
-go 1.20
+go 1.21
 
 require (
 	github.com/fabienbellanger/goutils v1.0.18
