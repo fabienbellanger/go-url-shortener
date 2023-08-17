@@ -417,6 +417,30 @@ paths:
             $ref: "#/components/responses/Unauthorized"
         '500':
             $ref: "#/components/responses/InternalServerError"
+  /links/export/csv:
+    get:
+      summary: ""
+      description: Export link into CSV
+      tags:
+        - "Links"
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: s
+          schema:
+            type: string
+          required: false
+          description: Search
+      responses:
+        '200':
+          description: OK
+        '400':
+            $ref: "#/components/responses/BadRequest"
+        '401':
+            $ref: "#/components/responses/Unauthorized"
+        '500':
+            $ref: "#/components/responses/InternalServerError"
 components:
   securitySchemes:
     bearerAuth:

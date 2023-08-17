@@ -1,10 +1,12 @@
 package handlers
 
 import (
+	"bufio"
 	"encoding/csv"
 	"fmt"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/fabienbellanger/go-url-shortener/server/db"
 	models "github.com/fabienbellanger/go-url-shortener/server/models"
@@ -273,5 +275,54 @@ func UploadLink(db *db.DB, logger *zap.Logger) fiber.Handler {
 		}
 
 		return fiber.NewError(fiber.StatusInternalServerError, "invalid or empty CSV file")
+	}
+}
+
+// ExportCSVLinks exports all filtered link into CSV
+func ExportCSVLinks(db *db.DB, logger *zap.Logger) fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		search := c.Query("s")
+
+		// Get links rows
+		rows, err := repositories.GetLinksRowsToExport(db, search)
+		if err != nil {
+			return fiber.NewError(fiber.StatusInternalServerError, "Error when getting links to export")
+		}
+
+		c.Set(fiber.HeaderContentType, "text/csv; charset=utf-8")
+		c.Context().SetBodyStreamWriter(func(w *bufio.Writer) {
+			// Header
+			header := [5]string{"ID", "Name", "URL", "Expired at", "Created at"}
+			csvWriter := csv.NewWriter(w)
+			csvWriter.Comma = ';'
+			err := csvWriter.Write(header[:])
+			if err != nil {
+				return
+			}
+
+			// Rows
+			for i := 0; rows.Next(); i++ {
+				var l models.Link
+				err := db.ScanRows(rows, &l)
+				if err != nil {
+					continue
+				}
+
+				link := []string{
+					l.ID,
+					*l.Name,
+					l.URL,
+					l.ExpiredAt.Format(time.RFC3339),
+					l.CreatedAt.Format(time.RFC3339),
+				}
+
+				err = csvWriter.Write(link)
+				if err != nil {
+					continue
+				}
+			}
+		})
+
+		return nil
 	}
 }

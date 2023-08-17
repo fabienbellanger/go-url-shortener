@@ -1,4 +1,27 @@
-.PHONY: all install update update-all serve serve-race logs build test bench clean help test-cover-count cover-count test-cover-atomic cover-atomic html-cover-count html-cover-atomic run-cover-count run-cover-atomic view-cover-count view-cover-atomic
+.PHONY:
+	all \
+	install \
+	update \
+	update-all \
+	serve \
+	serve-race \
+	watch \
+	logs \
+	build \
+	test \
+	bench \
+	clean \
+	help \
+	test-cover-count \
+	cover-count \
+	test-cover-atomic \
+	cover-atomic \
+	html-cover-count \
+	html-cover-atomic \
+	run-cover-count \
+	run-cover-atomic \
+	view-cover-count \
+	view-cover-atomic
 
 .DEFAULT_GOAL=help
 
@@ -19,6 +42,7 @@ GO_GET=$(GO_CMD) get
 GO_MOD=$(GO_CMD) mod
 GO_TOOL=$(GO_CMD) tool
 GO_VET=$(GO_CMD) vet
+AIR_BIN=air
 BINARY_NAME=go-url-shortener
 BINARY_UNIX=$(BINARY_NAME)_unix
 DOCKER_COMPOSE=docker-compose
@@ -39,6 +63,9 @@ serve:
 
 serve-race:
 	$(GO_RUN) run -race $(MAIN_PATH)
+
+watch:
+	$(AIR_BIN)
 
 ## logs: Display access/error logs
 logs:

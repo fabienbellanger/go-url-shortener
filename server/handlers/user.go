@@ -244,7 +244,7 @@ func ForgottenPassword(db *db.DB) fiber.Handler {
 			})
 		}
 
-		// Sale line in database
+		// Save line in database
 		passwordReset := models.PasswordResets{
 			UserID:    user.ID,
 			Token:     uuid.New().String(),

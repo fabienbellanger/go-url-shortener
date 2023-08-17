@@ -165,8 +165,8 @@ class LinkAPI {
      * @author Fabien Bellanger
      * @return {Promise<any>}
      */
-     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-     public static upload(): Promise<any> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    public static upload(): Promise<any> {
         return new Promise((resolve, reject) => {
             const user = User.fromSession();
             if (user.token !== null && user.token !== '') {
@@ -180,6 +180,28 @@ class LinkAPI {
             } else {
                 reject('Empty token');
             }
+        });
+    }
+
+    /**
+     * Export des liens
+     *
+     * @author Fabien Bellanger
+     * @return {Promise<string>}
+     */
+    public static export(filter: string): Promise<string> {
+        return new Promise((resolve, reject) => {
+            // Construct URL
+            const url = new URL('https://www.apitic.com/links/export/csv');
+            if (filter) {
+                url.searchParams.append('s', filter);
+            }
+
+            Http.request('GET', url.pathname + url.search, true)
+                .then((data) => resolve(data))
+                .catch((error) => {
+                    reject(error);
+                });
         });
     }
 }

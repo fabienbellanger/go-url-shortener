@@ -103,7 +103,7 @@
                 </q-tr>
             </template>
             <template v-slot:top-right>
-                <q-input clearable dense debounce="300" v-model="filter" placeholder="Search" class="search_input">
+                <q-input clearable dense debounce="500" v-model="filter" placeholder="Search" class="search_input">
                     <template v-slot:prepend>
                         <q-icon name="search" />
                     </template>
@@ -227,7 +227,6 @@ import { exportFile, useQuasar, date, copyToClipboard } from 'quasar';
 import Link from '../../models/Link';
 import { defineComponent, ref } from 'vue';
 import { LinkAPI, LinkAPIList } from '../../api/Link';
-import CSV from '../../services/CSV';
 import ImportLinksDialog from './dialogs/ImportLinksDialog.vue';
 
 export default defineComponent({
@@ -428,7 +427,32 @@ export default defineComponent({
                 });
         };
 
-        const exportCSV = () => {
+        const exportCSV = (props?) => {
+            loading.value = true;
+
+            const search = props ? props.filter : filter.value;
+
+            LinkAPI.export(search)
+                .then((content: string) => {
+                    const status = exportFile(
+                        `url-shortener_${date.formatDate(Date.now(), 'YYYYMMDDHHmmss')}.csv`,
+                        content,
+                        'text/csv',
+                    );
+                    if (status !== true) {
+                        $q.notify({
+                            color: 'negative',
+                            icon: 'warning',
+                            message: 'Browser denied file download',
+                        });
+                    }
+                    loading.value = false;
+                })
+                .catch((error) => {
+                    console.error(error);
+                    loading.value = false;
+                });
+            /*
             // Headers
             const csvHeaders = headers
                 .filter((line) => line.name != 'actions')
@@ -467,6 +491,7 @@ export default defineComponent({
                         message: 'Error during CSV creation',
                     });
                 });
+            */
         };
 
         const copyLink = (id) => {

@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"database/sql"
 	"errors"
 	"time"
 
@@ -48,6 +49,15 @@ func GetAllLinks(db *database.DB, page, limit, search, sortBy, sort string) (lin
 		return links, total, result.Error
 	}
 	return
+}
+
+// GetLinksRowsToExport returns *sql.Rows of links for export.
+func GetLinksRowsToExport(db *database.DB, search string) (*sql.Rows, error) {
+	var q = db.Model(&models.Link{})
+	if search != "" {
+		q.Where("url LIKE ? OR name LIKE ?", "%"+search+"%", "%"+search+"%")
+	}
+	return q.Rows()
 }
 
 // CreateLink adds a shortened URL in database.

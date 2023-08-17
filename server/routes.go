@@ -78,4 +78,5 @@ func registerProtectedAPIRoutes(r fiber.Router, db *db.DB, logger *zap.Logger) {
 	links.Put("/:id", handlers.UpdateLink(db))
 	links.Delete("/selected", handlers.DeleteLinks(db))
 	links.Delete("/:id", handlers.DeleteLink(db))
+	links.Get("/export/csv", handlers.ExportCSVLinks(db, logger))
 }
