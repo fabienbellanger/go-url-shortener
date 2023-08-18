@@ -103,7 +103,7 @@
                 </q-tr>
             </template>
             <template v-slot:top-right>
-                <q-input clearable dense debounce="500" v-model="filter" placeholder="Search" class="search_input">
+                <q-input clearable dense debounce="400" v-model="filter" placeholder="Search" class="search_input">
                     <template v-slot:prepend>
                         <q-icon name="search" />
                     </template>
@@ -223,7 +223,7 @@
 </template>
 
 <script lang="ts">
-import { exportFile, useQuasar, date, copyToClipboard } from 'quasar';
+import { useQuasar, date, copyToClipboard, exportFile } from 'quasar';
 import Link from '../../models/Link';
 import { defineComponent, ref } from 'vue';
 import { LinkAPI, LinkAPIList } from '../../api/Link';
@@ -427,10 +427,10 @@ export default defineComponent({
                 });
         };
 
-        const exportCSV = (props?) => {
+        const exportCSV = () => {
             loading.value = true;
 
-            const search = props ? props.filter : filter.value;
+            const search = filter.value ?? '';
 
             LinkAPI.export(search)
                 .then((content: string) => {
@@ -452,46 +452,6 @@ export default defineComponent({
                     console.error(error);
                     loading.value = false;
                 });
-            /*
-            // Headers
-            const csvHeaders = headers
-                .filter((line) => line.name != 'actions')
-                .map((line) => line.label);
-
-            // Body
-            const csvBody = links.value
-                .map((link) => [
-                    link.id,
-                    link.name,
-                    link.url,
-                    link.expired_at,
-                    link.created_at,
-                ]);
-
-            const CSVService = new CSV(';');
-            CSVService.stringify(csvHeaders, csvBody)
-                .then((content) => {
-                    const status = exportFile(
-                        `${date.formatDate(Date.now(), 'YYYYMMDDHHmmss')}_url-shortener.csv`,
-                        content,
-                        'text/csv',
-                    );
-                    if (status !== true) {
-                        $q.notify({
-                            color: 'negative',
-                            icon: 'warning',
-                            message: 'Browser denied file download',
-                        });
-                    }
-                })
-                .catch(() => {
-                    $q.notify({
-                        color: 'negative',
-                        icon: 'warning',
-                        message: 'Error during CSV creation',
-                    });
-                });
-            */
         };
 
         const copyLink = (id) => {

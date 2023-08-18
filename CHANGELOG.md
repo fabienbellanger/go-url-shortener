@@ -24,7 +24,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Improvement CSV export to export all wanted links using server stream (less memory consumption if large data)
 
-## `1.2.1` (2023-08-04) [CURRENT]
+## `1.3.0` (2023-08-18) [CURRENT]
+
+### Added
+- Add `CHANGELOG.md` file
+
+### Changed
+- Improve CSV export. The CSV file now contains all pages not only selected page.
+- Update dependencies for server and client
+
+## `1.2.1` (2023-08-04)
 
 ### Changed
 - Update dependencies for server and client
