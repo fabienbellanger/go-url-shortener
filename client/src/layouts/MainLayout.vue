@@ -8,17 +8,17 @@
                     <span>URL Shortener</span>
                 </q-toolbar-title>
                 <div>
-                    <span>Hi {{userStore.user.firstname}},</span>
-                    <q-btn flat round :to="{ name: 'logout' }" class="q-mx-sm" icon="logout">
-                        <q-tooltip transition-show="scale" transition-hide="scale" >
-                            Logout
-                        </q-tooltip>
-                    </q-btn>
-                    <q-btn flat round
+                    <q-btn flat round class="q-mr-md"
                         :icon="$q.dark.isActive ? 'light_mode' : 'dark_mode'"
                         @click="toggleDarkMode">
                         <q-tooltip transition-show="scale" transition-hide="scale" >
                             Change theme
+                        </q-tooltip>
+                    </q-btn>
+                    <span>Hi {{userStore.user.firstname}},</span>
+                    <q-btn flat round :to="{ name: 'logout' }" class="q-ml-xs" icon="logout">
+                        <q-tooltip transition-show="scale" transition-hide="scale" >
+                            Logout
                         </q-tooltip>
                     </q-btn>
                 </div>

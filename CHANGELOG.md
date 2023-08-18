@@ -18,12 +18,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
-- Add `CHANGELOG.md` file
-
-### Changed
-- Improvement CSV export to export all wanted links using server stream (less memory consumption if large data)
-
 ## `1.3.0` (2023-08-18) [CURRENT]
 
 ### Added
