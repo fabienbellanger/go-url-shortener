@@ -13,27 +13,27 @@
     "test": "echo \"No test specified\" && exit 0"
   },
   "dependencies": {
-    "@quasar/extras": "^1.16.5",
-    "axios": "^1.4.0",
-    "csv-stringify": "^6.4.0",
+    "@quasar/extras": "^1.16.6",
+    "axios": "^1.5.0",
+    "csv-stringify": "^6.4.2",
     "pinia": "^2.1.6",
-    "quasar": "^2.12.4",
+    "quasar": "^2.12.5",
     "vue": "^3.3.4",
     "vue-i18n": "^9.2.2",
     "vue-router": "^4.2.4"
   },
   "devDependencies": {
-    "@quasar/app-vite": "^1.4.5",
-    "@types/node": "^18.17.5",
-    "@typescript-eslint/eslint-plugin": "^6.4.0",
-    "@typescript-eslint/parser": "^6.4.0",
+    "@quasar/app-vite": "^1.4.6",
+    "@types/node": "^18.17.12",
+    "@typescript-eslint/eslint-plugin": "^6.5.0",
+    "@typescript-eslint/parser": "^6.5.0",
     "autoprefixer": "^10.4.15",
     "email-validator": "^2.0.4",
-    "eslint": "^8.47.0",
+    "eslint": "^8.48.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-vue": "^9.17.0",
-    "prettier": "^3.0.2",
-    "typescript": "^5.1.6"
+    "prettier": "^3.0.3",
+    "typescript": "^5.2.2"
   },
   "engines": {
     "node": "^18 || ^16 || ^14.19",
