@@ -5,7 +5,7 @@ go 1.21
 require (
 	github.com/fabienbellanger/goutils v1.0.18
 	github.com/go-playground/validator/v10 v10.15.4
-	github.com/gofiber/fiber/v2 v2.49.1
+	github.com/gofiber/fiber/v2 v2.49.2
 	github.com/gofiber/jwt/v3 v3.3.10
 	github.com/golang-jwt/jwt/v4 v4.5.0
 	github.com/google/uuid v1.3.1
@@ -14,7 +14,7 @@ require (
 	github.com/spf13/cobra v1.7.0
 	github.com/spf13/viper v1.16.0
 	github.com/stretchr/testify v1.8.4
-	go.uber.org/zap v1.25.0
+	go.uber.org/zap v1.26.0
 	gorm.io/driver/mysql v1.5.1
 	gorm.io/gorm v1.25.4
 )
@@ -50,7 +50,7 @@ require (
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/tinylib/msgp v1.1.8 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
-	github.com/valyala/fasthttp v1.49.0 // indirect
+	github.com/valyala/fasthttp v1.50.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/crypto v0.13.0 // indirect
