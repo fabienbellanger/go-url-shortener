@@ -276,7 +276,7 @@ func ForgottenPassword(db *db.DB) fiber.Handler {
 			return fiber.NewError(fiber.StatusInternalServerError, "Error when creating password reset email")
 		}
 
-		err = mail.Send(viper.GetString("FORGOTTEN_PASSWORD_EMAIL_FROM"), to, subject, body.String(), "", "", viper.GetString("SMTP_HOST"), viper.GetInt("SMTP_PORT"))
+		err = mail.Send(viper.GetString("FORGOTTEN_PASSWORD_EMAIL_FROM"), to, nil, nil, subject, body.String(), "", "", viper.GetString("SMTP_HOST"), viper.GetInt("SMTP_PORT"))
 		if err != nil {
 			return fiber.NewError(fiber.StatusInternalServerError, "Error when sending password reset email")
 		}
