@@ -12,12 +12,16 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var serverLogsFlag bool
-var dbLogsFlag bool
+var (
+	serverLogsFlag bool
+	dbLogsFlag     bool
+	verboseFlag    bool
+)
 
 func init() {
 	logReaderCmd.Flags().BoolVarP(&serverLogsFlag, "server", "s", false, "server access/error logs")
 	logReaderCmd.Flags().BoolVarP(&dbLogsFlag, "db", "d", false, "database logs")
+	logReaderCmd.Flags().BoolVarP(&verboseFlag, "verbose", "v", false, "verbose logs")
 
 	rootCmd.AddCommand(logReaderCmd)
 }
@@ -34,7 +38,7 @@ var logReaderCmd = &cobra.Command{
 
 		scanner := bufio.NewScanner(os.Stdin)
 		for scanner.Scan() {
-			line, _ := parseLine(scanner.Bytes(), serverLogsFlag, dbLogsFlag)
+			line, _ := parseLine(scanner.Bytes(), serverLogsFlag, dbLogsFlag, verboseFlag)
 			fmt.Println(line)
 		}
 
@@ -45,26 +49,27 @@ var logReaderCmd = &cobra.Command{
 }
 
 type errorLog struct {
-	Level     string    `json:"level"`
-	Time      time.Time `json:"time"`
-	Caller    string    `json:"caller"`
-	Message   string    `json:"message"`
-	Error     string    `json:"error"`
-	Code      uint      `json:"code"`
-	Method    string    `json:"method"`
-	Path      string    `json:"path"`
-	Body      string    `json:"body"`
-	URL       string    `json:"url"`
-	Host      string    `json:"host"`
-	IP        string    `json:"ip"`
-	RequestID string    `json:"requestId"`
-	Latency   string    `json:"latency"`
-	UserAgent string    `json:"userAgent"`
+	Level       string    `json:"level"`
+	Time        time.Time `json:"time"`
+	Caller      string    `json:"caller"`
+	Message     string    `json:"message"`
+	Description string    `json:"description"`
+	Error       string    `json:"error"`
+	Code        uint      `json:"code"`
+	Method      string    `json:"method"`
+	Path        string    `json:"path"`
+	Body        string    `json:"body"`
+	URL         string    `json:"url"`
+	Host        string    `json:"host"`
+	IP          string    `json:"ip"`
+	RequestID   string    `json:"requestId"`
+	Latency     string    `json:"latency"`
+	UserAgent   string    `json:"userAgent"`
 }
 
-func parseLine(line []byte, serverLogs, dbLogs bool) (string, error) {
+func parseLine(line []byte, serverLogs, dbLogs, verboseFlag bool) (string, error) {
 	if serverLogs {
-		return parseLineServer(line)
+		return parseLineServer(line, verboseFlag)
 	} else if dbLogs {
 		return string(line), nil
 	}
@@ -72,7 +77,7 @@ func parseLine(line []byte, serverLogs, dbLogs bool) (string, error) {
 }
 
 // TODO: Improve parser
-func parseLineServer(line []byte) (string, error) {
+func parseLineServer(line []byte, verboseFlag bool) (string, error) {
 	var errLog errorLog
 	err := json.Unmarshal(line, &errLog)
 	if err != nil {
@@ -87,6 +92,10 @@ func parseLineServer(line []byte) (string, error) {
 	if errLog.Message != "" {
 		message = fmt.Sprintf(" | Message: %s", errLog.Message)
 	}
+	description := ""
+	if errLog.Description != "" {
+		description = fmt.Sprintf(" | Description: %s", errLog.Description)
+	}
 	errorLog := ""
 	if errLog.Error != "" && errLog.Error != "<nil>" {
 		errorLog = fmt.Sprintf(" | Error: %s", errLog.Error)
@@ -96,27 +105,27 @@ func parseLineServer(line []byte) (string, error) {
 		method = fmt.Sprintf(" | %6s", displayLogMethod(errLog.Method))
 	}
 	url := ""
-	if errLog.URL != "" {
+	if errLog.URL != "" && verboseFlag {
 		url = fmt.Sprintf(" | %s", errLog.URL)
 	}
 	path := ""
-	if errLog.URL != "" {
+	if errLog.Path != "" {
 		path = fmt.Sprintf(" | %s", errLog.Path)
 	}
 	host := ""
-	if errLog.Host != "" {
+	if errLog.Host != "" && verboseFlag {
 		host = fmt.Sprintf(" | %s", errLog.Host)
 	}
 	ip := ""
-	if errLog.IP != "" {
+	if errLog.IP != "" && verboseFlag {
 		ip = fmt.Sprintf(" | IP: %s", errLog.IP)
 	}
-	requestId := ""
+	requestID := ""
 	if errLog.RequestID != "" {
-		requestId = fmt.Sprintf(" | RequestID: %s", errLog.RequestID)
+		requestID = fmt.Sprintf(" | RequestID: %s", errLog.RequestID)
 	}
 	userAgent := ""
-	if errLog.UserAgent != "" {
+	if errLog.UserAgent != "" && verboseFlag {
 		userAgent = fmt.Sprintf(" | UserAgent: %s", errLog.UserAgent)
 	}
 	latency := ""
@@ -124,18 +133,19 @@ func parseLineServer(line []byte) (string, error) {
 		latency = fmt.Sprintf(" | %s", errLog.Latency)
 	}
 
-	result := fmt.Sprintf("%s %7s %s%s%s%s%s%s%s%s%s%s%s%s",
+	result := fmt.Sprintf("%s | %7s %s%s%s%s%s%s%s%s%s%s%s%s%s",
 		errLog.Time.Format(time.RFC3339),
 		displayLogLevel(errLog.Level),
 		code,
 		method,
 		message,
+		description,
 		errorLog,
 		path,
 		url,
 		host,
 		ip,
-		requestId,
+		requestID,
 		userAgent,
 		latency,
 		" | "+errLog.Caller,
