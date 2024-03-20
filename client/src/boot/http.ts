@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, Method } from 'axios';
+import { boot } from 'quasar/wrappers';
+import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, Method, AxiosResponse } from 'axios';
 import User from 'src/models/User';
+import { Router } from 'vue-router';
 
 /**
  * Service gérant les requêtes HTTP
@@ -18,6 +20,7 @@ class Http
     public parameters?: any;
     public url = '';
     public withCredentials = false;
+    private router: Router | null = null;
 
     /**
      * Constructeur
@@ -36,35 +39,39 @@ class Http
         return Http.instance;
     }
 
-    // /**
-    //  * Gestion des erreurs
-    //  *
-    //  * @static
-    //  * @author Fabien Bellanger
-    //  * @param {AxiosResponse<any>} response
-    //  */
-    // public static manageError(response: AxiosResponse<any>): void
-    // {
-    //     if (response.status === 401)
-    //     {
-    //         // Not autorized : On déconnecte l'utilisateur
-    //         // -------------------------------------------
-    //         // tslint:disable-next-line
-    //         app.$router.push('/logout').catch(() => {});
-    //     }
-    //     else if (response.status === 200)
-    //     {
-    //         const data = response.data;
+    /**
+     * Ajout du router
+     *
+     * @author Fabien Bellanger
+     * @param {Router} router
+     */
+    public addRouter(router: Router): void
+    {
+        this.router = router;
+    }
 
-    //         if (typeof data.code === 'number' && data.code === 401)
-    //         {
-    //             // Not autorized : On déconnecte l'utilisateur
-    //             // -------------------------------------------
-    //             // tslint:disable-next-line
-    //             app.$router.push('/logout').catch(() => {});
-    //         }
-    //     }
-    // }
+    /**
+     * Gestion de l'erreur 401
+     *
+     * @author Fabien Bellanger
+     * @param {AxiosResponse<any>} response
+     */
+    public manage401Error(response: AxiosResponse<any>): void
+    {
+        if (response.status === 401)
+        {
+            this.router?.push({name: 'logout'});
+        }
+        else if (response.status === 200)
+        {
+            const data = response.data;
+
+            if (typeof data.code === 'number' && data.code === 401)
+            {
+                this.router?.push({name: 'logout'});
+            }
+        }
+    }
 
     /**
      * Requête
@@ -125,7 +132,7 @@ class Http
 
                             if (user.token !== null && user.token !== '')
                             {
-                                requestConfig.headers = { Authorization: `Bearer ${user.token}` };
+                                requestConfig.headers.Authorization = `Bearer ${user.token}`;
                             }
                         }
 
@@ -141,17 +148,18 @@ class Http
                 // ----------------------
                 axiosInstance.interceptors.response.use((response) =>
                     {
-                        // Gestion des erreurs
-                        // Http.manageError(response);
+                        this.manage401Error(response);
 
                         return response;
                     },
                     (error: AxiosError) =>
                     {
-                        // Http.manageError(error.response);
-                        const message = error.response.data.message ?? 'Unknown error';
+                        const responseError = error.response;
+                        if (responseError !== undefined) {
+                            this.manage401Error(responseError);
+                        }
                         
-                        return Promise.reject(message);
+                        return Promise.reject(error);
                     },
                 );
 
@@ -171,6 +179,9 @@ class Http
     }
 }
 
-const instance: Http = new Http();
-Object.freeze(instance);
-export default instance;
+export default boot(({ router }) => {
+    http.addRouter(router);
+});
+
+const http: Http = new Http();
+export { http };

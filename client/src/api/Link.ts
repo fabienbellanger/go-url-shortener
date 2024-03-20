@@ -1,6 +1,7 @@
+import { http } from 'src/boot/http';
 import Link from 'src/models/Link';
 import User from 'src/models/User';
-import Http from '../services/Http';
+
 
 type LinkAPIList = {
     total: number;
@@ -33,7 +34,7 @@ class LinkAPI {
                 url.searchParams.append('sort-by', sortBy);
             }
 
-            Http.request('GET', url.pathname + url.search, true)
+            http.request('GET', url.pathname + url.search, true)
                 .then((data) => {
                     const links = data.links;
                     for (const i in links) {
@@ -60,7 +61,7 @@ class LinkAPI {
      public static add(link: Link): Promise<Link> {
         return new Promise((resolve, reject) => {
             if (link.url !== '' && link.expired_at !== '') {
-                Http.request('POST', '/links', true, {}, {
+                http.request('POST', '/links', true, {}, {
                     url: link.url,
                     name: link.name,
                     expired_at: (new Date(link.expired_at)).toISOString()
@@ -88,7 +89,7 @@ class LinkAPI {
         return new Promise((resolve, reject) => {
             if (link.url !== '' && link.expired_at !== '')
             {
-                Http.request('PUT', `/links/${link.id}`, true, {}, {
+                http.request('PUT', `/links/${link.id}`, true, {}, {
                     url: link.url,
                     name: link.name,
                     expired_at: (new Date(link.expired_at)).toISOString()
@@ -118,7 +119,7 @@ class LinkAPI {
         return new Promise((resolve, reject) => {
             if (id !== '')
             {
-                Http.request('DELETE', `/links/${id}`)
+                http.request('DELETE', `/links/${id}`)
                     .then((link: Link) => {
                         resolve(link);
                     })
@@ -144,7 +145,7 @@ class LinkAPI {
         return new Promise((resolve, reject) => {
             if (ids.length !== 0)
             {
-                Http.request('DELETE', '/links/selected', true, {}, ids)
+                http.request('DELETE', '/links/selected', true, {}, ids)
                     .then(() => {
                         resolve();
                     })
@@ -171,7 +172,7 @@ class LinkAPI {
             const user = User.fromSession();
             if (user.token !== null && user.token !== '') {
                 resolve({
-                    url: `${Http.baseURL}/links/upload`,
+                    url: `${http.baseURL}/links/upload`,
                     method: 'POST',
                     headers: [
                         { name: 'Authorization', value: `Bearer ${user.token}` }
@@ -197,7 +198,7 @@ class LinkAPI {
                 url.searchParams.append('s', filter);
             }
 
-            Http.request('GET', url.pathname + url.search, true)
+            http.request('GET', url.pathname + url.search, true)
                 .then((data) => resolve(data))
                 .catch((error) => {
                     reject(error);

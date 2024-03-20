@@ -33,6 +33,7 @@ module.exports = configure(function (/* ctx */) {
       'i18n',
       'axios',
       'pinia',
+      'http',
     ],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#css
@@ -74,7 +75,7 @@ module.exports = configure(function (/* ctx */) {
       env: {
         API_BASE_URL: 'http://localhost:3000/api/v1',
         SORT_URL_BASE: 'https://apitic.fr',
-        VERSION: 'v1.3.0',
+        VERSION: 'v1.3.1',
       },
 
       // rawDefine: {}

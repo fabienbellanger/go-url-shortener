@@ -1,5 +1,5 @@
 import User from 'src/models/User';
-import Http from '../services/Http';
+import { http } from 'src/boot/http';
 import * as EmailValidator from 'email-validator';
 
 interface AuthUser {
@@ -22,7 +22,7 @@ class UserAPI {
      */
      public static login(authUser: AuthUser): Promise<User> {
         return new Promise((resolve, reject) => {
-            Http.request('POST', 'login', false, {}, { username: authUser.email, password: authUser.password })
+            http.request('POST', 'login', false, {}, { username: authUser.email, password: authUser.password })
                 .then((user: User) => {
                     resolve(User.fromUser(user));
                 })
@@ -40,7 +40,7 @@ class UserAPI {
      */
     public static list(): Promise<User[]> {
         return new Promise((resolve, reject) => {
-            Http.request('GET', 'users', true)
+            http.request('GET', 'users', true)
                 .then((data: User[]) => {
                     const users = [];
 
@@ -74,7 +74,7 @@ class UserAPI {
      public static delete(id: string): Promise<User> {
         return new Promise((resolve, reject) => {
             if (id !== '') {
-                Http.request('DELETE', `/users/${id}`)
+                http.request('DELETE', `/users/${id}`)
                     .then((user: User) => {
                         resolve(user);
                     })
@@ -97,7 +97,7 @@ class UserAPI {
      public static add(user: User): Promise<User> {
         return new Promise((resolve, reject) => {
             if (user.lastname !== '' && user.firstname !== '' && user.username !== '') {
-                Http.request('POST', '/register', true, {}, {
+                http.request('POST', '/register', true, {}, {
                     lastname: user.lastname,
                     firstname: user.firstname,
                     username: user.username,
@@ -125,7 +125,7 @@ class UserAPI {
     public static forgottenPassword(email: string): Promise<void> {
         return new Promise((resolve, reject) => {
             if (EmailValidator.validate(email)) {
-                Http.request('POST', `/forgotten-password/${email}`)
+                http.request('POST', `/forgotten-password/${email}`)
                     .then(() => {
                         resolve();
                     })
@@ -149,7 +149,7 @@ class UserAPI {
     public static updatePassword(token: string, password: string): Promise<void> {
         return new Promise((resolve, reject) => {
             if (token.length === 36 && password.length >= 8) {
-                Http.request('PATCH', `/update-password/${token}`, false, {}, {
+                http.request('PATCH', `/update-password/${token}`, false, {}, {
                     password,
                 })
                     .then(() => {
