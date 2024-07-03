@@ -93,7 +93,7 @@
                 <q-form @submit="editUser">
                     <q-card-section class="row items-center">
                         <span class="q-ml-sm text-h6">
-                            <span v-if="currentUser.id">User update</span>
+                            <span v-if="currentUser?.id">User update</span>
                             <span v-else>User creation</span>
                         </span>
                     </q-card-section>
@@ -113,7 +113,7 @@
                             :rules="[val => !!val || 'Username is required', val => checkEmail(val) || 'Email is not valid']"/>
                     </q-card-section>
 
-                    <q-card-section v-if="!currentUser.id">
+                    <q-card-section v-if="!currentUser?.id">
                         <q-input v-model="currentUser.password" label="Password*" style="width: 320px" autofocus type="password" autocomplete="new-password"
                             :rules="[val => !!val || 'Password is required', val => val.length >= 8 || 'Please use at least 8 characters']"/>
                     </q-card-section>
@@ -131,10 +131,67 @@
 <script lang="ts">
 import { useQuasar } from 'quasar';
 import User from '../../models/User';
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, onMounted } from 'vue';
 import { useUserStore } from '../../stores/user';
 import { UserAPI } from '../../api/User';
 import * as EmailValidator from 'email-validator';
+
+const headers = [
+    {
+        name: 'id',
+        label: 'ID',
+        field: 'id',
+        align: 'left',
+        style: 'width: 160px',
+        sortable: false,
+        required: true,
+    },
+    {
+        name: 'lastname',
+        label: 'Lastname',
+        field: 'lastname',
+        align: 'left',
+        style: '',
+        sortable: true,
+        required: true,
+    },
+    {
+        name: 'firstname',
+        label: 'Firstname',
+        field: 'firstname',
+        align: 'left',
+        style: '',
+        sortable: true,
+        required: true,
+    },
+    {
+        name: 'username',
+        label: 'Username',
+        field: 'username',
+        align: 'left',
+        style: '',
+        sortable: true,
+        required: true,
+    },
+    {
+        name: 'created_at',
+        label: 'Created at',
+        field: 'created_at',
+        align: 'left',
+        style: 'width: 100px',
+        sortable: true,
+        required: true,
+    },
+    {
+        name: 'actions',
+        label: 'Actions',
+        field: 'actions',
+        align: 'left',
+        style: 'width: 80px',
+        sortable: false,
+        required: true,
+    },
+];
 
 export default defineComponent({
     name: 'UsersList',
@@ -143,78 +200,33 @@ export default defineComponent({
         const $q = useQuasar();
         const userStore = useUserStore();
         const filter = ref('');
-        const users = ref<User[]>();
+        const users = ref<User[]>([]);
         const currentUser = ref<User>();
         const confirmDeleteDialog = ref<boolean>(false);
         const confirmCreationDialog = ref<boolean>(false);
         const confirmDeleteUser = ref<boolean>(false);
 
-        const headers = [
-            {
-                name: 'id',
-                label: 'ID',
-                field: 'id',
-                align: 'left',
-                style: 'width: 160px',
-            },
-            {
-                name: 'lastname',
-                label: 'Lastname',
-                field: 'lastname',
-                align: 'left',
-                sortable: true,
-            },
-            {
-                name: 'firstname',
-                label: 'Firstname',
-                field: 'firstname',
-                align: 'left',
-                sortable: true,
-            },
-            {
-                name: 'username',
-                label: 'Username',
-                field: 'username',
-                align: 'left',
-                sortable: true,
-            },
-            {
-                name: 'created_at',
-                label: 'Created at',
-                field: 'created_at',
-                align: 'left',
-                sortable: true,
-                style: 'width: 100px',
-            },
-            {
-                name: 'actions',
-                label: 'Actions',
-                align: 'left',
-                style: 'width: 80px',
-                required: true,
-            },
-        ];
-
-        const formatDatetime = (datetime: string) => {
+        function formatDatetime(datetime: string) {
             if (datetime) {
-                return datetime.substr(0, 10) + ' ' + datetime.substr(11, 5);
+                console.log(datetime);
+                return datetime.substring(0, 10) + ' ' + datetime.substring(11, 19);
             }
             return '';
         };
 
-        const clearUserCreation = () => {
+        function clearUserCreation() {
             currentUser.value = User.initEmpty();
         };
 
-        const checkEmail = (email: string) => {
+        function checkEmail(email: string) {
             return EmailValidator.validate(email);
         };
 
-        const isAuthenticatedUser = () => {
-            return userStore.user.id === currentUser.value.id;
+        function isAuthenticatedUser() {
+            return userStore.user.id === currentUser.value?.id;
         };
 
-        const getList = () => {
+        function getList() {
             UserAPI.list()
                 .then((usersList: User[]) => {
                     users.value = usersList;
@@ -224,7 +236,7 @@ export default defineComponent({
                 });
         };
 
-        const deleteUser = () => {
+        function deleteUser() {
             if (isAuthenticatedUser()) {
                 $q.notify({
                     type: 'negative',
@@ -233,31 +245,39 @@ export default defineComponent({
 
                 return;
             }
+            
+            if (currentUser.value) {
+                UserAPI.delete(currentUser.value.id)
+                    .then(() => {
+                        getList();
 
-            UserAPI.delete(currentUser.value.id)
-                .then(() => {
-                    getList();
-                    currentUser.value.id = '';
+                        if (currentUser.value) {
+                            currentUser.value.id = '';
+                        }
 
-                    $q.notify({
-                        type: 'positive',
-                        message: 'Successfull user deletion',
+                        $q.notify({
+                            type: 'positive',
+                            message: 'Successfull user deletion',
+                        });
+                    })
+                    .catch((error) => {
+                        getList();
+
+                        if (currentUser.value) {
+                            currentUser.value.id = '';
+                        }
+
+                        $q.notify({
+                            type: 'negative',
+                            message: `Error: ${error}`,
+                        });
+                        console.error(error);
                     });
-                })
-                .catch((error) => {
-                    getList();
-                    currentUser.value.id = '';
-
-                    $q.notify({
-                        type: 'negative',
-                        message: `Error: ${error}`,
-                    });
-                    console.error(error);
-                });
+            }
         };
 
-        const editUser = () => {
-            if (currentUser.value.id) {
+        function editUser() {
+            if (currentUser.value && currentUser.value.id) {
                 updateUser();
             } else {
                 addUser();
@@ -266,30 +286,34 @@ export default defineComponent({
             confirmCreationDialog.value = false;
         };
 
-        const addUser = () => {
-            UserAPI.add(currentUser.value)
-                .then(() => {
-                    getList();
+        function addUser() {
+            if (currentUser.value) {
+                UserAPI.add(currentUser.value)
+                    .then(() => {
+                        getList();
 
-                    $q.notify({
-                        type: 'positive',
-                        message: 'Successfull user creation',
+                        $q.notify({
+                            type: 'positive',
+                            message: 'Successfull user creation',
+                        });
+                    })
+                    .catch((error) => {
+                        $q.notify({
+                            type: 'negative',
+                            message: `Error: ${error}`,
+                        });
+                        console.error(error);
                     });
-                })
-                .catch((error) => {
-                    $q.notify({
-                        type: 'negative',
-                        message: `Error: ${error}`,
-                    });
-                    console.error(error);
-                });
+            }
         };
 
-        const updateUser = () => {
+        function updateUser() {
             return;
         };
 
-        getList();
+        onMounted(() => {
+            getList();
+        })
 
         return {
             headers,

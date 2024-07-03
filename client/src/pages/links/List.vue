@@ -9,6 +9,7 @@
             :filter="filter"
             :rows-per-page-options="[25, 50, 100, 200, 500]"
             :loading="loading"
+            ref="linksRef"
             row-key="id"
             v-model:pagination="pagination"
             v-model:selected="selectedLinks"
@@ -179,7 +180,7 @@
                 <q-form @submit="editLink">
                     <q-card-section class="row items-center">
                         <span class="q-ml-sm text-h6">
-                            <span v-if="currentLink.id">Link update ({{ currentLink.id }})</span>
+                            <span v-if="currentLink?.id">Link update ({{ currentLink.id }})</span>
                             <span v-else>Link creation</span>
                         </span>
                     </q-card-section>
@@ -225,9 +226,65 @@
 <script lang="ts">
 import { useQuasar, date, copyToClipboard, exportFile } from 'quasar';
 import Link from '../../models/Link';
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, onMounted } from 'vue';
 import { LinkAPI, LinkAPIList } from '../../api/Link';
 import ImportLinksDialog from './dialogs/ImportLinksDialog.vue';
+
+const headers = [
+    {
+        name: 'id',
+        label: 'ID',
+        field: 'id',
+        align: 'left',
+        style: 'width: 120px',
+        sortable: false,
+        required: false,
+    },
+    {
+        name: 'name',
+        label: 'Name',
+        field: 'name',
+        align: 'left',
+        style: 'max-width: 200px',
+        sortable: true,
+        required: false,
+    },
+    {
+        name: 'url',
+        label: 'URL',
+        field: 'url',
+        align: 'left',
+        style: 'max-width: 500px',
+        sortable: true,
+        required: false,
+    },
+    {
+        name: 'expired_at',
+        label: 'Expired at',
+        field: 'expired_at',
+        align: 'left',
+        style: 'width: 100px',
+        sortable: true,
+        required: false,
+    },
+    {
+        name: 'created_at',
+        label: 'Created at',
+        field: 'created_at',
+        align: 'left',
+        style: 'width: 100px',
+        sortable: true,
+        required: false,
+    },
+    {
+        name: 'actions',
+        label: 'Actions',
+        align: 'left',
+        style: 'width: 240px',
+        sortable: false,
+        required: true,
+    },
+];
 
 export default defineComponent({
     components: { ImportLinksDialog },
@@ -235,7 +292,8 @@ export default defineComponent({
 
     setup() {
         const $q = useQuasar();
-        const links = ref<Link[]>();
+        const links = ref<Link[]>([]);
+        const linksRef = ref();
         const confirmDeleteDialog = ref<boolean>(false);
         const confirmCreationDialog = ref<boolean>(false);
         const confirmDeleteLink = ref<boolean>(false);
@@ -243,7 +301,6 @@ export default defineComponent({
         const loading = ref<boolean>(false);
         const showUploaderDialog = ref<boolean>(false);
         const currentLink = ref<Link>();
-        const valid = ref<boolean>();
         const filter = ref('');
         const pagination = ref({
             sortBy: 'created_at',
@@ -252,104 +309,64 @@ export default defineComponent({
             page: 1,
             rowsNumber: 50,
         });
-        const selectedLinks = ref([]);
-
-        const headers = [
-            {
-                name: 'id',
-                label: 'ID',
-                field: 'id',
-                align: 'left',
-                style: 'width: 120px',
-            },
-            {
-                name: 'name',
-                label: 'Name',
-                field: 'name',
-                align: 'left',
-                sortable: true,
-                style: 'max-width: 200px',
-            },
-            {
-                name: 'url',
-                label: 'URL',
-                field: 'url',
-                align: 'left',
-                sortable: true,
-                style: 'max-width: 500px',
-            },
-            {
-                name: 'expired_at',
-                label: 'Expired at',
-                field: 'expired_at',
-                align: 'left',
-                sortable: true,
-                style: 'width: 100px',
-            },
-            {
-                name: 'created_at',
-                label: 'Created at',
-                field: 'created_at',
-                align: 'left',
-                sortable: true,
-                style: 'width: 100px',
-            },
-            {
-                name: 'actions',
-                label: 'Actions',
-                align: 'left',
-                style: 'width: 240px',
-                required: true,
-            },
-        ];
+        const selectedLinks = ref<Link[]>([]);
 
         const formatDatetime = (datetime: string) => {
             if (datetime) {
-                return datetime.substr(0, 10) + ' ' + datetime.substr(11, 5);
+                console.log(datetime);
+                return datetime.substring(0, 10) + ' ' + datetime.substring(11, 19);
             }
             return '';
         };
 
-        const clearLinkCreation = () => {
+        function clearLinkCreation() {
             currentLink.value = new Link(
                 '',
                 '',
                 '',
-                (date.addToDate(new Date(), {years: 50}).toISOString()).substr(0, 10),
+                (date.addToDate(new Date(), {years: 50}).toISOString()).substring(0, 10),
                 '',
             );
         };
 
-        const deleteLink = () => {
-            LinkAPI.delete(currentLink.value.id)
-                .then(() => {
-                    getList();
-                    currentLink.value.id = '';
+        function deleteLink() {
+            if (currentLink.value) {
+                LinkAPI.delete(currentLink.value.id)
+                    .then(() => {
+                        getList();
 
-                    $q.notify({
-                        type: 'positive',
-                        message: 'Successfull link deletion',
-                    });
-                })
-                .catch((error) => {
-                    getList();
-                    currentLink.value.id = '';
+                        if (currentLink.value) {
+                            currentLink.value.id = '';
+                        }
 
-                    $q.notify({
-                        type: 'negative',
-                        message: `Error: ${error}`,
+                        $q.notify({
+                            type: 'positive',
+                            message: 'Successfull link deletion',
+                        });
+                    })
+                    .catch((error) => {
+                        getList();
+
+                        if (currentLink.value) {
+                            currentLink.value.id = '';
+                        }
+
+                        $q.notify({
+                            type: 'negative',
+                            message: `Error: ${error}`,
+                        });
+                        console.error(error);
                     });
-                    console.error(error);
-                });
+            }
         };
 
-        const newLink = () => {
+        function newLink() {
             clearLinkCreation();
             confirmCreationDialog.value = true;
         };
 
-        const editLink = () => {
-            if (currentLink.value.id) {
+        function editLink() {
+            if (currentLink.value && currentLink.value.id) {
                 updateLink();
             } else {
                 addLink();
@@ -358,51 +375,57 @@ export default defineComponent({
             confirmCreationDialog.value = false;
         };
 
-        const addLink = () => {
-            LinkAPI.add(currentLink.value)
-                .then(() => {
-                    getList();
+        function addLink() {
+            if (currentLink.value) {
+                LinkAPI.add(currentLink.value)
+                    .then(() => {
+                        getList();
 
-                    $q.notify({
-                        type: 'positive',
-                        message: 'Successfull link creation',
+                        $q.notify({
+                            type: 'positive',
+                            message: 'Successfull link creation',
+                        });
+                    })
+                    .catch((error) => {
+                        $q.notify({
+                            type: 'negative',
+                            message: `Error: ${error}`,
+                        });
+                        console.error(error);
                     });
-                })
-                .catch((error) => {
-                    $q.notify({
-                        type: 'negative',
-                        message: `Error: ${error}`,
-                    });
-                    console.error(error);
-                });
+            }
         };
 
-        const updateLink = () => {
-            LinkAPI.update(currentLink.value)
-                .then(() => {
-                    getList();
+        function updateLink() {
+            if (currentLink.value) {
+                LinkAPI.update(currentLink.value)
+                    .then(() => {
+                        getList();
 
-                    $q.notify({
-                        type: 'positive',
-                        message: 'Successfull link update',
-                    });
-                })
-                .catch((error) => {
-                    getList();
+                        $q.notify({
+                            type: 'positive',
+                            message: 'Successfull link update',
+                        });
+                    })
+                    .catch((error) => {
+                        getList();
 
-                    $q.notify({
-                        type: 'negative',
-                        message: `Error: ${error}`,
+                        $q.notify({
+                            type: 'negative',
+                            message: `Error: ${error}`,
+                        });
+                        console.error(error);
                     });
-                    console.error(error);
-                });
+            }
         };
 
-        const openLink = () => {
-            window.open(`${process.env.SORT_URL_BASE}/${currentLink.value.id}`, '_blank');
+        function openLink() {
+            if (currentLink.value?.id) {
+                window.open(`${process.env.SORT_URL_BASE}/${currentLink.value.id}`, '_blank');
+            }
         };
 
-        const getList = (props?) => {
+        function getList(props?) {
             loading.value = true;
             selectedLinks.value = [];
 
@@ -427,7 +450,7 @@ export default defineComponent({
                 });
         };
 
-        const exportCSV = () => {
+        function exportCSV() {
             loading.value = true;
 
             const search = filter.value ?? '';
@@ -454,7 +477,7 @@ export default defineComponent({
                 });
         };
 
-        const copyLink = (id) => {
+        function copyLink(id: string) {
             copyToClipboard(`${process.env.SORT_URL_BASE}/${id}`)
                 .then(() => {
                     $q.notify({
@@ -471,7 +494,7 @@ export default defineComponent({
                 });
         };
 
-        const uploadFinished = (reload) => {
+        function uploadFinished(reload: boolean) {
             // Hide uploader dialog
             showUploaderDialog.value = false;
 
@@ -481,7 +504,7 @@ export default defineComponent({
             }
         }
 
-        const deleteSelectedLinks = () => {
+        function deleteSelectedLinks() {
             const linksIds = selectedLinks.value.map(v => v.id);
             
             LinkAPI.deleteSelectedLinks(linksIds)
@@ -504,10 +527,13 @@ export default defineComponent({
                 });
         }
 
-        void getList();
+        onMounted(() => {
+            linksRef.value.requestServerInteraction();
+        });
 
         return {
             links,
+            linksRef,
             currentLink,
             headers,
             confirmDeleteDialog,
@@ -515,7 +541,6 @@ export default defineComponent({
             confirmDeleteSelectedDialog,
             confirmDeleteLink,
             showUploaderDialog,
-            valid,
             pagination,
             filter,
             loading,
