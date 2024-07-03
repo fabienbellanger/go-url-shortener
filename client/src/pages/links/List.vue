@@ -44,10 +44,10 @@
                         </div>
                     </q-td>
                     <q-td key="expired_at" :props="props">
-                        {{ formatDatetime(props.row.expired_at) }}
+                        {{ props.row.expired_at }}
                     </q-td>
                     <q-td key="created_at" :props="props">
-                        {{ formatDatetime(props.row.created_at) }}
+                        {{ props.row.created_at }}
                     </q-td>
                     <q-td key="actions" :props="props">
                         <q-btn
@@ -311,14 +311,6 @@ export default defineComponent({
         });
         const selectedLinks = ref<Link[]>([]);
 
-        const formatDatetime = (datetime: string) => {
-            if (datetime) {
-                console.log(datetime);
-                return datetime.substring(0, 10) + ' ' + datetime.substring(11, 19);
-            }
-            return '';
-        };
-
         function clearLinkCreation() {
             currentLink.value = new Link(
                 '',
@@ -545,7 +537,6 @@ export default defineComponent({
             filter,
             loading,
             selectedLinks,
-            formatDatetime,
             deleteLink,
             newLink,
             editLink,
