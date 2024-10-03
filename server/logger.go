@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"strings"
 	"time"
 
 	"github.com/fabienbellanger/goutils"
@@ -60,6 +61,7 @@ func getLoggerOutputs(logOutputs []string, appName, filePath string) (outputs []
 			return nil, err
 		}
 
+		appName = strings.ReplaceAll(appName, " ", "_")
 		if appName == "" {
 			return nil, errors.New("no APP_NAME variable defined")
 		}
