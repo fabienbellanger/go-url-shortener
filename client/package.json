@@ -13,13 +13,13 @@
     "test": "echo \"No test specified\" && exit 0"
   },
   "dependencies": {
-    "@quasar/extras": "^1.16.12",
-    "axios": "^1.7.7",
-    "csv-stringify": "^6.5.1",
-    "pinia": "2.2.4",
-    "quasar": "2.18.1",
-    "vue": "3.5.16",
-    "vue-i18n": "11.1.5",
+    "@quasar/extras": "^1.17.0",
+    "axios": "^1.11.0",
+    "csv-stringify": "^6.6.0",
+    "pinia": "3.0.3",
+    "quasar": "2.18.2",
+    "vue": "3.5.18",
+    "vue-i18n": "11.1.11",
     "vue-router": "4.5.1"
   },
   "devDependencies": {
@@ -27,12 +27,12 @@
     "@types/node": "20.17.57",
     "@typescript-eslint/eslint-plugin": "^7.18.0",
     "@typescript-eslint/parser": "^7.18.0",
-    "autoprefixer": "^10.4.20",
+    "autoprefixer": "^10.4.21",
     "email-validator": "^2.0.4",
     "eslint": "^8.57.1",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-vue": "^9.28.0",
-    "prettier": "^3.3.3",
+    "eslint-config-prettier": "^9.1.2",
+    "eslint-plugin-vue": "^9.33.0",
+    "prettier": "^3.6.2",
     "typescript": "5.5.4"
   },
   "engines": {
