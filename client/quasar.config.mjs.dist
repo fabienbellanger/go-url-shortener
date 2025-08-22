@@ -73,7 +73,7 @@ export default configure(function (/* ctx */) {
       // analyze: true,
       
       env: {
-        API_BASE_URL: 'http://localhost:3000/api/v1',
+        API_BASE_URL: 'https://apitic.fr/api/v1',
         SORT_URL_BASE: 'https://apitic.fr',
         VERSION: 'v1.3.4',
       },
