@@ -4,6 +4,7 @@
 	update \
 	update-all \
 	serve \
+	serve-logs \
 	serve-race \
 	watch \
 	logs \
@@ -60,6 +61,9 @@ update-all:
 
 serve:
 	$(GO_RUN) $(MAIN_PATH) run
+
+serve-logs:
+	$(GO_RUN) $(MAIN_PATH) run | $(GO_RUN) $(MAIN_PATH) logs --server
 
 serve-race:
 	$(GO_RUN) run -race $(MAIN_PATH)
