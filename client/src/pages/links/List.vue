@@ -75,6 +75,19 @@
                         &nbsp;
                         <q-btn
                             size="sm"
+                            icon="qr_code_2"
+                            color="deep-purple"
+                            @click="
+                                currentLink = props.row;
+                                openQRCode();
+                            ">
+                            <q-tooltip transition-show="scale" transition-hide="scale" >
+                                Display QR code
+                            </q-tooltip>
+                        </q-btn>
+                        &nbsp;
+                        <q-btn
+                            size="sm"
                             icon="edit"
                             color="green"
                             :disable="selectedLinks.length != 0"
@@ -187,7 +200,7 @@
 
                     <q-card-section>
                         <q-input v-model="currentLink.url" label="URL*" style="width: 320px" autofocus type="url" 
-                            :rules="[val => (val.startsWith('http://') || val.startsWith('https://')) || 'URL is required']"/>
+                            :rules="[(val: string) => (val.startsWith('http://') || val.startsWith('https://')) || 'URL is required']"/>
                     </q-card-section>
 
                     <q-card-section>
@@ -196,7 +209,7 @@
 
                     <q-card-section>
                         <q-input v-model="currentLink.expired_at" label="Expired At*" style="width: 320px"
-                            :rules="[val => !!val || 'Expiration date is required']">
+                            :rules="[(val: any) => !!val || 'Expiration date is required']">
                             <template v-slot:prepend>
                                 <q-icon name="event" class="cursor-pointer">
                                     <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -219,6 +232,23 @@
             </q-card>
         </q-dialog>
 
+        <!-- Display QR Code -->
+        <q-dialog v-model="displayQRCodeDialog">
+            <q-card>
+                <q-card-section class="row items-center">
+                    <qrcode-vue :value="currentURL"
+                        :image-settings='qrCodeImageSettings'
+                        level="H"
+                        render-as="svg"
+                        size="192"/>
+                </q-card-section>
+
+                <q-card-actions align="center">
+                    <q-btn flat label="Close" color="primary" v-close-popup />
+                </q-card-actions>
+            </q-card>
+        </q-dialog>
+
         <import-links-dialog v-model="showUploaderDialog" @close="uploadFinished"/>
     </div>
 </template>
@@ -229,6 +259,8 @@ import Link from '../../models/Link';
 import { defineComponent, ref, onMounted } from 'vue';
 import { LinkAPI, LinkAPIList } from '../../api/Link';
 import ImportLinksDialog from './dialogs/ImportLinksDialog.vue';
+import QrcodeVue from 'qrcode.vue';
+import type { ImageSettings } from 'qrcode.vue';
 
 const headers = [
     {
@@ -287,7 +319,7 @@ const headers = [
 ];
 
 export default defineComponent({
-    components: { ImportLinksDialog },
+    components: { ImportLinksDialog, QrcodeVue },
     name: 'LinksList',
 
     setup() {
@@ -300,7 +332,9 @@ export default defineComponent({
         const confirmDeleteSelectedDialog = ref<boolean>(false);
         const loading = ref<boolean>(false);
         const showUploaderDialog = ref<boolean>(false);
+        const displayQRCodeDialog = ref<boolean>(false);
         const currentLink = ref<Link>();
+        const currentURL = ref<string>('');
         const filter = ref('');
         const pagination = ref({
             sortBy: 'created_at',
@@ -310,6 +344,13 @@ export default defineComponent({
             rowsNumber: 50,
         });
         const selectedLinks = ref<Link[]>([]);
+
+        const qrCodeImageSettings = ref<ImageSettings>({
+            src: '/logo.png',
+            width: 64,
+            height: 64,
+            excavate: true,
+        });
 
         function clearLinkCreation() {
             currentLink.value = new Link(
@@ -416,6 +457,13 @@ export default defineComponent({
                 window.open(`${process.env.SORT_URL_BASE}/${currentLink.value.id}`, '_blank');
             }
         };
+
+        function openQRCode() {
+            if (currentLink.value?.id) {
+                currentURL.value = `${process.env.SORT_URL_BASE}/${currentLink.value.id}`;
+                displayQRCodeDialog.value = true;
+            }
+        }
 
         function getList(props?) {
             loading.value = true;
@@ -527,22 +575,26 @@ export default defineComponent({
             links,
             linksRef,
             currentLink,
+            currentURL,
             headers,
             confirmDeleteDialog,
             confirmCreationDialog,
             confirmDeleteSelectedDialog,
             confirmDeleteLink,
             showUploaderDialog,
+            displayQRCodeDialog,
             pagination,
             filter,
             loading,
             selectedLinks,
+            qrCodeImageSettings,
             deleteLink,
             newLink,
             editLink,
             addLink,
             updateLink,
             openLink,
+            openQRCode,
             getList,
             clearLinkCreation,
             exportCSV,

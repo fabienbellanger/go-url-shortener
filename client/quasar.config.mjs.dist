@@ -75,7 +75,7 @@ export default configure(function (/* ctx */) {
       env: {
         API_BASE_URL: 'https://apitic.fr/api/v1',
         SORT_URL_BASE: 'https://apitic.fr',
-        VERSION: 'v1.3.4',
+        VERSION: 'v1.4.0',
       },
 
       // rawDefine: {}
