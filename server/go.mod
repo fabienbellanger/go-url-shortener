@@ -1,8 +1,6 @@
 module github.com/fabienbellanger/go-url-shortener/server
 
-go 1.24.0
-
-toolchain go1.24.3
+go 1.25
 
 require (
 	github.com/fabienbellanger/goutils v1.0.20
@@ -20,8 +18,6 @@ require (
 	gorm.io/driver/mysql v1.6.0
 	gorm.io/gorm v1.31.0
 )
-
-require go.yaml.in/yaml/v3 v3.0.4 // indirect
 
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
@@ -56,6 +52,7 @@ require (
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.66.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
+	go.yaml.in/yaml/v3 v3.0.4 // indirect
 	golang.org/x/crypto v0.42.0 // indirect
 	golang.org/x/sys v0.36.0 // indirect
 	golang.org/x/text v0.29.0 // indirect
