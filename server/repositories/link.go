@@ -70,7 +70,7 @@ func CreateLink(db *database.DB, link *models.LinkForm) (newLink models.Link, er
 	} else if len(links) > 1 {
 		return newLink, errors.New("too many links with the same URL")
 	} else if len(links) == 1 {
-		return newLink, errors.New("a link with the same URL already exists")
+		return links[0], nil
 	}
 
 	// Create new link
