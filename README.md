@@ -309,6 +309,39 @@ drill --benchmark drill.yml --stats --quiet
     └── docker-compose.yml
 ```
 
+## Convention de commit
+
+Les messages de commit suivent une structure simple : une ligne de résumé, puis une liste de puces taguées par emoji selon la nature du changement.
+
+```
+<résumé en une ligne, < 70 caractères, sans point final>
+
+🔥 Feature: <ce qui a été ajouté>
+♻️ Refactor: <ce qui a été restructuré>
+🩹 Fix: <ce qui a été corrigé>
+🚨 Test: <ce qui change côté tests>
+📚 Doc: <ce qui change côté documentation>
+🎨 Style: <formatage / style UI>
+```
+
+Règles :
+
+- La première ligne est un résumé clair, sans emoji ni préfixe.
+- Ne garder que les puces qui s'appliquent réellement au commit (pas de catégorie vide).
+- Rester simple et lisible, y compris pour des non-natifs : phrases courtes, pas de jargon.
+- Regrouper les fichiers liés sous une même puce plutôt qu'une puce par fichier.
+- Ne pas inventer de changement absent du diff.
+
+Exemple :
+
+```
+Switch client tooling to Biome and bump deps
+
+🔥 Feature: add CLAUDE.md and README.md
+♻️ Refactor: replace legacy ESLint config with flat config and Biome
+🎨 Style: reformat client files with Biome (4-space indent, trailing commas)
+```
+
 ## Licence
 
 Voir `server/LICENSE`.
