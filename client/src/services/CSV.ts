@@ -5,8 +5,7 @@ import { stringify } from 'csv-stringify/browser/esm';
  *
  * @author Fabien Bellanger
  */
-class CSV
-{
+class CSV {
     public separator: string;
 
     /**
@@ -15,12 +14,11 @@ class CSV
      * @author Fabien Bellanger
      * @param string separator Séparateur de colonnes
      */
-    constructor(separator = ';')
-    {
+    constructor(separator = ';') {
         this.separator = separator;
     }
 
-    /** 
+    /**
      * Contruit le CSV sous forme de chaîne de caractères
      *
      * @author Fabien Bellanger
@@ -31,19 +29,21 @@ class CSV
     stringify(headers: string[], body: string[][]): Promise<string> {
         return new Promise((resolve, reject) => {
             body.unshift(headers);
-            
+
             stringify(
                 body,
                 {
                     delimiter: this.separator,
                     quoted_string: true,
-                }, (err, output) => {
+                },
+                (err, output) => {
                     if (err) {
                         reject(err);
                     } else {
                         resolve(output);
                     }
-                });
+                },
+            );
         });
     }
 }

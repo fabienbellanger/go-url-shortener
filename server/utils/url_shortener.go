@@ -37,7 +37,7 @@ func GenerateShortLink(link string, key string) (string, error) {
 	}
 
 	generatedNumber := new(big.Int).SetBytes(urlHashBytes).Uint64()
-	finalString, err := base58Encoded([]byte(fmt.Sprintf("%d", generatedNumber)))
+	finalString, err := base58Encoded(fmt.Appendf(nil, "%d", generatedNumber))
 	if err != nil {
 		return "", err
 	}

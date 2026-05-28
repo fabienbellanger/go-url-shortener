@@ -129,12 +129,12 @@
 </template>
 
 <script lang="ts">
-import { useQuasar } from 'quasar';
-import User from '../../models/User';
-import { defineComponent, ref, onMounted } from 'vue';
-import { useUserStore } from '../../stores/user';
-import { UserAPI } from '../../api/User';
 import * as EmailValidator from 'email-validator';
+import { useQuasar } from 'quasar';
+import { defineComponent, onMounted, ref } from 'vue';
+import { UserAPI } from '../../api/User';
+import User from '../../models/User';
+import { useUserStore } from '../../stores/user';
 
 const headers = [
     {
@@ -209,22 +209,22 @@ export default defineComponent({
         function formatDatetime(datetime: string) {
             if (datetime) {
                 console.log(datetime);
-                return datetime.substring(0, 10) + ' ' + datetime.substring(11, 19);
+                return `${datetime.substring(0, 10)} ${datetime.substring(11, 19)}`;
             }
             return '';
-        };
+        }
 
         function clearUserCreation() {
             currentUser.value = User.initEmpty();
-        };
+        }
 
         function checkEmail(email: string) {
             return EmailValidator.validate(email);
-        };
+        }
 
         function isAuthenticatedUser() {
             return userStore.user.id === currentUser.value?.id;
-        };
+        }
 
         function getList() {
             UserAPI.list()
@@ -234,7 +234,7 @@ export default defineComponent({
                 .catch((error) => {
                     console.error(error);
                 });
-        };
+        }
 
         function deleteUser() {
             if (isAuthenticatedUser()) {
@@ -245,7 +245,7 @@ export default defineComponent({
 
                 return;
             }
-            
+
             if (currentUser.value) {
                 UserAPI.delete(currentUser.value.id)
                     .then(() => {
@@ -274,17 +274,17 @@ export default defineComponent({
                         console.error(error);
                     });
             }
-        };
+        }
 
         function editUser() {
-            if (currentUser.value && currentUser.value.id) {
+            if (currentUser.value?.id) {
                 updateUser();
             } else {
                 addUser();
             }
 
             confirmCreationDialog.value = false;
-        };
+        }
 
         function addUser() {
             if (currentUser.value) {
@@ -305,15 +305,15 @@ export default defineComponent({
                         console.error(error);
                     });
             }
-        };
+        }
 
         function updateUser() {
             return;
-        };
+        }
 
         onMounted(() => {
             getList();
-        })
+        });
 
         return {
             headers,

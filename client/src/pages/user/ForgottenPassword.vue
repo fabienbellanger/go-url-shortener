@@ -24,10 +24,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from 'vue';
-import { useQuasar } from 'quasar';
-import { useRouter } from 'vue-router';
 import * as EmailValidator from 'email-validator';
+import { useQuasar } from 'quasar';
+import { computed, defineComponent, ref } from 'vue';
+import { useRouter } from 'vue-router';
 import { UserAPI } from '../../api/User';
 
 export default defineComponent({
@@ -52,7 +52,7 @@ export default defineComponent({
 
             $q.notify({
                 type: 'negative',
-                message: 'Error during password reset process: ' + error,
+                message: `Error during password reset process: ${error}`,
             });
             console.error(error);
         };
@@ -92,6 +92,6 @@ export default defineComponent({
             valid,
             submit,
         };
-    }
+    },
 });
 </script>

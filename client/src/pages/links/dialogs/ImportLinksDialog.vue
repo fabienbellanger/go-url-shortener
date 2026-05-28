@@ -75,11 +75,11 @@ export default defineComponent({
                     reload.value = true;
                 }
             } else {
-                reload.value = (insertedLinks > 0);
+                reload.value = insertedLinks > 0;
 
                 close();
             }
-        }
+        };
 
         const close = () => {
             // Close dialog and reload links list if links inserted
@@ -88,14 +88,14 @@ export default defineComponent({
             showUploader.value = true;
             errors.value = [];
             reload.value = false;
-        }
+        };
 
         return {
             showUploader,
             errors,
             uploadFinished,
             close,
-        }
-    }
-})
+        };
+    },
+});
 </script>

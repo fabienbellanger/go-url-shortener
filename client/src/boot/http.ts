@@ -1,19 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
+import axios, { type AxiosError, type AxiosInstance, type AxiosRequestConfig, type AxiosResponse, type Method } from 'axios';
 import { boot } from 'quasar/wrappers';
-import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, Method, AxiosResponse } from 'axios';
 import User from 'src/models/User';
-import { Router } from 'vue-router';
+import type { Router } from 'vue-router';
 
 /**
  * Service gérant les requêtes HTTP
  *
  * @author Fabien Bellanger
  */
-class Http
-{
-    private static instance: Http;
-    public baseURL = '';
+class Http {
+    public baseURL = process.env.API_BASE_URL as string;
     public headers?: any;
     public loading = '';
     public method: Method = 'GET';
@@ -23,30 +21,12 @@ class Http
     private router: Router | null = null;
 
     /**
-     * Constructeur
-     *
-     * @author Fabien Bellanger
-     */
-    constructor()
-    {
-        if (!Http.instance)
-        {
-            // Initialisation
-            // --------------
-            this.baseURL = process.env.API_BASE_URL as string;
-        }
-
-        return Http.instance;
-    }
-
-    /**
      * Ajout du router
      *
      * @author Fabien Bellanger
      * @param {Router} router
      */
-    public addRouter(router: Router): void
-    {
+    public addRouter(router: Router): void {
         this.router = router;
     }
 
@@ -56,19 +36,14 @@ class Http
      * @author Fabien Bellanger
      * @param {AxiosResponse<any>} response
      */
-    public manage401Error(response: AxiosResponse<any>): void
-    {
-        if (response.status === 401)
-        {
-            this.router?.push({name: 'logout'});
-        }
-        else if (response.status === 200)
-        {
+    public manage401Error(response: AxiosResponse<any>): void {
+        if (response.status === 401) {
+            this.router?.push({ name: 'logout' });
+        } else if (response.status === 200) {
             const data = response.data;
 
-            if (typeof data.code === 'number' && data.code === 401)
-            {
-                this.router?.push({name: 'logout'});
+            if (typeof data.code === 'number' && data.code === 401) {
+                this.router?.push({ name: 'logout' });
             }
         }
     }
@@ -86,92 +61,81 @@ class Http
      * @param {string}      baseUrl=''              Base URL autre que celle de la caisse
      * @return {Promise<any>}
      */
-     public request(
+    public request(
         method: Method,
         url: string,
         withCredentials = true,
         parameters = {},
         data = {},
         headers = {},
-        baseUrl = ''): Promise<any>
-    {
-        return new Promise((resolve, reject) =>
-        {
-            if (['GET', 'POST', 'PUT', 'PATCH', 'DELETE'].indexOf(method) === -1)
-            {
+        baseUrl = '',
+    ): Promise<any> {
+        return new Promise((resolve, reject) => {
+            if (['GET', 'POST', 'PUT', 'PATCH', 'DELETE'].indexOf(method) === -1) {
                 reject(new Error('Bad method'));
-            }
-            else if (typeof url !== 'string')
-            {
+            } else if (typeof url !== 'string') {
                 reject(new Error('Bad request'));
-            }
-            else
-            {
+            } else {
                 const config: AxiosRequestConfig = {
                     url,
                     method,
                     headers,
                     withCredentials,
-                    baseURL:         baseUrl === '' ? this.baseURL : baseUrl,
-                    params:          parameters,
-                    responseType:    'json',
-                    data:            data,
+                    baseURL: baseUrl === '' ? this.baseURL : baseUrl,
+                    params: parameters,
+                    responseType: 'json',
+                    data: data,
                 };
                 const axiosInstance: AxiosInstance = axios.create(config);
 
                 // Intercepteur - Requête
                 // ----------------------
-                axiosInstance.interceptors.request.use((requestConfig) =>
-                    {
+                axiosInstance.interceptors.request.use(
+                    (requestConfig) => {
                         // Gestion des token d'authentification
                         // ------------------------------------
                         // S'il faut un token et qu'un token est bien présent alors on l'ajoute aux headers
-                        if (withCredentials)
-                        {
+                        if (withCredentials) {
                             const user = User.fromSession();
 
-                            if (user.token !== null && user.token !== '')
-                            {
+                            if (user.token !== null && user.token !== '') {
                                 requestConfig.headers.Authorization = `Bearer ${user.token}`;
                             }
                         }
 
                         return requestConfig;
                     },
-                    (error: AxiosError) =>
-                    {
+                    (error: AxiosError) => {
                         return Promise.reject(error);
                     },
                 );
 
                 // Intercepteur - Réponse
                 // ----------------------
-                axiosInstance.interceptors.response.use((response) =>
-                    {
+                axiosInstance.interceptors.response.use(
+                    (response) => {
                         this.manage401Error(response);
 
                         return response;
                     },
-                    (error: AxiosError) =>
-                    {
+                    (error: AxiosError) => {
                         const responseError = error.response;
                         if (responseError !== undefined) {
                             this.manage401Error(responseError);
                         }
-                        
+
                         return Promise.reject(error);
                     },
                 );
 
                 // Lancement de la requête
                 // -----------------------
-                axiosInstance.request(config)
-                    .then((response) =>
-                    {
+                axiosInstance
+                    .request(config)
+                    .then((response) => {
                         resolve(response.data);
                     })
-                    .catch((error) =>
-                    {
+                    .catch((error) => {
                         reject(error);
                     });
             }
@@ -184,4 +148,5 @@ export default boot(({ router }) => {
 });
 
 const http: Http = new Http();
+
 export { http };

@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import { QUploader, useQuasar } from 'quasar';
+import { type QUploader, useQuasar } from 'quasar';
 import { defineComponent, ref } from 'vue';
 import { LinkAPI } from '../../api/Link';
 
@@ -26,7 +26,7 @@ export default defineComponent({
     methods: {
         uploadFile() {
             return LinkAPI.upload();
-        }
+        },
     },
     setup(_props, ctx) {
         const $q = useQuasar();
@@ -37,7 +37,7 @@ export default defineComponent({
                 type: 'negative',
                 message: 'Error: Invalid file size (< 1MB) or type (.csv)',
             });
-        }
+        };
 
         const onFailed = (error) => {
             let response = JSON.parse(error.xhr.response);
@@ -46,7 +46,7 @@ export default defineComponent({
                 type: 'negative',
                 message: `Error: ${response?.details}`,
             });
-        }
+        };
 
         const onUploaded = (info) => {
             const response = JSON.parse(info.xhr.response);
@@ -55,12 +55,12 @@ export default defineComponent({
 
             let notifyType = 'positive';
             if (errors.length > 0) {
-                if (insertedLinks == 0) {
+                if (insertedLinks === 0) {
                     notifyType = 'negative';
                 } else {
                     notifyType = 'warning';
                 }
-            } else if (insertedLinks == 0) {
+            } else if (insertedLinks === 0) {
                 notifyType = 'warning';
             }
 
@@ -75,14 +75,14 @@ export default defineComponent({
                     Errors: <b>${errors.length}</b>
                 `,
             });
-        }
+        };
 
         return {
             uploader,
             onRejected,
             onUploaded,
             onFailed,
-        }
-    }
-})
+        };
+    },
+});
 </script>

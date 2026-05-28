@@ -28,12 +28,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from 'vue';
-import { useRouter } from 'vue-router';
-import { useQuasar } from 'quasar';
 import * as EmailValidator from 'email-validator';
+import { useQuasar } from 'quasar';
+import { computed, defineComponent, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import type { AuthUser } from '../../api/User';
 import { useUserStore } from '../../stores/user';
-import { AuthUser } from '../../api/User';
 
 export default defineComponent({
     name: 'PageLogin',
@@ -46,9 +46,7 @@ export default defineComponent({
         const loginInput = ref<HTMLInputElement | null>(null);
         const login = ref('');
         const password = ref('');
-        const valid = computed(() => login.value !== '' 
-            && EmailValidator.validate(login.value) 
-            && password.value.length >= 8);
+        const valid = computed(() => login.value !== '' && EmailValidator.validate(login.value) && password.value.length >= 8);
 
         /**
          * Display authentication error
@@ -75,7 +73,8 @@ export default defineComponent({
             if (valid.value) {
                 let user: AuthUser = { email: login.value, password: password.value };
 
-                store.init(user)
+                store
+                    .init(user)
                     .then(() => {
                         $q.notify({
                             type: 'positive',

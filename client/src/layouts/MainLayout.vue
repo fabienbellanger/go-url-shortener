@@ -52,10 +52,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
-import { useQuasar } from 'quasar';
-import { useUserStore } from '../stores/user';
 import Drawer from 'components/Drawer.vue';
+import { useQuasar } from 'quasar';
+import { defineComponent, ref } from 'vue';
+import { useUserStore } from '../stores/user';
 
 export default defineComponent({
     name: 'MainLayout',
@@ -67,7 +67,7 @@ export default defineComponent({
     setup() {
         const $q = useQuasar();
         const leftDrawerOpen = ref(false);
-        const miniState = ref(true)
+        const miniState = ref(true);
         const year = ref(new Date().getFullYear());
         const userStore = useUserStore();
         const version = process.env.VERSION;

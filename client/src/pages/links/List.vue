@@ -254,13 +254,13 @@
 </template>
 
 <script lang="ts">
-import { useQuasar, date, copyToClipboard, exportFile } from 'quasar';
-import Link from '../../models/Link';
-import { defineComponent, ref, onMounted } from 'vue';
-import { LinkAPI, LinkAPIList } from '../../api/Link';
-import ImportLinksDialog from './dialogs/ImportLinksDialog.vue';
-import QrcodeVue from 'qrcode.vue';
 import type { ImageSettings } from 'qrcode.vue';
+import QrcodeVue from 'qrcode.vue';
+import { copyToClipboard, date, exportFile, useQuasar } from 'quasar';
+import { defineComponent, onMounted, ref } from 'vue';
+import { LinkAPI, type LinkAPIList } from '../../api/Link';
+import Link from '../../models/Link';
+import ImportLinksDialog from './dialogs/ImportLinksDialog.vue';
 
 const headers = [
     {
@@ -353,14 +353,8 @@ export default defineComponent({
         });
 
         function clearLinkCreation() {
-            currentLink.value = new Link(
-                '',
-                '',
-                '',
-                (date.addToDate(new Date(), {years: 50}).toISOString()).substring(0, 10),
-                '',
-            );
-        };
+            currentLink.value = new Link('', '', '', date.addToDate(new Date(), { years: 50 }).toISOString().substring(0, 10), '');
+        }
 
         function deleteLink() {
             if (currentLink.value) {
@@ -391,22 +385,22 @@ export default defineComponent({
                         console.error(error);
                     });
             }
-        };
+        }
 
         function newLink() {
             clearLinkCreation();
             confirmCreationDialog.value = true;
-        };
+        }
 
         function editLink() {
-            if (currentLink.value && currentLink.value.id) {
+            if (currentLink.value?.id) {
                 updateLink();
             } else {
                 addLink();
             }
-            
+
             confirmCreationDialog.value = false;
-        };
+        }
 
         function addLink() {
             if (currentLink.value) {
@@ -427,7 +421,7 @@ export default defineComponent({
                         console.error(error);
                     });
             }
-        };
+        }
 
         function updateLink() {
             if (currentLink.value) {
@@ -450,13 +444,13 @@ export default defineComponent({
                         console.error(error);
                     });
             }
-        };
+        }
 
         function openLink() {
             if (currentLink.value?.id) {
                 window.open(`${process.env.SORT_URL_BASE}/${currentLink.value.id}`, '_blank');
             }
-        };
+        }
 
         function openQRCode() {
             if (currentLink.value?.id) {
@@ -488,7 +482,7 @@ export default defineComponent({
                     console.error(error);
                     loading.value = false;
                 });
-        };
+        }
 
         function exportCSV() {
             loading.value = true;
@@ -497,11 +491,7 @@ export default defineComponent({
 
             LinkAPI.export(search)
                 .then((content: string) => {
-                    const status = exportFile(
-                        `url-shortener_${date.formatDate(Date.now(), 'YYYYMMDDHHmmss')}.csv`,
-                        content,
-                        'text/csv',
-                    );
+                    const status = exportFile(`url-shortener_${date.formatDate(Date.now(), 'YYYYMMDDHHmmss')}.csv`, content, 'text/csv');
                     if (status !== true) {
                         $q.notify({
                             color: 'negative',
@@ -515,7 +505,7 @@ export default defineComponent({
                     console.error(error);
                     loading.value = false;
                 });
-        };
+        }
 
         function copyLink(id: string) {
             copyToClipboard(`${process.env.SORT_URL_BASE}/${id}`)
@@ -532,7 +522,7 @@ export default defineComponent({
                         message: 'Error when copying link to clipboard',
                     });
                 });
-        };
+        }
 
         function uploadFinished(reload: boolean) {
             // Hide uploader dialog
@@ -545,8 +535,8 @@ export default defineComponent({
         }
 
         function deleteSelectedLinks() {
-            const linksIds = selectedLinks.value.map(v => v.id);
-            
+            const linksIds = selectedLinks.value.map((v) => v.id);
+
             LinkAPI.deleteSelectedLinks(linksIds)
                 .then(() => {
                     getList();

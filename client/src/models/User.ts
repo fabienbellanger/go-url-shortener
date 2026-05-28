@@ -13,15 +13,7 @@ export default class User {
     updated_at = '';
     token = '';
 
-    constructor(
-        id: string,
-        lastname: string,
-        firstname: string,
-        username: string,
-        created_at: string,
-        updated_at: string,
-        token: string,
-    ) {
+    constructor(id: string, lastname: string, firstname: string, username: string, created_at: string, updated_at: string, token: string) {
         this.id = id;
         this.lastname = lastname;
         this.firstname = firstname;
@@ -39,23 +31,15 @@ export default class User {
         if (user === null) {
             return User.initEmpty();
         }
-        return new User(
-            user.id,
-            user.lastname,
-            user.firstname,
-            user.username,
-            user.created_at,
-            user.updated_at,
-            user.token
-        );
+        return new User(user.id, user.lastname, user.firstname, user.username, user.created_at, user.updated_at, user.token);
     }
 
     static toSession() {
-        sessionStorage.setItem('user', JSON.stringify(this));
+        sessionStorage.setItem('user', JSON.stringify(User));
     }
 
     static fromSession(): User {
-        const user = <User> JSON.parse(sessionStorage.getItem('user') as string);
+        const user = <User>JSON.parse(sessionStorage.getItem('user') as string);
         return User.fromUser(user);
     }
 

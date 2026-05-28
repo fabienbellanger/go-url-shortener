@@ -1,10 +1,10 @@
-import User from 'src/models/User';
-import { http } from 'src/boot/http';
 import * as EmailValidator from 'email-validator';
+import { http } from 'src/boot/http';
+import User from 'src/models/User';
 
 interface AuthUser {
-    email: string,
-    password: string,
+    email: string;
+    password: string;
 }
 
 /**
@@ -20,7 +20,7 @@ class UserAPI {
      * @param {AuthUser} authUser
      * @return {Promise<User>}
      */
-     public static login(authUser: AuthUser): Promise<User> {
+    public static login(authUser: AuthUser): Promise<User> {
         return new Promise((resolve, reject) => {
             http.request('POST', 'login', false, {}, { username: authUser.email, password: authUser.password })
                 .then((user: User) => {
@@ -45,22 +45,24 @@ class UserAPI {
                     const users = [];
 
                     for (const i in data) {
-                        users.push(new User(
-                            data[i].id,
-                            data[i].lastname,
-                            data[i].firstname,
-                            data[i].username,
-                            data[i].created_at,
-                            data[i].updated_at,
-                            ''
-                        ));
+                        users.push(
+                            new User(
+                                data[i].id,
+                                data[i].lastname,
+                                data[i].firstname,
+                                data[i].username,
+                                data[i].created_at,
+                                data[i].updated_at,
+                                '',
+                            ),
+                        );
                     }
 
                     resolve(users);
                 })
                 .catch((error: Error) => {
                     reject(error);
-                })
+                });
         });
     }
 
@@ -71,7 +73,7 @@ class UserAPI {
      * @param id string ID du lien
      * @return {Promise<user[]>}
      */
-     public static delete(id: string): Promise<User> {
+    public static delete(id: string): Promise<User> {
         return new Promise((resolve, reject) => {
             if (id !== '') {
                 http.request('DELETE', `/users/${id}`)
@@ -94,15 +96,21 @@ class UserAPI {
      * @param user User Utilisateur
      * @return {Promise<user>}
      */
-     public static add(user: User): Promise<User> {
+    public static add(user: User): Promise<User> {
         return new Promise((resolve, reject) => {
             if (user.lastname !== '' && user.firstname !== '' && user.username !== '') {
-                http.request('POST', '/register', true, {}, {
-                    lastname: user.lastname,
-                    firstname: user.firstname,
-                    username: user.username,
-                    password: user.password,
-                })
+                http.request(
+                    'POST',
+                    '/register',
+                    true,
+                    {},
+                    {
+                        lastname: user.lastname,
+                        firstname: user.firstname,
+                        username: user.username,
+                        password: user.password,
+                    },
+                )
                     .then((user: User) => {
                         resolve(user);
                     })
@@ -133,7 +141,7 @@ class UserAPI {
                         reject(error);
                     });
             } else {
-                reject(new Error('invalid email'))
+                reject(new Error('invalid email'));
             }
         });
     }
@@ -149,9 +157,15 @@ class UserAPI {
     public static updatePassword(token: string, password: string): Promise<void> {
         return new Promise((resolve, reject) => {
             if (token.length === 36 && password.length >= 8) {
-                http.request('PATCH', `/update-password/${token}`, false, {}, {
-                    password,
-                })
+                http.request(
+                    'PATCH',
+                    `/update-password/${token}`,
+                    false,
+                    {},
+                    {
+                        password,
+                    },
+                )
                     .then(() => {
                         resolve();
                     })
@@ -159,11 +173,11 @@ class UserAPI {
                         reject(error);
                     });
             } else {
-                reject(new Error('invalid token or password'))
+                reject(new Error('invalid token or password'));
             }
         });
     }
 }
 
-export { UserAPI };
 export type { AuthUser };
+export { UserAPI };

@@ -1,4 +1,4 @@
-import { RouteRecordRaw } from 'vue-router';
+import type { RouteRecordRaw } from 'vue-router';
 
 const routes: RouteRecordRaw[] = [
     {
@@ -24,7 +24,7 @@ const routes: RouteRecordRaw[] = [
                 path: '/update-password/:token',
                 name: 'update-password',
                 component: () => import('pages/user/UpdatePassword.vue'),
-            }
+            },
         ],
     },
     {

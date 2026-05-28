@@ -71,11 +71,11 @@ export default configure(function (/* ctx */) {
 
       // publicPath: '/',
       // analyze: true,
-      
+
       env: {
         API_BASE_URL: 'https://apitic.fr/api/v1',
         SORT_URL_BASE: 'https://apitic.fr',
-        VERSION: 'v1.4.0',
+        VERSION: 'v1.5.0',
       },
 
       // rawDefine: {}
@@ -87,7 +87,7 @@ export default configure(function (/* ctx */) {
       // extendViteConf (viteConf) {},
       // viteVuePluginOptions: {},
 
-      
+
       // vitePlugins: [
       //   [ 'package-name', { ..options.. } ]
       // ]

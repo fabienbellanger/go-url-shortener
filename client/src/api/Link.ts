@@ -2,7 +2,6 @@ import { http } from 'src/boot/http';
 import Link from 'src/models/Link';
 import User from 'src/models/User';
 
-
 type LinkAPIList = {
     total: number;
     links: Link[];
@@ -58,14 +57,20 @@ class LinkAPI {
      * @param link Link Lien
      * @return {Promise<Link[]>}
      */
-     public static add(link: Link): Promise<Link> {
+    public static add(link: Link): Promise<Link> {
         return new Promise((resolve, reject) => {
             if (link.url !== '' && link.expired_at !== '') {
-                http.request('POST', '/links', true, {}, {
-                    url: link.url,
-                    name: link.name,
-                    expired_at: (new Date(link.expired_at)).toISOString()
-                })
+                http.request(
+                    'POST',
+                    '/links',
+                    true,
+                    {},
+                    {
+                        url: link.url,
+                        name: link.name,
+                        expired_at: new Date(link.expired_at).toISOString(),
+                    },
+                )
                     .then((link: Link) => {
                         resolve(link);
                     })
@@ -85,24 +90,27 @@ class LinkAPI {
      * @param link Link Lien
      * @return {Promise<Link[]>}
      */
-     public static update(link: Link): Promise<Link> {
+    public static update(link: Link): Promise<Link> {
         return new Promise((resolve, reject) => {
-            if (link.url !== '' && link.expired_at !== '')
-            {
-                http.request('PUT', `/links/${link.id}`, true, {}, {
-                    url: link.url,
-                    name: link.name,
-                    expired_at: (new Date(link.expired_at)).toISOString()
-                })
+            if (link.url !== '' && link.expired_at !== '') {
+                http.request(
+                    'PUT',
+                    `/links/${link.id}`,
+                    true,
+                    {},
+                    {
+                        url: link.url,
+                        name: link.name,
+                        expired_at: new Date(link.expired_at).toISOString(),
+                    },
+                )
                     .then((link: Link) => {
                         resolve(link);
                     })
                     .catch((error) => {
                         reject(error);
                     });
-            }
-            else
-            {
+            } else {
                 reject(new Error('invalid URL or expired date'));
             }
         });
@@ -117,8 +125,7 @@ class LinkAPI {
      */
     public static delete(id: string): Promise<Link> {
         return new Promise((resolve, reject) => {
-            if (id !== '')
-            {
+            if (id !== '') {
                 http.request('DELETE', `/links/${id}`)
                     .then((link: Link) => {
                         resolve(link);
@@ -126,9 +133,7 @@ class LinkAPI {
                     .catch((error) => {
                         reject(error);
                     });
-            }
-            else
-            {
+            } else {
                 reject(new Error('invalid id'));
             }
         });
@@ -143,8 +148,7 @@ class LinkAPI {
      */
     public static deleteSelectedLinks(ids: string[]): Promise<void> {
         return new Promise((resolve, reject) => {
-            if (ids.length !== 0)
-            {
+            if (ids.length !== 0) {
                 http.request('DELETE', '/links/selected', true, {}, ids)
                     .then(() => {
                         resolve();
@@ -152,9 +156,7 @@ class LinkAPI {
                     .catch((error) => {
                         reject(error);
                     });
-            }
-            else
-            {
+            } else {
                 reject(new Error('invalid id'));
             }
         });
@@ -174,10 +176,8 @@ class LinkAPI {
                 resolve({
                     url: `${http.baseURL}/links/upload`,
                     method: 'POST',
-                    headers: [
-                        { name: 'Authorization', value: `Bearer ${user.token}` }
-                    ]
-                })
+                    headers: [{ name: 'Authorization', value: `Bearer ${user.token}` }],
+                });
             } else {
                 reject('Empty token');
             }
@@ -207,5 +207,5 @@ class LinkAPI {
     }
 }
 
+export type { LinkAPIList };
 export { LinkAPI };
-export type { LinkAPIList }

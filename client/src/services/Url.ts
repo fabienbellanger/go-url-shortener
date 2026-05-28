@@ -1,18 +1,17 @@
 export type UrlParameters = {
-    name: string,
-    value: string,
-}
+    name: string;
+    value: string;
+};
 
 /**
  * Service générant une URL
  *
  * @author Fabien Bellanger
  */
-export class Url
-{
+export class Url {
     /**
      * Generate URL
-     * 
+     *
      * @param base string Base URL
      * @param parameters UrlParameters[] Query parameters
      * @return string Encoded URL
@@ -22,7 +21,7 @@ export class Url
 
         if (parameters !== undefined && parameters.length > 0) {
             let first = true;
-            
+
             for (const parameter of parameters) {
                 if (parameter.name !== '') {
                     if (first) {
@@ -31,8 +30,8 @@ export class Url
                     } else {
                         url += '&';
                     }
-    
-                    url += parameter.name + '=' + parameter.value;
+
+                    url += `${parameter.name}=${parameter.value}`;
                 }
             }
         }

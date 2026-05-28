@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
+import { type AuthUser, UserAPI } from 'src/api/User';
 import User from 'src/models/User';
-import { UserAPI, AuthUser } from 'src/api/User';
 
 interface State {
     user: User;
@@ -10,7 +10,7 @@ export const useUserStore = defineStore('user', {
     state: (): State => {
         return {
             user: User.fromSession(),
-        }
+        };
     },
 
     getters: {
@@ -19,8 +19,8 @@ export const useUserStore = defineStore('user', {
         },
 
         isAuthenticated: (state: State) => {
-            return state.user.token !== ''
-        }
+            return state.user.token !== '';
+        },
     },
 
     actions: {
@@ -52,4 +52,4 @@ export const useUserStore = defineStore('user', {
             sessionStorage.removeItem('user');
         },
     },
-})
+});

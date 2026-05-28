@@ -18,7 +18,7 @@ export default defineComponent({
 
     setup() {
         const $q = useQuasar();
-        
+
         // Theme from OS
         // -------------
         const darkThemeOS = window.matchMedia('(prefers-color-scheme: dark)');

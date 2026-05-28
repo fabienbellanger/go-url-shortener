@@ -33,8 +33,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
 import { useQuasar } from 'quasar';
+import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
     name: 'LoginLayout',
@@ -43,7 +43,7 @@ export default defineComponent({
         const $q = useQuasar();
         const version = process.env.VERSION;
         const year = ref(new Date().getFullYear());
-        
+
         // Theme from OS
         // -------------
         const darkThemeOS = window.matchMedia('(prefers-color-scheme: dark)');
@@ -57,7 +57,7 @@ export default defineComponent({
 
         return {
             year,
-            version
+            version,
         };
     },
 });

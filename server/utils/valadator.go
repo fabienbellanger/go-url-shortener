@@ -13,7 +13,7 @@ type ValidatorError struct {
 
 // ValidateStruct checks if a struct is valid and returns an array of errors
 // if it is not valid.
-func ValidateStruct(task interface{}) (errors []*ValidatorError) {
+func ValidateStruct(task any) (errors []*ValidatorError) {
 	validate := validator.New()
 	err := validate.Struct(task)
 	if err != nil {

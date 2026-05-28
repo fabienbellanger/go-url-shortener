@@ -30,9 +30,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from 'vue';
 import { useQuasar } from 'quasar';
-import { useRouter, useRoute } from 'vue-router';
+import { computed, defineComponent, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { UserAPI } from '../../api/User';
 
 export default defineComponent({
@@ -62,7 +62,7 @@ export default defineComponent({
 
             $q.notify({
                 type: 'negative',
-                message: 'Error when enter a new password: ' + error,
+                message: `Error when enter a new password: ${error}`,
             });
             console.error(error);
         };
@@ -104,6 +104,6 @@ export default defineComponent({
             valid,
             submit,
         };
-    }
+    },
 });
 </script>
